@@ -1,20 +1,3 @@
-:root {
-    --base-pt: 8;
-    --spacer-1: calc(var(--base-pt) * 1px);
-    --spacer-2: calc(var(--base-pt) * 2px);
-    --spacer-3: calc(var(--base-pt) * 3px);
-    --spacer-4: calc(var(--base-pt) * 4px);
-}
-
-* {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-body {
-    height: 100vh;
-}
-
 .window {
     display: grid;
     height: 100vh;
@@ -37,6 +20,7 @@ body {
     grid-area: head;
     padding: 0 var(--spacer-2);
     z-index: 20;
+    @include flex(center, null);
 }
 
 /* Window's Sidebar Styles */
@@ -46,13 +30,14 @@ body {
     background: #fff;
 }
 
-.window-isCollapsed .window__sidebar__content {
-    display: none;
+.window-isCollapsed {
+    .window__sidebar__content {
+        display: none;
+    }
 }
 
 .window__sidebar__actions {
-    display: flex;
-    align-items: center;
+    @include flex(center, null);
     height: 40px;
     padding: 0 var(--spacer-2);
     outline: 1px solid #E0C9C9;
@@ -71,6 +56,7 @@ body {
     height: 40px;
     padding: 0 var(--spacer-2);
     outline: 1px solid #E0C9C9;
+    @include flex(center, null);
 }
 
 .window__main__content {
@@ -82,7 +68,9 @@ body {
     grid-area: foot;
     padding: 0 var(--spacer-2);
     border-top: 1px solid #E0C9C9;
+    @include flex(center, null);
 }
+
 @media screen and (max-width: 567px) {
     .window {
         grid-template-columns: 1fr;
@@ -99,13 +87,20 @@ body {
         z-index: 10;
     }
 
-    .window-isCollapsed .window__sidebar {
-        width: 360px;
-        box-shadow: 1px 0 20px 2px rgba(0,0,0,0.2);
+    .window-isCollapsed {
+        .window__sidebar {
+            width: 360px;
+            -webkit-box-shadow: 1px 0 20px 2px rgba(0,0,0,0.2);
+                    box-shadow: 1px 0 20px 2px rgba(0,0,0,0.2);
+        }
     }
 
-    .window-isCollapsed .window__sidebar .window__sidebar__content {
-        display: block;
+    .window-isCollapsed {
+        .window__sidebar {
+            .window__sidebar__content {
+                display: block;
+            }
+        }
     }
 
     .window__sidebar__content {
