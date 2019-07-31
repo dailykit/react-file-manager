@@ -1,0 +1,39 @@
+* {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+}
+
+#window {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 240px 1fr;
+    -ms-grid-template-columns: 240px 1fr;
+    grid-template-rows: 40px 1fr 40px;
+    -ms-grid-template-rows: 40px 1fr 40px;
+    grid-template-areas: 
+        "head head" 
+        "aside main"
+        "aside foot";
+}
+
+.window__header {
+    outline: 1px solid #000;
+    grid-area: head;
+}
+
+.window__sidebar {
+    outline: 1px solid #000;
+    grid-area: aside;
+}
+.window__main {
+    outline: 1px solid #000;
+    grid-area: main;
+}
+.window__footer {
+    outline: 1px solid #000;
+    grid-area: foot;
+}
