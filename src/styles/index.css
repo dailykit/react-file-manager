@@ -1,39 +1,122 @@
+:root {
+    --base-pt: 8;
+    --spacer-1: calc(var(--base-pt) * 1px);
+    --spacer-2: calc(var(--base-pt) * 2px);
+    --spacer-3: calc(var(--base-pt) * 3px);
+    --spacer-4: calc(var(--base-pt) * 4px);
+}
+
 * {
     -webkit-box-sizing: border-box;
-            box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
     height: 100vh;
 }
 
-#window {
+.window {
     display: grid;
     height: 100vh;
     grid-template-columns: 240px 1fr;
     -ms-grid-template-columns: 240px 1fr;
     grid-template-rows: 40px 1fr 40px;
     -ms-grid-template-rows: 40px 1fr 40px;
-    grid-template-areas: 
-        "head head" 
-        "aside main"
-        "aside foot";
+    grid-template-areas: "head head" "aside main" "aside foot";
 }
 
+.window-isCollapsed {
+    grid-template-columns: 40px 1fr;
+    -ms-grid-template-columns: 40px 1fr;
+}
+
+/* Window's Header Styles */
 .window__header {
-    outline: 1px solid #000;
+    background: #fff;
+    border-bottom: 1px solid #E0C9C9;
     grid-area: head;
+    padding: 0 var(--spacer-2);
+    z-index: 20;
 }
 
+/* Window's Sidebar Styles */
 .window__sidebar {
-    outline: 1px solid #000;
+    border-right: 1px solid #E0C9C9;
     grid-area: aside;
+    background: #fff;
 }
+
+.window-isCollapsed .window__sidebar__content {
+    display: none;
+}
+
+.window__sidebar__actions {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 var(--spacer-2);
+    outline: 1px solid #E0C9C9;
+}
+
+.window__sidebar__content {
+    padding: var(--spacer-2);
+}
+
+/* Window's Main Styles */
 .window__main {
-    outline: 1px solid #000;
     grid-area: main;
 }
+
+.window__main__nav {
+    height: 40px;
+    padding: 0 var(--spacer-2);
+    outline: 1px solid #E0C9C9;
+}
+
+.window__main__content {
+    padding: var(--spacer-2);
+}
+
+/* Window's Footer Styles */
 .window__footer {
-    outline: 1px solid #000;
     grid-area: foot;
+    padding: 0 var(--spacer-2);
+    border-top: 1px solid #E0C9C9;
+}
+@media screen and (max-width: 567px) {
+    .window {
+        grid-template-columns: 1fr;
+        -ms-grid-template-columns: 1fr;
+        grid-template-areas: "head" "main" "foot";
+    }
+
+    .window__sidebar {
+        width: 40px;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        bottom: 0;
+        z-index: 10;
+    }
+
+    .window-isCollapsed .window__sidebar {
+        width: 360px;
+        box-shadow: 1px 0 20px 2px rgba(0,0,0,0.2);
+    }
+
+    .window-isCollapsed .window__sidebar .window__sidebar__content {
+        display: block;
+    }
+
+    .window__sidebar__content {
+        display: none;
+    }
+
+    .window__main {
+        margin-left: 40px;
+    }
+
+    .window__footer {
+        margin-left: 40px;
+    }
 }

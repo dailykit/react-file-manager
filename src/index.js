@@ -9,11 +9,15 @@ const Main = React.lazy(() => import('./sections/Main'))
 const Footer = React.lazy(() => import('./sections/Footer'))
 
 const App = () => {
+	const [collapse, setCollapse] = React.useState(false)
+	const isCollapsed = () => {
+		setCollapse(!collapse)
+	}
 	return (
-		<div id="window">
-			<React.Suspense fallback={() => <span>Loading...</span>}>
+		<div className={`window ${collapse ? 'window-isCollapsed' : ''}`}>
+			<React.Suspense fallback={<span>Loading...</span>}>
 				<Header />
-				<Sidebar />
+				<Sidebar isCollapsed={isCollapsed} />
 				<Main />
 				<Footer />
 			</React.Suspense>
