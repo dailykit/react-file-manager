@@ -38,5 +38,12 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dailykit/react-file-manager.git"
+      },
+      "bugs": {
+        "url": "https://github.com/dailykit/react-file-manager.git/issues"
+      }
 }
