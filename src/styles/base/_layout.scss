@@ -53,14 +53,6 @@
     padding: var(--spacer-2);
 }
 
-/* Window's Footer Styles */
-.window__footer {
-    grid-area: foot;
-    padding: 0 var(--spacer-2);
-    border-top: 1px solid var(--border);
-    @include flex(center, null);
-}
-
 @media screen and (max-width: 567px) {
     .window {
         grid-template-columns: 1fr;

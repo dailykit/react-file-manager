@@ -1,0 +1,22 @@
+.window__footer {
+    grid-area: foot;
+    padding-left: var(--spacer-2);
+    border-top: 1px solid var(--border);
+    @include flex(center, space-between);
+}
+
+.window__responsive__actions {
+    @include flex(center, space-around);
+    height: 32px;
+    width: 120px;
+    div { 
+        flex:1;
+        @include flex(center, center);
+        height: inherit;
+        border-left: 1px solid var(--border);
+        cursor: pointer;
+        &:hover {
+            background: rgba(#000,0.05);
+        }
+    }
+}
