@@ -3,8 +3,8 @@
     height: 100vh;
     grid-template-columns: 240px 1fr;
     -ms-grid-template-columns: 240px 1fr;
-    grid-template-rows: 40px 1fr 40px;
-    -ms-grid-template-rows: 40px 1fr 40px;
+    grid-template-rows: 32px 1fr 32px;
+    -ms-grid-template-rows: 32px 1fr 32px;
     grid-template-areas: "head head" "aside main" "aside foot";
 }
 
@@ -13,19 +13,9 @@
     -ms-grid-template-columns: 40px 1fr;
 }
 
-/* Window's Header Styles */
-.window__header {
-    background: #fff;
-    border-bottom: 1px solid #E0C9C9;
-    grid-area: head;
-    padding: 0 var(--spacer-2);
-    z-index: 20;
-    @include flex(center, null);
-}
-
 /* Window's Sidebar Styles */
 .window__sidebar {
-    border-right: 1px solid #E0C9C9;
+    border-right: 1px solid var(--border);
     grid-area: aside;
     background: #fff;
 }
@@ -40,7 +30,7 @@
     @include flex(center, null);
     height: 40px;
     padding: 0 var(--spacer-2);
-    outline: 1px solid #E0C9C9;
+    outline: 1px solid var(--border);
 }
 
 .window__sidebar__content {
@@ -55,7 +45,7 @@
 .window__main__nav {
     height: 40px;
     padding: 0 var(--spacer-2);
-    outline: 1px solid #E0C9C9;
+    outline: 1px solid var(--border);
     @include flex(center, null);
 }
 
@@ -67,7 +57,7 @@
 .window__footer {
     grid-area: foot;
     padding: 0 var(--spacer-2);
-    border-top: 1px solid #E0C9C9;
+    border-top: 1px solid var(--border);
     @include flex(center, null);
 }
 
@@ -81,7 +71,7 @@
     .window__sidebar {
         width: 40px;
         position: absolute;
-        top: 40px;
+        top: 32px;
         left: 0;
         bottom: 0;
         z-index: 10;
