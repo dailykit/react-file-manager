@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import './styles/index.css'
+import './styles/index.scss'
 
 const Header = React.lazy(() => import('./sections/Header'))
 const Sidebar = React.lazy(() => import('./sections/Sidebar'))
@@ -16,7 +16,7 @@ const App = () => {
 	return (
 		<div className={`window ${collapse ? 'window-isCollapsed' : ''}`}>
 			<React.Suspense fallback={<span>Loading...</span>}>
-				<Header />
+				<Header title={'File Manager'} />
 				<Sidebar isCollapsed={isCollapsed} />
 				<Main />
 				<Footer />
