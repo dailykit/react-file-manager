@@ -27,7 +27,7 @@ const App = () => {
 				<Header title={'File Manager'} />
 				<Sidebar isCollapsed={isCollapsed} />
 				<Main data={selectedFolderData} />
-				<Footer />
+				<Footer itemCount={selectedFolderData.length} />
 			</React.Suspense>
 		</div>
 	)
