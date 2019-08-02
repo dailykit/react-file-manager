@@ -1,20 +1,27 @@
 .window {
+    display: -ms-grid;
     display: grid;
     height: 100vh;
+    -ms-grid-columns: 240px 1fr;
     grid-template-columns: 240px 1fr;
     -ms-grid-template-columns: 240px 1fr;
+    -ms-grid-rows: 32px 1fr 32px;
     grid-template-rows: 32px 1fr 32px;
     -ms-grid-template-rows: 32px 1fr 32px;
-    grid-template-areas: "head head" "aside main" "aside foot";
+        grid-template-areas: "head head" "aside main" "aside foot";
 }
 
 .window-isCollapsed {
+    -ms-grid-columns: 40px 1fr;
     grid-template-columns: 40px 1fr;
     -ms-grid-template-columns: 40px 1fr;
 }
 
 /* Window's Sidebar Styles */
 .window__sidebar {
+    -ms-grid-row: 2;
+    -ms-grid-row-span: 2;
+    -ms-grid-column: 1;
     border-right: 1px solid var(--border);
     grid-area: aside;
     background: #fff;
@@ -39,9 +46,10 @@
 
 @media screen and (max-width: 567px) {
     .window {
+        -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
         -ms-grid-template-columns: 1fr;
-        grid-template-areas: "head" "main" "foot";
+            grid-template-areas: "head" "main" "foot";
     }
 
     .window__sidebar {

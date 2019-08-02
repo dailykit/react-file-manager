@@ -13,7 +13,9 @@
     height: 32px;
     width: 120px;
     div { 
-        flex:1;
+        -webkit-box-flex:1; 
+            -ms-flex:1; 
+                flex:1;
         @include flex(center, center);
         height: inherit;
         border-left: 1px solid var(--border);
@@ -23,4 +25,3 @@
         }
     }
 }
-

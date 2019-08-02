@@ -5,7 +5,9 @@
 .window__main__navbar {
     height: 40px;
     outline: 1px solid var(--border);
+    display: -ms-grid;
     display: grid;
+    -ms-grid-columns: 80px 1fr 240px 80px;
     grid-template-columns: 80px 1fr 240px 80px;
 }
 
@@ -57,15 +59,21 @@ ul.window__main__breadcrumbs {
 }
 
 .window__main__content {
+    display: -ms-grid;
     display: grid;
     height: calc(100vh - 104px);
 }
 
 .window__main__grid__view {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
     .item {
-        flex: 1 1 120px;
+        -webkit-box-flex: 1;
+            -ms-flex: 1 1 120px;
+                flex: 1 1 120px;
         max-width: 130px;
         height: 150px;
         border-top: none;
@@ -88,10 +96,14 @@ ul.window__main__breadcrumbs {
 }
 
 .window__main__list__view {
+    display: -ms-grid;
     display: grid;
+    -ms-grid-rows: 32px 1fr;
     grid-template-rows: 32px 1fr;
     .table__header, .table__row {
+        display: -ms-grid;
         display: grid;
+        -ms-grid-columns: 1fr 120px 120px;
         grid-template-columns: 1fr 120px 120px;
     }
     .table__header {
