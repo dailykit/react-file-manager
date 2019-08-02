@@ -10,15 +10,19 @@ const Main = props => {
 	const [view, setView] = React.useState('list')
 	const [preview, setPreview] = React.useState(false)
 	const [previewData, setPreviewData] = React.useState({})
+	const [search, setSearch] = React.useState('')
 	const [sort, sortBy] = React.useState({
 		name: 'asc',
 	})
 
 	const breadcrumbs = ['Folders', 'Dishes', 'Vegetarians']
-
-	const items = _.mapValues(_.groupBy(props.data, 'type'), v =>
+	const itemData = props.data.filter(i =>
+		i.name.toLowerCase().includes(search.toLowerCase())
+	)
+	const items = _.mapValues(_.groupBy(itemData, 'type'), v =>
 		_.orderBy(v, ['name'], [sort.name])
 	)
+	console.log(items)
 
 	const togglePreview = (data, from) => {
 		if (from === 'fromPreview') {
@@ -92,6 +96,8 @@ const Main = props => {
 					<input
 						type="text"
 						placeholder="Search files or folders..."
+						value={search}
+						onChange={e => setSearch(e.target.value)}
 					/>
 				</div>
 				<div className="window__main__view">
@@ -116,20 +122,22 @@ const Main = props => {
 				<div className="window__main__content__left">
 					{view === 'grid' ? (
 						<div className="window__main__grid__view">
-							{items.folder.map(item => (
-								<Card
-									{...item}
-									key={item.id}
-									togglePreview={togglePreview}
-								/>
-							))}
-							{items.file.map(item => (
-								<Card
-									{...item}
-									key={item.id}
-									togglePreview={togglePreview}
-								/>
-							))}
+							{items.folder &&
+								items.folder.map(item => (
+									<Card
+										{...item}
+										key={item.id}
+										togglePreview={togglePreview}
+									/>
+								))}
+							{items.file &&
+								items.file.map(item => (
+									<Card
+										{...item}
+										key={item.id}
+										togglePreview={togglePreview}
+									/>
+								))}
 						</div>
 					) : (
 						<div className="window__main__list__view">
@@ -154,20 +162,22 @@ const Main = props => {
 								<div className="item__size">Size</div>
 							</div>
 							<div className="table__main">
-								{items.folder.map(item => (
-									<TableRow
-										{...item}
-										key={item.id}
-										togglePreview={togglePreview}
-									/>
-								))}
-								{items.file.map(item => (
-									<TableRow
-										{...item}
-										key={item.id}
-										togglePreview={togglePreview}
-									/>
-								))}
+								{items.folder &&
+									items.folder.map(item => (
+										<TableRow
+											{...item}
+											key={item.id}
+											togglePreview={togglePreview}
+										/>
+									))}
+								{items.file &&
+									items.file.map(item => (
+										<TableRow
+											{...item}
+											key={item.id}
+											togglePreview={togglePreview}
+										/>
+									))}
 							</div>
 						</div>
 					)}
