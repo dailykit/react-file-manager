@@ -37,22 +37,6 @@
     padding: var(--spacer-2);
 }
 
-/* Window's Main Styles */
-.window__main {
-    grid-area: main;
-}
-
-.window__main__nav {
-    height: 40px;
-    padding: 0 var(--spacer-2);
-    outline: 1px solid var(--border);
-    @include flex(center, null);
-}
-
-.window__main__content {
-    padding: var(--spacer-2);
-}
-
 @media screen and (max-width: 567px) {
     .window {
         grid-template-columns: 1fr;

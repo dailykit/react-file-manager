@@ -13,6 +13,7 @@
     "auther": "Praveen Bisht",
     "main": "index.js",
     "dependencies": {
+        "lodash": "^4.17.15",
         "node-sass": "^4.12.0",
         "prop-types": "^15.7.2",
         "react": "^16.8.6",
