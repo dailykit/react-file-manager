@@ -7,11 +7,16 @@ const Header = React.lazy(() => import('./sections/Header'))
 const Sidebar = React.lazy(() => import('./sections/Sidebar'))
 const Main = React.lazy(() => import('./sections/Main'))
 const Footer = React.lazy(() => import('./sections/Footer'))
+const Navbar = React.lazy(() => import('./sections/Navbar'))
 
 const App = () => {
-	const [collapse, setCollapse] = React.useState(false)
+	const [isSidebarVisible, toggleSidebar] = React.useState(false)
+	const [preview, togglePreview] = React.useState(false)
+	const [view, toggleView] = React.useState('list')
+
+	const breadcrumbs = ['Folders', 'Dishes', 'Vegetarians']
 	const isCollapsed = () => {
-		setCollapse(!collapse)
+		toggleSidebar(!isSidebarVisible)
 	}
 	const selectedFolderData = [
 		{ id: 1, name: 'folder2', type: 'folder' },
@@ -22,11 +27,23 @@ const App = () => {
 		{ id: 6, name: 'file4', type: 'file', size: 1024 * 5 },
 	]
 	return (
-		<div className={`window ${collapse ? 'window-isCollapsed' : ''}`}>
+		<div
+			className={`window ${isSidebarVisible ? 'window-isCollapsed' : ''}`}
+		>
 			<React.Suspense fallback={<span>Loading...</span>}>
 				<Header title={'File Manager'} />
 				<Sidebar isCollapsed={isCollapsed} />
-				<Main data={selectedFolderData} />
+				<Navbar
+					toggleView={toggleView}
+					togglePreview={togglePreview}
+					breadcrumbs={breadcrumbs}
+				/>
+				<Main
+					data={selectedFolderData}
+					view={view}
+					preview={preview}
+					togglePreview={togglePreview}
+				/>
 				<Footer itemCount={selectedFolderData.length} />
 			</React.Suspense>
 		</div>
