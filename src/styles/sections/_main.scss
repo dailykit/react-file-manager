@@ -113,17 +113,23 @@ ul.window__main__breadcrumbs {
     -ms-grid-rows: 32px 1fr;
     grid-template-rows: 32px 1fr;
     .table__header, .table__row {
-        display: -ms-grid;
         display: grid;
-        -ms-grid-columns: 1fr 120px 120px;
-        grid-template-columns: 1fr 120px 120px;
+        grid-template-columns: repeat(auto-fill, calc(100% / 3));
     }
     .table__header {
         line-height: 32px;
         border-bottom: 1px solid var(--border);
         div {
+            cursor: pointer;
             padding: 0 var(--spacer-2);
             @include flex(null,space-between);
+            &:hover {
+                background: rgba(#000, 0.05);
+            }
+
+        }
+        div.item__type {
+            pointer-events: none;
         }
     }
     .table__row {
