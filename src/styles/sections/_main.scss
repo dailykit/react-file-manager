@@ -143,6 +143,26 @@ ul.window__main__breadcrumbs {
     padding: var(--spacer-2);
 }
 
+main.preview__main {
+    div {
+        height: 32px;
+        @include flex(center, space-between);
+    }
+}
+
+
+.preview__header {
+    @include flex(center, space-between);
+}
+
+.preview__thumbnail {
+    height: 200px;
+    width: 100%;
+    background: rgba(#000, 0.2);
+    @include flex(center, center);
+    margin: 16px 0;
+}
+
 @media screen and (max-width: 980px) {
     .window__main__content.with__preview {
         grid-template-columns: 1fr 0;
