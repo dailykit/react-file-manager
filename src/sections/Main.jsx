@@ -22,7 +22,6 @@ const Main = props => {
 	const items = _.mapValues(_.groupBy(itemData, 'type'), v =>
 		_.orderBy(v, ['name'], [sort.name])
 	)
-	console.log(items)
 
 	const togglePreview = (data, from) => {
 		if (from === 'fromPreview') {
@@ -114,79 +113,98 @@ const Main = props => {
 				</div>
 			</div>
 			<div
-				className="window__main__content"
-				style={{
-					gridTemplateColumns: `1fr ${preview ? '321px' : '0'}`,
-				}}
+				className={`window__main__content ${
+					preview ? 'with__preview' : ''
+				}`}
 			>
-				<div className="window__main__content__left">
-					{view === 'grid' ? (
-						<div className="window__main__grid__view">
-							{items.folder &&
-								items.folder.map(item => (
-									<Card
-										{...item}
-										key={item.id}
-										togglePreview={togglePreview}
-									/>
-								))}
-							{items.file &&
-								items.file.map(item => (
-									<Card
-										{...item}
-										key={item.id}
-										togglePreview={togglePreview}
-									/>
-								))}
+				{props.data.length === 0 ? (
+					<div className="empty__state">
+						<h3>
+							This folder is empty. Start by creating a new folder
+							or a file
+						</h3>
+						<div>
+							<button>Create File</button>
+							<button>Create Folder</button>
 						</div>
-					) : (
-						<div className="window__main__list__view">
-							<div className="table__header">
-								<div
-									className="item__name"
-									onClick={() =>
-										sortBy({
-											name:
-												sort.name === 'asc'
-													? 'desc'
-													: sort.name === 'desc'
-													? 'asc'
-													: null,
-										})
-									}
-								>
-									<span>Name</span>
-									<span>{sort.name}</span>
-								</div>
-								<div className="item__type">Type</div>
-								<div className="item__size">Size</div>
-							</div>
-							<div className="table__main">
-								{items.folder &&
-									items.folder.map(item => (
-										<TableRow
-											{...item}
-											key={item.id}
-											togglePreview={togglePreview}
-										/>
-									))}
-								{items.file &&
-									items.file.map(item => (
-										<TableRow
-											{...item}
-											key={item.id}
-											togglePreview={togglePreview}
-										/>
-									))}
-							</div>
-						</div>
-					)}
-				</div>
-				{preview ? (
-					<div className="window__main__content__right">
-						<FilePreview {...previewData} />
 					</div>
-				) : null}
+				) : (
+					<>
+						<div className="window__main__content__left">
+							{view === 'grid' ? (
+								<div className="window__main__grid__view">
+									{items.folder &&
+										items.folder.map(item => (
+											<Card
+												{...item}
+												key={item.id}
+												togglePreview={togglePreview}
+											/>
+										))}
+									{items.file &&
+										items.file.map(item => (
+											<Card
+												{...item}
+												key={item.id}
+												togglePreview={togglePreview}
+											/>
+										))}
+								</div>
+							) : (
+								<div className="window__main__list__view">
+									<div className="table__header">
+										<div
+											className="item__name"
+											onClick={() =>
+												sortBy({
+													name:
+														sort.name === 'asc'
+															? 'desc'
+															: sort.name ===
+															  'desc'
+															? 'asc'
+															: null,
+												})
+											}
+										>
+											<span>Name</span>
+											<span>{sort.name}</span>
+										</div>
+										<div className="item__type">Type</div>
+										<div className="item__size">Size</div>
+									</div>
+									<div className="table__main">
+										{items.folder &&
+											items.folder.map(item => (
+												<TableRow
+													{...item}
+													key={item.id}
+													togglePreview={
+														togglePreview
+													}
+												/>
+											))}
+										{items.file &&
+											items.file.map(item => (
+												<TableRow
+													{...item}
+													key={item.id}
+													togglePreview={
+														togglePreview
+													}
+												/>
+											))}
+									</div>
+								</div>
+							)}
+						</div>
+						{preview ? (
+							<div className="window__main__content__right">
+								<FilePreview {...previewData} />
+							</div>
+						) : null}
+					</>
+				)}
 			</div>
 		</main>
 	)

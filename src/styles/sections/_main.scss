@@ -1,5 +1,13 @@
 .window__main {
     grid-area: main;
+    position: relative;
+}
+
+.empty__state {
+    height: 100%;
+    width: 100%;
+    @include flex(center, center);
+    flex-direction: column;
 }
 
 .window__main__navbar {
@@ -61,7 +69,11 @@ ul.window__main__breadcrumbs {
 .window__main__content {
     display: -ms-grid;
     display: grid;
+    grid-template-columns: 1fr 0;
     height: calc(100vh - 104px);
+    &.with__preview {
+        grid-template-columns: 1fr 321px;
+    }
 }
 
 .window__main__grid__view {
@@ -129,4 +141,18 @@ ul.window__main__breadcrumbs {
 .window__main__content__right {
     border-left: 1px solid var(--border);
     padding: var(--spacer-2);
+}
+
+@media screen and (max-width: 980px) {
+    .window__main__content.with__preview {
+        grid-template-columns: 1fr 0;
+    }
+    .window__main__content__right {
+        position: absolute;
+        right: 0;
+        top: 41px;
+        bottom: 0;
+        width: 321px;
+        background: #fff;
+    }
 }
