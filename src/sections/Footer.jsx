@@ -6,9 +6,12 @@ const Footer = props => {
 	const SwitchDesktopView = () => console.log('Desktop View!')
 	return (
 		<footer className="window__footer">
-			<span>{`${props.itemCount} ${
-				props.itemCount === 1 ? 'item' : 'items'
-			}`}</span>
+			<span>
+				{props.itemCount &&
+					`${props.itemCount} ${
+						props.itemCount === 1 ? 'item' : 'items'
+					}`}
+			</span>
 			<div className="window__responsive__actions">
 				<div onClick={() => SwitchMobileView()}>M</div>
 				<div onClick={() => SwitchTabletView()}>T</div>

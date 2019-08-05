@@ -12,11 +12,9 @@ const Main = props => {
 		column: 'name',
 		order: 'asc',
 	})
-
-	const items = _.mapValues(_.groupBy(props.data, 'type'), v =>
+	const items = _.mapValues(_.groupBy(props.data.children, 'type'), v =>
 		_.orderBy(v, [sort.column], [sort.order])
 	)
-
 	const togglePreview = (data, from) => {
 		if (from === 'fromPreview') {
 			props.togglePreview(false)

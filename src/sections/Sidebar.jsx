@@ -2,51 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Treebeard } from 'react-treebeard'
 
-const folderData = {
-	name: 'Folders',
-	toggled: true,
-	children: [
-		{
-			name: 'Dishes',
-			id: './filesystem/Dishes',
-			children: [
-				{
-					name: 'Vegetarian',
-					id: './filesystem/Dishes/Vegetarian',
-					children: [
-						{
-							name: 'Paneer',
-							id: './filesystem/Dishes/Vegetarian/Paneer',
-							children: [],
-							type: 'folder',
-						},
-					],
-					type: 'folder',
-				},
-			],
-			type: 'folder',
-		},
-		{
-			name: 'Ingredients',
-			id: './filesystem/Ingredients',
-
-			children: [],
-			type: 'folder',
-		},
-		{
-			name: 'Menu',
-			id: './filesystem/Menu',
-
-			children: [],
-			type: 'folder',
-		},
-	],
-}
-
-const TreeExample = () => {
-	const [data, setData] = React.useState(folderData)
+const TreeExample = props => {
+	const [data, setData] = React.useState({})
 	const [cursor, setCursor] = React.useState(false)
-
+	React.useEffect(() => {
+		const fetch__data = async url => {
+			const fetch__json = await fetch(url)
+			const parsed = await fetch__json.json()
+			setData(parsed)
+			return parsed
+		}
+		fetch__data('/mockdata.json')
+	}, [])
 	const onToggle = (node, toggled) => {
 		if (cursor) {
 			cursor.active = false
@@ -56,6 +23,7 @@ const TreeExample = () => {
 			node.toggled = toggled
 		}
 		setCursor(node)
+		props.openFolder(node)
 		setData(Object.assign({}, data))
 	}
 	const decorators = {
@@ -125,7 +93,7 @@ const Sidebar = props => {
 				<span onClick={() => props.isCollapsed()}>{'<'}</span>
 			</div>
 			<div className="window__sidebar__content">
-				<TreeExample />
+				<TreeExample openFolder={props.openFolder} />
 			</div>
 		</aside>
 	)
