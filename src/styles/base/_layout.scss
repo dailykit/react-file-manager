@@ -23,6 +23,7 @@
 
 .window__main__navbar {
     grid-area: nav;
+    border-bottom: 1px solid var(--border);
 }
 
 /* Window's Sidebar Styles */
@@ -47,11 +48,13 @@
     @include flex(center, null);
     height: 40px;
     padding: 0 var(--spacer-2);
-    outline: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 }
 
 .window__sidebar__content {
     padding: var(--spacer-2);
+    height: 100%;
+    overflow: auto;
 }
 
 @media screen and (max-width: 567px) {

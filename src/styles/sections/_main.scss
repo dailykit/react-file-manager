@@ -12,7 +12,6 @@
 
 .window__main__navbar {
     height: 40px;
-    outline: 1px solid var(--border);
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: 80px 1fr 240px 80px;
@@ -57,10 +56,11 @@ ul.window__main__breadcrumbs {
 }
 
 .window__main__search {
+    border-bottom: 1px solid var(--border);
     border-right: 1px solid var(--border);
     input {
         width: 100%;
-        height: 40px;
+        height: 39px;
         border: none;
         padding-left: var(--spacer-2);
     }
