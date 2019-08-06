@@ -15,7 +15,6 @@ const App = () => {
 	const [preview, togglePreview] = React.useState(false)
 	const [view, toggleView] = React.useState('list')
 
-	const breadcrumbs = ['Folders', 'Dishes', 'Vegetarians']
 	const isCollapsed = () => {
 		toggleSidebar(!isSidebarVisible)
 	}
@@ -30,7 +29,7 @@ const App = () => {
 				<Navbar
 					toggleView={toggleView}
 					togglePreview={togglePreview}
-					breadcrumbs={breadcrumbs}
+					breadcrumbs={folderData.path}
 				/>
 				<Main
 					data={folderData}

@@ -10,6 +10,7 @@ const TreeExample = props => {
 			const fetch__json = await fetch(url)
 			const parsed = await fetch__json.json()
 			setData(parsed)
+			props.openFolder(parsed)
 			return parsed
 		}
 		fetch__data('/mockdata.json')
@@ -48,7 +49,7 @@ const TreeExample = props => {
 			return <span style={{ marginLeft: '8px' }}>{props.node.name}</span>
 		},
 		Container: props => {
-			return (
+			return props.node.type !== 'file' ? (
 				<div
 					onClick={props.onClick}
 					style={{
@@ -61,7 +62,7 @@ const TreeExample = props => {
 					<props.decorators.Toggle toggled={props.node.toggled} />
 					<props.decorators.Header {...props} />
 				</div>
-			)
+			) : null
 		},
 	}
 
