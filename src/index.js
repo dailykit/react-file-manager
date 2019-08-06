@@ -30,6 +30,7 @@ const App = () => {
 					toggleView={toggleView}
 					togglePreview={togglePreview}
 					breadcrumbs={folderData.path}
+					openFolder={openFolder}
 				/>
 				<Main
 					data={folderData}

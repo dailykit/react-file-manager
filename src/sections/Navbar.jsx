@@ -1,8 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Navbar = ({ breadcrumbs, toggleView, togglePreview }) => {
+// Helpers
+import deepSearch from '../utils/deepSearch'
+
+const Navbar = ({ breadcrumbs, toggleView, togglePreview, openFolder }) => {
 	const [search, setSearch] = React.useState('')
+	const [data, setData] = React.useState({})
+	React.useEffect(() => {
+		const fetch__data = async url => {
+			const fetch__json = await fetch(url)
+			const parsed = await fetch__json.json()
+			setData(parsed)
+			return parsed
+		}
+		fetch__data('/mockdata.json')
+	}, [])
+	const goToFolder = folder => {
+		const path = breadcrumbs.split('/')
+		const index = path.indexOf(folder)
+		const slicePath = path.slice(0, index + 1)
+		const gotoPath =
+			slicePath.length === 1 ? slicePath[0] + '/' : slicePath.join('/')
+
+		const redirectTo = deepSearch(data, 'path', gotoPath)
+		openFolder(redirectTo)
+	}
 	return (
 		<div className="window__main__navbar">
 			<div className="window__main__nav">
@@ -41,7 +64,9 @@ const Navbar = ({ breadcrumbs, toggleView, togglePreview }) => {
 				{breadcrumbs &&
 					breadcrumbs.split('/').map((breadcrumb, index) => (
 						<React.Fragment key={index}>
-							<li>{breadcrumb}</li>
+							<li onClick={() => goToFolder(breadcrumb)}>
+								{breadcrumb}
+							</li>
 							{index ===
 							breadcrumbs.split('/').length - 1 ? null : (
 								<span>
@@ -91,6 +116,7 @@ Navbar.propTypes = {
 	breadcrumbs: PropTypes.string,
 	toggleView: PropTypes.func,
 	togglePreview: PropTypes.func,
+	openFolder: PropTypes.func,
 }
 
 export default Navbar
