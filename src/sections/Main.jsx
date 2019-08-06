@@ -1,26 +1,27 @@
 import React from 'react'
 import _ from 'lodash'
+import PropTypes from 'prop-types'
 
 // Components
 import FilePreview from '../components/FilePreview'
 import Card from '../components/Card'
 import TableRow from '../components/TableRow'
 
-const Main = props => {
+const Main = ({ data, view, preview, togglePreview }) => {
 	const [previewData, setPreviewData] = React.useState({})
 	const [sort, sortBy] = React.useState({
 		column: 'name',
 		order: 'asc',
 	})
-	const items = _.mapValues(_.groupBy(props.data.children, 'type'), v =>
+	const items = _.mapValues(_.groupBy(data.children, 'type'), v =>
 		_.orderBy(v, [sort.column], [sort.order])
 	)
-	const togglePreview = (data, from) => {
+	const showHidePreview = (data, from) => {
 		if (from === 'fromPreview') {
-			props.togglePreview(false)
+			togglePreview(false)
 		}
-		if (!props.preview && from !== 'fromPreview') {
-			props.togglePreview(!props.preview)
+		if (!preview && from !== 'fromPreview') {
+			togglePreview(!preview)
 		}
 		setPreviewData(data)
 	}
@@ -35,10 +36,10 @@ const Main = props => {
 		<main className="window__main">
 			<div
 				className={`window__main__content ${
-					props.preview ? 'with__preview' : ''
+					preview ? 'with__preview' : ''
 				}`}
 			>
-				{props.data.length === 0 ? (
+				{data.length === 0 ? (
 					<div className="empty__state">
 						<h3>
 							This folder is empty. Start by creating a new folder
@@ -52,14 +53,16 @@ const Main = props => {
 				) : (
 					<>
 						<div className="window__main__content__left">
-							{props.view === 'grid' ? (
+							{view === 'grid' ? (
 								<div className="window__main__grid__view">
 									{items.folder &&
 										items.folder.map(item => (
 											<Card
 												{...item}
 												key={item.id}
-												togglePreview={togglePreview}
+												showHidePreview={
+													showHidePreview
+												}
 											/>
 										))}
 									{items.file &&
@@ -67,7 +70,9 @@ const Main = props => {
 											<Card
 												{...item}
 												key={item.id}
-												togglePreview={togglePreview}
+												showHidePreview={
+													showHidePreview
+												}
 											/>
 										))}
 								</div>
@@ -102,8 +107,8 @@ const Main = props => {
 												<TableRow
 													{...item}
 													key={item.id}
-													togglePreview={
-														togglePreview
+													showHidePreview={
+														showHidePreview
 													}
 												/>
 											))}
@@ -112,8 +117,8 @@ const Main = props => {
 												<TableRow
 													{...item}
 													key={item.id}
-													togglePreview={
-														togglePreview
+													showHidePreview={
+														showHidePreview
 													}
 												/>
 											))}
@@ -121,7 +126,7 @@ const Main = props => {
 								</div>
 							)}
 						</div>
-						{props.preview ? (
+						{preview ? (
 							<div className="window__main__content__right">
 								<FilePreview {...previewData} />
 							</div>
@@ -131,6 +136,13 @@ const Main = props => {
 			</div>
 		</main>
 	)
+}
+
+Main.propTypes = {
+	data: PropTypes.object,
+	view: PropTypes.string,
+	preview: PropTypes.bool,
+	togglePreview: PropTypes.func,
 }
 
 export default Main

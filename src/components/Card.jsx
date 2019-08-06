@@ -2,7 +2,7 @@ import React from 'react'
 
 const Card = props => {
 	return (
-		<div className="item" onClick={() => props.togglePreview(props)}>
+		<div className="item" onClick={() => props.showHidePreview(props)}>
 			<div className="item__thumbnail">
 				<div />
 			</div>

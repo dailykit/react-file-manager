@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Footer = props => {
 	const SwitchMobileView = () => console.log('Mobile View!')
@@ -19,6 +20,10 @@ const Footer = props => {
 			</div>
 		</footer>
 	)
+}
+
+Footer.propTypes = {
+	itemCount: PropTypes.number,
 }
 
 export default Footer

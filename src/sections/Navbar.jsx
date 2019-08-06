@@ -1,6 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const Navbar = props => {
+const Navbar = ({ breadcrumbs, toggleView, togglePreview }) => {
 	const [search, setSearch] = React.useState('')
 	return (
 		<div className="window__main__navbar">
@@ -37,12 +38,12 @@ const Navbar = props => {
 				</button>
 			</div>
 			<ul className="window__main__breadcrumbs">
-				{props.breadcrumbs &&
-					props.breadcrumbs.split('/').map((breadcrumb, index) => (
+				{breadcrumbs &&
+					breadcrumbs.split('/').map((breadcrumb, index) => (
 						<React.Fragment key={index}>
 							<li>{breadcrumb}</li>
 							{index ===
-							props.breadcrumbs.split('/').length - 1 ? null : (
+							breadcrumbs.split('/').length - 1 ? null : (
 								<span>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -72,22 +73,24 @@ const Navbar = props => {
 			</div>
 			<div className="window__main__view">
 				<button
-					onClick={() =>
-						props.toggleView('list') || props.togglePreview(false)
-					}
+					onClick={() => toggleView('list') || togglePreview(false)}
 				>
 					L
 				</button>
 				<button
-					onClick={() =>
-						props.toggleView('grid') || props.togglePreview(false)
-					}
+					onClick={() => toggleView('grid') || togglePreview(false)}
 				>
 					G
 				</button>
 			</div>
 		</div>
 	)
+}
+
+Navbar.propTypes = {
+	breadcrumbs: PropTypes.string,
+	toggleView: PropTypes.func,
+	togglePreview: PropTypes.func,
 }
 
 export default Navbar
