@@ -5,6 +5,8 @@
     display: grid;
     -ms-grid-columns: 80px 1fr 240px 80px;
     grid-template-columns: 80px 1fr 240px 80px;
+    background: #fff;
+    z-index: 1;
 }
 
 .window__main__nav, .window__main__view {
@@ -38,6 +40,7 @@ ul.window__main__breadcrumbs {
     li {
         height: 40px;
         line-height: 40px;
+        cursor: pointer;
     }
     span {
         margin: 0 var(--spacer-1);

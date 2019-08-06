@@ -82,6 +82,7 @@
         height: 40px;
         line-height: 40px;
         div {
+            cursor: pointer;
             padding: 0 var(--spacer-2);
         }
         &:hover {
