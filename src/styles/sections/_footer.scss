@@ -1,8 +1,11 @@
 .window__footer {
+    background: #fff;
+    width: calc(100vw - 240px);
     grid-area: foot;
     padding-left: var(--spacer-2);
     border-top: 1px solid var(--border);
     @include flex(center, space-between);
+    z-index: 10;
 }
 
 .window__responsive__actions {

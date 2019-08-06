@@ -3,7 +3,11 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow: hidden;
+}
+
 body {
     height: 100vh;
-    overflow: hidden;
+    // overflow-y: hidden;
 }

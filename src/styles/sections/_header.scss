@@ -1,5 +1,6 @@
 /* Window's Header Styles */
 .window__header {
+    max-width: 100vw;
     background: #fff;
     border-bottom: 1px solid var(--border);
     grid-area: head;
