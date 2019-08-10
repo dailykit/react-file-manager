@@ -29,15 +29,11 @@
 }
 
 .window__main__grid__view {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     .item {
-        -webkit-box-flex: 1;
-            -ms-flex: 1 1 120px;
-                flex: 1 1 120px;
+        outline: 1px solid #000;
         max-width: 130px;
         height: 150px;
         border-top: none;
