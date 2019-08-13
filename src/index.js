@@ -1,5 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import ApolloClient from 'apollo-boost'
+import { ApolloProvider } from '@apollo/react-hooks'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { HttpLink } from 'apollo-link-http'
 
 import './styles/index.scss'
 
@@ -8,6 +12,14 @@ const Sidebar = React.lazy(() => import('./sections/Sidebar'))
 const Main = React.lazy(() => import('./sections/Main'))
 const Footer = React.lazy(() => import('./sections/Footer'))
 const Navbar = React.lazy(() => import('./sections/Navbar'))
+
+const cache = new InMemoryCache()
+
+const client = new ApolloClient({
+	uri: process.env.REACT_APP_GRAPHQL_URI,
+	link: new HttpLink(),
+	cache,
+})
 
 const App = () => {
 	const [isSidebarVisible, toggleSidebar] = React.useState(false)
@@ -20,31 +32,38 @@ const App = () => {
 	}
 	const openFolder = value => setFolderData(value)
 	return (
-		<div
-			className={`window ${isSidebarVisible ? 'window-isCollapsed' : ''}`}
-		>
-			<React.Suspense fallback={<span>Loading...</span>}>
-				<Header title={'File Manager'} />
-				<Sidebar isCollapsed={isCollapsed} openFolder={openFolder} />
-				<Navbar
-					toggleView={toggleView}
-					togglePreview={togglePreview}
-					breadcrumbs={folderData.path}
-					openFolder={openFolder}
-				/>
-				<Main
-					data={folderData}
-					view={view}
-					preview={preview}
-					togglePreview={togglePreview}
-				/>
-				<Footer
-					itemCount={
-						folderData.children && folderData.children.length
-					}
-				/>
-			</React.Suspense>
-		</div>
+		<ApolloProvider client={client}>
+			<div
+				className={`window ${
+					isSidebarVisible ? 'window-isCollapsed' : ''
+				}`}
+			>
+				<React.Suspense fallback={<span>Loading...</span>}>
+					<Header title={'File Manager'} />
+					<Sidebar
+						isCollapsed={isCollapsed}
+						openFolder={openFolder}
+					/>
+					<Navbar
+						toggleView={toggleView}
+						togglePreview={togglePreview}
+						breadcrumbs={folderData.path}
+						openFolder={openFolder}
+					/>
+					<Main
+						data={folderData}
+						view={view}
+						preview={preview}
+						togglePreview={togglePreview}
+					/>
+					<Footer
+						itemCount={
+							folderData.children && folderData.children.length
+						}
+					/>
+				</React.Suspense>
+			</div>
+		</ApolloProvider>
 	)
 }
 

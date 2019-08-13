@@ -2,6 +2,9 @@ import React from 'react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 
+import gql from 'graphql-tag'
+import { useQuery } from '@apollo/react-hooks'
+
 // Components
 import FilePreview from '../components/FilePreview'
 import Card from '../components/Card'
