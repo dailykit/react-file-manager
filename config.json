@@ -2,8 +2,9 @@
     "apps": [
         {
             "name": "react-file-manager",
-            "script": "./src/index.js",
-            "env_production": {
+            "script": "npm",
+            "args": "start",
+            "env": {
                 "NODE_ENV": "production",
                 "REACT_APP_GRAPHQL_URI": "http://ec2-13-59-178-203.us-east-2.compute.amazonaws.com:4000/graphql"
             }
