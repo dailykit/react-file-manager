@@ -1,0 +1,12 @@
+{
+    "apps": [
+        {
+            "name": "react-file-manager",
+            "script": "./src/index.js",
+            "env_production": {
+                "NODE_ENV": "production",
+                "INST_URI": "http://ec2-13-59-178-203.us-east-2.compute.amazonaws.com:4000/graphql"
+            }
+        }
+    ]
+}

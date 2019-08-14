@@ -1,31 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-// Helpers
-import deepSearch from '../utils/deepSearch'
-
-const Navbar = ({ breadcrumbs, toggleView, togglePreview, openFolder }) => {
+const Navbar = ({ breadcrumbs, toggleView, togglePreview, setFolderPath }) => {
 	const [search, setSearch] = React.useState('')
-	const [data, setData] = React.useState({})
+	const [route, setRoute] = React.useState('')
 	React.useEffect(() => {
-		const fetch__data = async url => {
-			const fetch__json = await fetch(url)
-			const parsed = await fetch__json.json()
-			setData(parsed)
-			return parsed
+		if (breadcrumbs) {
+			setRoute(breadcrumbs.split('./')[1])
 		}
-		fetch__data('/mockdata.json')
-	}, [])
-	const goToFolder = folder => {
-		const path = breadcrumbs.split('/')
-		const index = path.indexOf(folder)
-		const slicePath = path.slice(0, index + 1)
-		const gotoPath =
-			slicePath.length === 1 ? slicePath[0] + '/' : slicePath.join('/')
+	}, [breadcrumbs])
 
-		const redirectTo = deepSearch(data, 'path', gotoPath)
-		openFolder(redirectTo)
+	const goToFolder = async folderName => {
+		const path = await route.split('/')
+		const index = await path.indexOf(folderName)
+		const slicePath = await path.slice(0, index + 1)
+		const fullPath = './' + slicePath.join('/')
+		setFolderPath(fullPath)
 	}
+
 	return (
 		<div className="window__main__navbar">
 			<div className="window__main__nav">
@@ -61,14 +53,13 @@ const Navbar = ({ breadcrumbs, toggleView, togglePreview, openFolder }) => {
 				</button>
 			</div>
 			<ul className="window__main__breadcrumbs">
-				{breadcrumbs &&
-					breadcrumbs.split('/').map((breadcrumb, index) => (
+				{route &&
+					route.split('/').map((breadcrumb, index) => (
 						<React.Fragment key={index}>
 							<li onClick={() => goToFolder(breadcrumb)}>
 								{breadcrumb}
 							</li>
-							{index ===
-							breadcrumbs.split('/').length - 1 ? null : (
+							{index === route.split('/').length - 1 ? null : (
 								<span>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -113,10 +104,10 @@ const Navbar = ({ breadcrumbs, toggleView, togglePreview, openFolder }) => {
 }
 
 Navbar.propTypes = {
-	breadcrumbs: PropTypes.string,
-	toggleView: PropTypes.func,
-	togglePreview: PropTypes.func,
-	openFolder: PropTypes.func,
+	breadcrumbs: PropTypes.string.isRequired,
+	toggleView: PropTypes.func.isRequired,
+	togglePreview: PropTypes.func.isRequired,
+	setFolderPath: PropTypes.func.isRequired,
 }
 
 export default Navbar
