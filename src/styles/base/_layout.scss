@@ -123,6 +123,10 @@
         border-bottom: 1px solid var(--border);
     }
 
+    .window__main__content {
+        height: calc(100vh - 144px);
+    }
+
     .window__footer,
     .window__main,
     .window__main__navbar {

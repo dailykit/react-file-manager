@@ -1,7 +1,7 @@
 .window__main {
     grid-area: main;
     position: relative;
-    width: calc(100vw - 240px);    
+    width: calc(100vw - 240px);
     overflow-y: auto;
 }
 
@@ -11,17 +11,16 @@
     @include flex(center, center);
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
-
 
 .window__main__content {
     display: -ms-grid;
     display: grid;
     -ms-grid-columns: 1fr 0;
     grid-template-columns: 1fr 0;
-    height: calc(100vh - 144px);
+    height: calc(100vh - 104px);
     &.with__preview {
         -ms-grid-columns: 1fr 321px;
         grid-template-columns: 1fr 321px;
@@ -60,7 +59,8 @@
     display: grid;
     -ms-grid-rows: 32px 1fr;
     grid-template-rows: 32px 1fr;
-    .table__header, .table__row {
+    .table__header,
+    .table__row {
         display: -ms-grid;
         display: grid;
         grid-template-columns: 3fr 1fr 1fr;
@@ -69,7 +69,6 @@
         line-height: 32px;
         border-bottom: 1px solid var(--border);
         div {
-            cursor: pointer;
             padding: 0 var(--spacer-2);
             @include flex(null,space-between);
             &:hover {
@@ -81,15 +80,46 @@
             pointer-events: none;
         }
     }
+    .table__main {
+        margin-top: -1px;
+    }
     .table__row {
         height: 40px;
         line-height: 40px;
+        position: relative;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid transparent;
         div {
-            cursor: pointer;
             padding: 0 var(--spacer-2);
+
         }
-        &:hover {
-            background: rgba(#000, 0.05);
+        div.item__options {
+            position: absolute;
+            right: 0;
+            background: #fff;
+            width: auto;
+            height: 38px;
+            visibility: hidden;
+            @include flex(center, null);
+            button {
+                background: transparent;
+                border: none;
+                height: 32px;
+                width: 32px;
+                cursor: pointer;
+                border-radius: 2px;
+                @include flex(center,center);
+                &:hover {
+                    border: 1px solid var(--border);
+                }
+            }
+        }
+        &:hover{
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            div.item__options {
+                visibility: visible;
+            }
         }
     }
 }
@@ -106,7 +136,6 @@ main.preview__main {
     }
 }
 
-
 .preview__header {
     @include flex(center, space-between);
 }
@@ -118,11 +147,11 @@ main.preview__main {
     @include flex(center, center);
     margin: 16px 0;
 }
-
 @media screen and (max-width: 980px) {
     .window__main__content.with__preview {
         -ms-grid-columns: 1fr 0;
         grid-template-columns: 1fr 0;
+        height: calc(100vh - 144px);
     }
     .window__main__content__right {
         position: absolute;
