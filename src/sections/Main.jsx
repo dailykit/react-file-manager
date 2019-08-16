@@ -39,7 +39,7 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			path: currentFolderPath,
 		},
 	})
-	const [createFolder, { data: mutationData }] = useMutation(CREATE_FOLDER, {
+	const [createFolder] = useMutation(CREATE_FOLDER, {
 		refetchQueries: [
 			{ query: GET_FOLDER, variables: { path: currentFolderPath } },
 		],
@@ -75,54 +75,50 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			order: sort.order === 'asc' ? 'desc' : 'asc',
 		})
 	}
+	const CreateFolderPopup = (
+		<Modal>
+			<Modal.Header>Create Folder</Modal.Header>
+			<Modal.Body>
+				<label htmlFor="create__folder__input">Folder Name</label>
+				<input
+					type="text"
+					name="createFolder"
+					id="create__folder__input"
+					value={folderName}
+					placeholder="Enter a folder name"
+					onChange={e => setFolderName(e.target.value)}
+				/>
+			</Modal.Body>
+			<Modal.Footer>
+				<button
+					onClick={() => {
+						createFolder({
+							variables: {
+								path: `${currentFolderPath}/${folderName}`,
+							},
+						})
+						setCreateModalVisibility(!isCreateModalVisible)
+					}}
+				>
+					Create Folder
+				</button>
+				<button
+					onClick={() =>
+						setCreateModalVisibility(!isCreateModalVisible)
+					}
+				>
+					Cancel
+				</button>
+			</Modal.Footer>
+		</Modal>
+	)
+
 	if (queryLoading) return <div>Loading...</div>
 	if (queryError) return console.log(queryError) || <div>Error!</div>
 	if (Object.keys(items).length === 0) {
 		return (
 			<div className="window__main empty__state">
-				{isCreateModalVisible && (
-					<Modal>
-						<Modal.Header>Create Folder</Modal.Header>
-						<Modal.Body>
-							<label htmlFor="create__folder__input">
-								Folder Name
-							</label>
-							<input
-								type="text"
-								name="createFolder"
-								id="create__folder__input"
-								value={folderName}
-								placeholder="Enter a folder name"
-								onChange={e => setFolderName(e.target.value)}
-							/>
-						</Modal.Body>
-						<Modal.Footer>
-							<button
-								onClick={() => {
-									createFolder({
-										variables: {
-											path: `${currentFolderPath}/${folderName}`,
-										},
-									})
-									setCreateModalVisibility(
-										!isCreateModalVisible
-									)
-								}}
-							>
-								Create Folder
-							</button>
-							<button
-								onClick={() =>
-									setCreateModalVisibility(
-										!isCreateModalVisible
-									)
-								}
-							>
-								Cancel
-							</button>
-						</Modal.Footer>
-					</Modal>
-				)}
+				{isCreateModalVisible && CreateFolderPopup}
 				<h3>
 					This folder is empty. Start by creating a new folder or a
 					file
@@ -142,45 +138,7 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 	}
 	return (
 		<main className="window__main">
-			{isCreateModalVisible && (
-				<Modal>
-					<Modal.Header>Create Folder</Modal.Header>
-					<Modal.Body>
-						<label htmlFor="create__folder__input">
-							Folder Name
-						</label>
-						<input
-							type="text"
-							name="createFolder"
-							id="create__folder__input"
-							value={folderName}
-							placeholder="Enter a folder name"
-							onChange={e => setFolderName(e.target.value)}
-						/>
-					</Modal.Body>
-					<Modal.Footer>
-						<button
-							onClick={() => {
-								createFolder({
-									variables: {
-										path: `${currentFolderPath}/${folderName}`,
-									},
-								})
-								setCreateModalVisibility(!isCreateModalVisible)
-							}}
-						>
-							Create Folder
-						</button>
-						<button
-							onClick={() =>
-								setCreateModalVisibility(!isCreateModalVisible)
-							}
-						>
-							Cancel
-						</button>
-					</Modal.Footer>
-				</Modal>
-			)}
+			{isCreateModalVisible && CreateFolderPopup}
 			<div
 				className={`window__main__content ${
 					preview ? 'with__preview' : ''

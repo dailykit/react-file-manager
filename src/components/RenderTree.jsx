@@ -16,12 +16,12 @@ const RenderTree = ({ setFolderPath, currentFolderPath }) => {
 	})
 	const [data, setData] = React.useState({})
 	const [cursor, setCursor] = React.useState(false)
-
 	React.useEffect(() => {
 		if (queryData.contentWithFilesData) {
 			setData({ ...queryData.contentWithFilesData, toggled: true })
 			setFolderPath(queryData.contentWithFilesData.path)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [queryData])
 	const onToggle = (node, toggled) => {
 		if (cursor) {
