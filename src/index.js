@@ -9,11 +9,17 @@ import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { ApolloLink } from 'apollo-link'
 
+// Schema
+import typeDefs from './queries/typeDefs'
+import resolvers from './queries/resolvers'
+
 // Components
 import App from './App'
 
 // Styles
 import './styles/index.scss'
+
+const cache = new InMemoryCache()
 
 const client = new ApolloClient({
 	link: ApolloLink.from([
@@ -30,7 +36,15 @@ const client = new ApolloClient({
 			uri: process.env.REACT_APP_GRAPHQL_URI,
 		}),
 	]),
-	cache: new InMemoryCache(),
+	cache,
+	typeDefs,
+	resolvers,
+})
+
+cache.writeData({
+	data: {
+		history: [],
+	},
 })
 
 const Main = () => {
