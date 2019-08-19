@@ -25,6 +25,7 @@
         "node-sass": "^4.12.0",
         "prop-types": "^15.7.2",
         "react": "^16.8.6",
+        "react-contexify": "^4.1.1",
         "react-dom": "^16.8.6",
         "react-scripts": "3.0.1",
         "react-treebeard": "^3.2.4"

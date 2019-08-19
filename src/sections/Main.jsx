@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import { useQuery } from '@apollo/react-hooks'
 import { useMutation } from '@apollo/react-hooks'
+import { Menu, Item, MenuProvider } from 'react-contexify'
 
 // Components
 import FilePreview from '../components/FilePreview'
@@ -15,6 +16,8 @@ import Modal from '../components/Modal'
 import GET_FOLDER from '../queries/getFolder'
 import CREATE_FOLDER from '../queries/createFolder'
 import CREATE_FILE from '../queries/createFile'
+
+import 'react-contexify/dist/ReactContexify.min.css'
 
 const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
@@ -123,7 +126,7 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 								variables: {
 									path: `${currentFolderPath}/${fileName}.json`,
 									type: currentFolderPath
-										.match(/[^/]+$/g)[0]
+										.split('/')[2]
 										.toLowerCase(),
 								},
 							})
@@ -151,7 +154,28 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			</Modal.Footer>
 		</Modal>
 	)
-
+	const MainMenu = () => (
+		<Menu id="main__menu">
+			<Item
+				onClick={() =>
+					setCreateModalVisibility({
+						file: !isCreateModalVisible.file,
+					})
+				}
+			>
+				Create File
+			</Item>
+			<Item
+				onClick={() =>
+					setCreateModalVisibility({
+						folder: !isCreateModalVisible.folder,
+					})
+				}
+			>
+				Create Folder
+			</Item>
+		</Menu>
+	)
 	if (queryLoading) return <div>Loading...</div>
 	if (queryError) return console.log(queryError) || <div>Error!</div>
 	if (Object.keys(items).length === 0) {
@@ -188,62 +212,20 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 	}
 	return (
 		<main className="window__main">
-			{isCreateModalVisible.folder && CreatePopup}
-			{isCreateModalVisible.file && CreatePopup}
-			<div
-				className={`window__main__content ${
-					preview ? 'with__preview' : ''
-				}`}
-			>
-				<div className="window__main__content__left">
-					{view === 'grid' ? (
-						<div className="window__main__grid__view">
-							{items.folder &&
-								items.folder.map((item, index) => (
-									<Card
-										{...item}
-										key={index}
-										showHidePreview={showHidePreview}
-									/>
-								))}
-							{items.file &&
-								items.file.map((item, index) => (
-									<Card
-										{...item}
-										key={index}
-										showHidePreview={showHidePreview}
-									/>
-								))}
-						</div>
-					) : (
-						<div className="window__main__list__view">
-							<div className="table__header">
-								<div
-									className="item__name"
-									onClick={() => sortItems('name')}
-								>
-									<span>Name</span>
-									{sort.column === 'name' && (
-										<span>{sort.order}</span>
-									)}
-								</div>
-								<div className="item__type">
-									<span>Type</span>
-								</div>
-								<div
-									className="item__size"
-									onClick={() => sortItems('size')}
-								>
-									<span>Size</span>
-									{sort.column === 'size' && (
-										<span>{sort.order}</span>
-									)}
-								</div>
-							</div>
-							<div className="table__main">
+			<MenuProvider id="main__menu">
+				{isCreateModalVisible.folder && CreatePopup}
+				{isCreateModalVisible.file && CreatePopup}
+				<div
+					className={`window__main__content ${
+						preview ? 'with__preview' : ''
+					}`}
+				>
+					<div className="window__main__content__left">
+						{view === 'grid' ? (
+							<div className="window__main__grid__view">
 								{items.folder &&
 									items.folder.map((item, index) => (
-										<TableRow
+										<Card
 											{...item}
 											key={index}
 											showHidePreview={showHidePreview}
@@ -251,22 +233,71 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 									))}
 								{items.file &&
 									items.file.map((item, index) => (
-										<TableRow
+										<Card
 											{...item}
 											key={index}
 											showHidePreview={showHidePreview}
 										/>
 									))}
 							</div>
-						</div>
-					)}
-				</div>
-				{preview ? (
-					<div className="window__main__content__right">
-						<FilePreview {...previewData} />
+						) : (
+							<div className="window__main__list__view">
+								<div className="table__header">
+									<div
+										className="item__name"
+										onClick={() => sortItems('name')}
+									>
+										<span>Name</span>
+										{sort.column === 'name' && (
+											<span>{sort.order}</span>
+										)}
+									</div>
+									<div className="item__type">
+										<span>Type</span>
+									</div>
+									<div
+										className="item__size"
+										onClick={() => sortItems('size')}
+									>
+										<span>Size</span>
+										{sort.column === 'size' && (
+											<span>{sort.order}</span>
+										)}
+									</div>
+								</div>
+								<div className="table__main">
+									{items.folder &&
+										items.folder.map((item, index) => (
+											<TableRow
+												{...item}
+												key={index}
+												showHidePreview={
+													showHidePreview
+												}
+											/>
+										))}
+									{items.file &&
+										items.file.map((item, index) => (
+											<TableRow
+												{...item}
+												key={index}
+												showHidePreview={
+													showHidePreview
+												}
+											/>
+										))}
+								</div>
+							</div>
+						)}
 					</div>
-				) : null}
-			</div>
+					{preview ? (
+						<div className="window__main__content__right">
+							<FilePreview {...previewData} />
+						</div>
+					) : null}
+				</div>
+			</MenuProvider>
+			<MainMenu id="main__menu" />
 		</main>
 	)
 }
