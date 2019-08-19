@@ -25,12 +25,10 @@ const FilePreview = ({ name, size, type, showHidePreview }) => {
 					<span>File type</span>
 					<span>{type}</span>
 				</div>
-				{size && (
-					<div>
-						<span>File size</span>
-						<span>{`${convertFileSize(size)}`}</span>
-					</div>
-				)}
+				<div>
+					<span>File size</span>
+					<span>{`${convertFileSize(size)}`}</span>
+				</div>
 			</main>
 		</div>
 	)

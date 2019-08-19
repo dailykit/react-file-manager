@@ -9,7 +9,6 @@ const GET_FOLDER = gql`
 			size
 			type
 			children {
-				content
 				createdAt
 				name
 				path
