@@ -8,6 +8,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { ApolloLink } from 'apollo-link'
+import { persistCache } from 'apollo-cache-persist'
 
 // Schema
 import typeDefs from './queries/typeDefs'
@@ -20,6 +21,14 @@ import App from './App'
 import './styles/index.scss'
 
 const cache = new InMemoryCache()
+
+const persistData = async () =>
+	await persistCache({
+		cache,
+		storage: window.localStorage,
+	})
+
+persistData()
 
 const client = new ApolloClient({
 	link: ApolloLink.from([

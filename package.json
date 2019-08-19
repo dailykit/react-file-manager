@@ -15,6 +15,7 @@
     "dependencies": {
         "@apollo/react-hooks": "^3.0.0",
         "apollo-cache-inmemory": "^1.6.3",
+        "apollo-cache-persist": "^0.1.1",
         "apollo-client": "^2.6.4",
         "apollo-link": "^1.2.12",
         "apollo-link-error": "^1.1.11",
