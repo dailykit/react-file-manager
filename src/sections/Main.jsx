@@ -14,12 +14,15 @@ import Modal from '../components/Modal'
 // Queries
 import GET_FOLDER from '../queries/getFolder'
 import CREATE_FOLDER from '../queries/createFolder'
+import CREATE_FILE from '../queries/createFile'
 
 const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
-	const [isCreateModalVisible, setCreateModalVisibility] = React.useState(
-		false
-	)
+	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
+		folder: false,
+		file: false,
+	})
 	const [folderName, setFolderName] = React.useState('')
+	const [fileName, setFileName] = React.useState('')
 	const [previewData, setPreviewData] = React.useState({})
 	const [folderData, setFolderData] = React.useState({
 		name: '',
@@ -44,13 +47,18 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			{ query: GET_FOLDER, variables: { path: currentFolderPath } },
 		],
 	})
+	const [createFile] = useMutation(CREATE_FILE, {
+		refetchQueries: [
+			{ query: GET_FOLDER, variables: { path: currentFolderPath } },
+		],
+	})
 
 	React.useEffect(() => {
-		if (queryData.contentWithFilesData) {
+		if (queryData.getFolderWithFiles) {
 			setFolderData({
-				name: queryData.contentWithFilesData.name,
-				path: queryData.contentWithFilesData.path,
-				children: queryData.contentWithFilesData.children,
+				name: queryData.getFolderWithFiles.name,
+				path: queryData.getFolderWithFiles.path,
+				children: queryData.getFolderWithFiles.children,
 			})
 		}
 	}, [queryData])
@@ -75,36 +83,67 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			order: sort.order === 'asc' ? 'desc' : 'asc',
 		})
 	}
-	const CreateFolderPopup = (
+	const CreatePopup = (
 		<Modal>
-			<Modal.Header>Create Folder</Modal.Header>
+			<Modal.Header>
+				{isCreateModalVisible.file ? 'Create File' : 'Create Folder'}
+			</Modal.Header>
 			<Modal.Body>
-				<label htmlFor="create__folder__input">Folder Name</label>
+				<label htmlFor="create__folder__input">
+					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
+				</label>
 				<input
 					type="text"
 					name="createFolder"
 					id="create__folder__input"
-					value={folderName}
-					placeholder="Enter a folder name"
-					onChange={e => setFolderName(e.target.value)}
+					value={isCreateModalVisible.file ? fileName : folderName}
+					placeholder={
+						isCreateModalVisible.file
+							? 'File Name'
+							: 'Enter a folder name'
+					}
+					onChange={e =>
+						isCreateModalVisible.file
+							? setFileName(e.target.value)
+							: setFolderName(e.target.value)
+					}
 				/>
 			</Modal.Body>
 			<Modal.Footer>
 				<button
 					onClick={() => {
-						createFolder({
-							variables: {
-								path: `${currentFolderPath}/${folderName}`,
-							},
+						if (isCreateModalVisible.folder) {
+							createFolder({
+								variables: {
+									path: `${currentFolderPath}/${folderName}`,
+								},
+							})
+						} else {
+							createFile({
+								variables: {
+									path: `${currentFolderPath}/${fileName}.json`,
+									type: currentFolderPath
+										.match(/[^/]+$/g)[0]
+										.toLowerCase(),
+								},
+							})
+						}
+						setCreateModalVisibility({
+							folder: false,
+							file: false,
 						})
-						setCreateModalVisibility(!isCreateModalVisible)
 					}}
 				>
-					Create Folder
+					{isCreateModalVisible.file
+						? 'Create File'
+						: 'Create Folder'}
 				</button>
 				<button
 					onClick={() =>
-						setCreateModalVisibility(!isCreateModalVisible)
+						setCreateModalVisibility({
+							folder: false,
+							file: false,
+						})
 					}
 				>
 					Cancel
@@ -118,16 +157,27 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 	if (Object.keys(items).length === 0) {
 		return (
 			<div className="window__main empty__state">
-				{isCreateModalVisible && CreateFolderPopup}
+				{isCreateModalVisible.folder && CreatePopup}
+				{isCreateModalVisible.file && CreatePopup}
 				<h3>
 					This folder is empty. Start by creating a new folder or a
 					file
 				</h3>
 				<div>
-					<button>Create File</button>
 					<button
 						onClick={() =>
-							setCreateModalVisibility(!isCreateModalVisible)
+							setCreateModalVisibility({
+								file: !isCreateModalVisible.file,
+							})
+						}
+					>
+						Create File
+					</button>
+					<button
+						onClick={() =>
+							setCreateModalVisibility({
+								folder: !isCreateModalVisible.folder,
+							})
 						}
 					>
 						Create Folder
@@ -138,7 +188,8 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 	}
 	return (
 		<main className="window__main">
-			{isCreateModalVisible && CreateFolderPopup}
+			{isCreateModalVisible.folder && CreatePopup}
+			{isCreateModalVisible.file && CreatePopup}
 			<div
 				className={`window__main__content ${
 					preview ? 'with__preview' : ''

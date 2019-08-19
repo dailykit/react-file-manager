@@ -6,6 +6,7 @@ import { useMutation } from '@apollo/react-hooks'
 // Queries
 import GET_FOLDER from '../queries/getFolder'
 import DELETE_FOLDER from '../queries/deleteFolder'
+import DELETE_FILE from '../queries/deleteFile'
 
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
@@ -24,15 +25,35 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 			},
 		],
 	})
+	const [deleteFile] = useMutation(DELETE_FILE, {
+		refetchQueries: [
+			{
+				query: GET_FOLDER,
+				variables: {
+					path: path
+						.split('/')
+						.slice(0, -1)
+						.join('/'),
+				},
+			},
+		],
+	})
 	const Delete = (
 		<button
-			onClick={() =>
-				deleteFolder({
+			onClick={() => {
+				if (type === 'folder') {
+					return deleteFolder({
+						variables: {
+							path,
+						},
+					})
+				}
+				return deleteFile({
 					variables: {
 						path,
 					},
 				})
-			}
+			}}
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
