@@ -1,13 +1,19 @@
 import gql from 'graphql-tag'
 
 const GET_FOLDER = gql`
-	query getFolder($path: String!) {
-		contentWithFilesData(path: $path) {
+	query getFolderWithFiles($path: String!) {
+		getFolderWithFiles(path: $path) {
+			createdAt
 			name
 			path
+			size
+			type
 			children {
+				content
+				createdAt
 				name
 				path
+				size
 				type
 			}
 		}

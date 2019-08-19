@@ -4,22 +4,22 @@ import { Treebeard } from 'react-treebeard'
 import { useQuery } from '@apollo/react-hooks'
 
 // Queries
-import GET_FOLDERS from '../queries/getFolders'
+import GET_NESTED_FOLDERS from '../queries/getNestedFolders'
 
 const RenderTree = ({ setFolderPath, currentFolderPath }) => {
 	const {
 		loading: queryLoading,
 		error: queryError,
 		data: queryData,
-	} = useQuery(GET_FOLDERS, {
+	} = useQuery(GET_NESTED_FOLDERS, {
 		variables: { path: './filesystem' },
 	})
 	const [data, setData] = React.useState({})
 	const [cursor, setCursor] = React.useState(false)
 	React.useEffect(() => {
-		if (queryData.contentWithFilesData) {
-			setData({ ...queryData.contentWithFilesData, toggled: true })
-			setFolderPath(queryData.contentWithFilesData.path)
+		if (queryData.getNestedFolders) {
+			setData({ ...queryData.getNestedFolders, toggled: true })
+			setFolderPath(queryData.getNestedFolders.path)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [queryData])
