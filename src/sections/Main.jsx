@@ -165,15 +165,18 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			>
 				Create File
 			</Item>
-			<Item
-				onClick={() =>
-					setCreateModalVisibility({
-						folder: !isCreateModalVisible.folder,
-					})
-				}
-			>
-				Create Folder
-			</Item>
+			{currentFolderPath.split('/').length > 2 &&
+				currentFolderPath.split('/').length < 6 && (
+					<Item
+						onClick={() =>
+							setCreateModalVisibility({
+								folder: !isCreateModalVisible.folder,
+							})
+						}
+					>
+						Create Folder
+					</Item>
+				)}
 		</Menu>
 	)
 	if (queryLoading) return <div>Loading...</div>
@@ -197,15 +200,18 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 					>
 						Create File
 					</button>
-					<button
-						onClick={() =>
-							setCreateModalVisibility({
-								folder: !isCreateModalVisible.folder,
-							})
-						}
-					>
-						Create Folder
-					</button>
+					{currentFolderPath.split('/').length > 2 &&
+						currentFolderPath.split('/').length < 6 && (
+							<button
+								onClick={() =>
+									setCreateModalVisibility({
+										folder: !isCreateModalVisible.folder,
+									})
+								}
+							>
+								Create Folder
+							</button>
+						)}
 				</div>
 			</div>
 		)
