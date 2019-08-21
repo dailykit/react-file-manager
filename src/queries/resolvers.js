@@ -20,10 +20,18 @@ const resolvers = {
 				}
 			`
 			const previous = cache.readQuery({ query })
-			const data = {
-				history: [...previous.history, path],
+			let data = {}
+			if (previous.history.length > 15) {
+				data = {
+					history: [path],
+				}
+			} else {
+				data = {
+					history: [...previous.history, path],
+				}
 			}
-			return cache.writeData({ data })
+			cache.writeData({ data })
+			return 'Updated History!'
 		},
 	},
 }
