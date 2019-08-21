@@ -105,7 +105,7 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 			</div>
 			<div className="item__options">
 				{Preview}
-				{Delete}
+				{path.split('/').length > 3 && Delete}
 			</div>
 		</div>
 	)

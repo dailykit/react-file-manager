@@ -22,13 +22,13 @@ import './styles/index.scss'
 
 const cache = new InMemoryCache()
 
-const persistData = async () =>
-	await persistCache({
-		cache,
-		storage: window.localStorage,
-	})
+// const persistData = async () =>
+// 	await persistCache({
+// 		cache,
+// 		storage: window.localStorage,
+// 	})
 
-persistData()
+// persistData()
 
 const client = new ApolloClient({
 	link: ApolloLink.from([

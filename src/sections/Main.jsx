@@ -154,19 +154,19 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			</Modal.Footer>
 		</Modal>
 	)
-	const MainMenu = () => (
-		<Menu id="main__menu">
-			<Item
-				onClick={() =>
-					setCreateModalVisibility({
-						file: !isCreateModalVisible.file,
-					})
-				}
-			>
-				Create File
-			</Item>
-			{currentFolderPath.split('/').length > 2 &&
-				currentFolderPath.split('/').length < 6 && (
+	const MainMenu = () =>
+		currentFolderPath.split('/').length > 2 && (
+			<Menu id="main__menu">
+				<Item
+					onClick={() =>
+						setCreateModalVisibility({
+							file: !isCreateModalVisible.file,
+						})
+					}
+				>
+					Create File
+				</Item>
+				{currentFolderPath.split('/').length < 6 && (
 					<Item
 						onClick={() =>
 							setCreateModalVisibility({
@@ -177,8 +177,8 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 						Create Folder
 					</Item>
 				)}
-		</Menu>
-	)
+			</Menu>
+		)
 	if (queryLoading) return <div>Loading...</div>
 	if (queryError) return console.log(queryError) || <div>Error!</div>
 	if (Object.keys(items).length === 0) {
