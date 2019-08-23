@@ -160,7 +160,18 @@ main.preview__main {
     .window__main__content__right {
         position: fixed;
         right: 0;
-        top: 1px;
+        top: 72px;
+        bottom: 0;
+        width: 321px;
+        background: #fff;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .window__main__content__right {
+        position: fixed;
+        right: 0;
+        top: 112px;
         bottom: 0;
         width: 321px;
         background: #fff;
