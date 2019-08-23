@@ -69,6 +69,7 @@
         line-height: 32px;
         border-bottom: 1px solid var(--border);
         div {
+            cursor: pointer;
             padding: 0 var(--spacer-2);
             @include flex(null,space-between);
             &:hover {
@@ -113,6 +114,9 @@
                     border: 1px solid var(--border);
                 }
             }
+        }
+        div.item__name {
+            cursor: pointer;
         }
         &:hover{
             border-top: 1px solid var(--border);
