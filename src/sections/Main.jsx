@@ -19,23 +19,10 @@ import CREATE_FILE from '../queries/createFile'
 
 import 'react-contexify/dist/ReactContexify.min.css'
 
+import { initialState, reducers } from '../state/main'
+
 const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
-	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
-		folder: false,
-		file: false,
-	})
-	const [folderName, setFolderName] = React.useState('')
-	const [fileName, setFileName] = React.useState('')
-	const [previewData, setPreviewData] = React.useState({})
-	const [folderData, setFolderData] = React.useState({
-		name: '',
-		path: '',
-		children: {},
-	})
-	const [sort, sortBy] = React.useState({
-		column: 'name',
-		order: 'asc',
-	})
+	const [state, dispatch] = React.useReducer(reducers, initialState)
 	const {
 		loading: queryLoading,
 		error: queryError,
@@ -58,16 +45,20 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 
 	React.useEffect(() => {
 		if (queryData.getFolderWithFiles) {
-			setFolderData({
-				name: queryData.getFolderWithFiles.name,
-				path: queryData.getFolderWithFiles.path,
-				children: queryData.getFolderWithFiles.children,
+			dispatch({
+				type: 'setFolderData',
+				payload: {
+					name: queryData.getFolderWithFiles.name,
+					path: queryData.getFolderWithFiles.path,
+					children: queryData.getFolderWithFiles.children,
+				},
 			})
 		}
 	}, [queryData])
 
-	let items = _.mapValues(_.groupBy(folderData.children || [], 'type'), v =>
-		_.orderBy(v, [sort.column], [sort.order])
+	let items = _.mapValues(
+		_.groupBy(state.folderData.children || [], 'type'),
+		v => _.orderBy(v, [state.sortBy.column], [state.sortBy.order])
 	)
 
 	const showHidePreview = (data, from) => {
@@ -77,80 +68,96 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 		if (!preview && from !== 'fromPreview') {
 			togglePreview(!preview)
 		}
-		setPreviewData(data)
+		dispatch({ type: 'setPreviewData', payload: data })
 	}
 
 	const sortItems = by => {
-		sortBy({
-			column: by,
-			order: sort.order === 'asc' ? 'desc' : 'asc',
+		dispatch({
+			type: 'sortBy',
+			payload: {
+				column: by,
+				order: state.sortBy.order === 'asc' ? 'desc' : 'asc',
+			},
 		})
 	}
+
+	const onModalSubmit = () => {
+		if (state.isModalVisible.folder) {
+			createFolder({
+				variables: {
+					path: `${currentFolderPath}/${state.folderName}`,
+				},
+			})
+		} else {
+			createFile({
+				variables: {
+					path: `${currentFolderPath}/${state.fileName}.json`,
+					type: currentFolderPath.split('/')[2].toLowerCase(),
+				},
+			})
+		}
+		dispatch({
+			type: 'toggleModal',
+			payload: {
+				folder: false,
+				file: false,
+			},
+		})
+	}
+
+	const onModalClose = () => {
+		return dispatch({
+			type: 'toggleModal',
+			payload: {
+				folder: false,
+				file: false,
+			},
+		})
+	}
+
 	const CreatePopup = (
 		<Modal>
 			<Modal.Header>
-				{isCreateModalVisible.file ? 'Create File' : 'Create Folder'}
+				{state.isModalVisible.file ? 'Create File' : 'Create Folder'}
 			</Modal.Header>
 			<Modal.Body>
-				<label htmlFor="create__folder__input">
-					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
+				<label htmlFor="modal__input">
+					{state.isModalVisible.file ? 'File Name' : 'Folder Name'}
 				</label>
 				<input
 					type="text"
 					name="createFolder"
-					id="create__folder__input"
-					value={isCreateModalVisible.file ? fileName : folderName}
+					id="modal__input"
+					value={
+						state.isModalVisible.file
+							? state.fileName
+							: state.folderName
+					}
 					placeholder={
-						isCreateModalVisible.file
-							? 'File Name'
+						state.isModalVisible.file
+							? 'Enter a file name'
 							: 'Enter a folder name'
 					}
 					onChange={e =>
-						isCreateModalVisible.file
-							? setFileName(e.target.value)
-							: setFolderName(e.target.value)
+						state.isModalVisible.file
+							? dispatch({
+									type: 'setFileName',
+									payload: e.target.value,
+							  })
+							: dispatch({
+									type: 'setFolderName',
+									payload: e.target.value,
+							  })
 					}
 				/>
 			</Modal.Body>
 			<Modal.Footer>
-				<button
-					onClick={() => {
-						if (isCreateModalVisible.folder) {
-							createFolder({
-								variables: {
-									path: `${currentFolderPath}/${folderName}`,
-								},
-							})
-						} else {
-							createFile({
-								variables: {
-									path: `${currentFolderPath}/${fileName}.json`,
-									type: currentFolderPath
-										.split('/')[2]
-										.toLowerCase(),
-								},
-							})
-						}
-						setCreateModalVisibility({
-							folder: false,
-							file: false,
-						})
-					}}
-				>
-					{isCreateModalVisible.file
+				<button onClick={() => onModalSubmit()}>
+					{state.isModalVisible.file
 						? 'Create File'
 						: 'Create Folder'}
 				</button>
-				<button
-					onClick={() =>
-						setCreateModalVisibility({
-							folder: false,
-							file: false,
-						})
-					}
-				>
-					Cancel
-				</button>
+				<button onClick={() => onModalClose()}>Cancel</button>
 			</Modal.Footer>
 		</Modal>
 	)
@@ -159,8 +166,12 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 			<Menu id="main__menu">
 				<Item
 					onClick={() =>
-						setCreateModalVisibility({
-							file: !isCreateModalVisible.file,
+						dispatch({
+							type: 'toggleModal',
+							payload: {
+								folder: false,
+								file: !state.isModalVisible.file,
+							},
 						})
 					}
 				>
@@ -169,8 +180,12 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 				{currentFolderPath.split('/').length < 6 && (
 					<Item
 						onClick={() =>
-							setCreateModalVisibility({
-								folder: !isCreateModalVisible.folder,
+							dispatch({
+								type: 'toggleModal',
+								payload: {
+									folder: !state.isModalVisible.folder,
+									file: false,
+								},
 							})
 						}
 					>
@@ -184,8 +199,8 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 	if (Object.keys(items).length === 0) {
 		return (
 			<div className="window__main empty__state">
-				{isCreateModalVisible.folder && CreatePopup}
-				{isCreateModalVisible.file && CreatePopup}
+				{state.isModalVisible.folder && CreatePopup}
+				{state.isModalVisible.file && CreatePopup}
 				<h3>
 					This folder is empty. Start by creating a new folder or a
 					file
@@ -193,8 +208,12 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 				<div>
 					<button
 						onClick={() =>
-							setCreateModalVisibility({
-								file: !isCreateModalVisible.file,
+							dispatch({
+								type: 'toggleModal',
+								payload: {
+									folder: false,
+									file: !state.isModalVisible.file,
+								},
 							})
 						}
 					>
@@ -204,8 +223,13 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 						currentFolderPath.split('/').length < 6 && (
 							<button
 								onClick={() =>
-									setCreateModalVisibility({
-										folder: !isCreateModalVisible.folder,
+									dispatch({
+										type: 'toggleModal',
+										payload: {
+											folder: !state.isModalVisible
+												.folder,
+											file: false,
+										},
 									})
 								}
 							>
@@ -219,8 +243,8 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 	return (
 		<main className="window__main">
 			<MenuProvider id="main__menu">
-				{isCreateModalVisible.folder && CreatePopup}
-				{isCreateModalVisible.file && CreatePopup}
+				{state.isModalVisible.folder && CreatePopup}
+				{state.isModalVisible.file && CreatePopup}
 				<div
 					className={`window__main__content ${
 						preview ? 'with__preview' : ''
@@ -254,8 +278,8 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 										onClick={() => sortItems('name')}
 									>
 										<span>Name</span>
-										{sort.column === 'name' && (
-											<span>{sort.order}</span>
+										{state.sortBy.column === 'name' && (
+											<span>{state.sortBy.order}</span>
 										)}
 									</div>
 									<div className="item__type">
@@ -266,8 +290,8 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 										onClick={() => sortItems('size')}
 									>
 										<span>Size</span>
-										{sort.column === 'size' && (
-											<span>{sort.order}</span>
+										{state.sortBy.column === 'size' && (
+											<span>{state.sortBy.order}</span>
 										)}
 									</div>
 								</div>
@@ -298,7 +322,7 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 					</div>
 					{preview ? (
 						<div className="window__main__content__right">
-							<FilePreview {...previewData} />
+							<FilePreview {...state.previewData} />
 						</div>
 					) : null}
 				</div>
