@@ -194,7 +194,25 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 				>
 					Rename {type === 'file' ? 'file' : 'folder'}
 				</Item>
-				<Item>Delete {type === 'file' ? 'file' : 'folder'}</Item>
+				<Item
+					onClick={() => {
+						if (type === 'file') {
+							deleteFile({
+								variables: {
+									path,
+								},
+							})
+							return
+						}
+						return deleteFolder({
+							variables: {
+								path,
+							},
+						})
+					}}
+				>
+					Delete {type === 'file' ? 'file' : 'folder'}
+				</Item>
 			</Menu>
 		)
 	return (

@@ -5,6 +5,8 @@ import { Menu, Item, MenuProvider } from 'react-contexify'
 import Modal from '../components/Modal'
 
 import GET_FOLDER from '../queries/getFolder'
+import DELETE_FOLDER from '../queries/deleteFolder'
+import DELETE_FILE from '../queries/deleteFile'
 import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
 
@@ -24,6 +26,12 @@ const Card = props => {
 				.join('/'),
 		},
 	}
+	const [deleteFolder] = useMutation(DELETE_FOLDER, {
+		refetchQueries: [refetchOptions],
+	})
+	const [deleteFile] = useMutation(DELETE_FILE, {
+		refetchQueries: [refetchOptions],
+	})
 	const [renameFile] = useMutation(RENAME_FILE, {
 		refetchQueries: [refetchOptions],
 	})
@@ -122,7 +130,25 @@ const Card = props => {
 				>
 					Rename {props.type === 'file' ? 'file' : 'folder'}
 				</Item>
-				<Item>Delete {props.type === 'file' ? 'file' : 'folder'}</Item>
+				<Item
+					onClick={() => {
+						if (props.type === 'file') {
+							deleteFile({
+								variables: {
+									path: props.path,
+								},
+							})
+							return
+						}
+						return deleteFolder({
+							variables: {
+								path: props.path,
+							},
+						})
+					}}
+				>
+					Delete {props.type === 'file' ? 'file' : 'folder'}
+				</Item>
 			</Menu>
 		)
 	return (
