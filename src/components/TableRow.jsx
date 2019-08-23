@@ -2,41 +2,47 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { useMutation } from '@apollo/react-hooks'
+import { Menu, Item, MenuProvider } from 'react-contexify'
+
+import Modal from '../components/Modal'
 
 // Queries
 import GET_FOLDER from '../queries/getFolder'
 import DELETE_FOLDER from '../queries/deleteFolder'
 import DELETE_FILE from '../queries/deleteFile'
+import RENAME_FILE from '../queries/renameFile'
+import RENAME_FOLDER from '../queries/renameFolder'
 
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
 
 const TableRow = ({ showHidePreview, name, type, size, path }) => {
+	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
+		folder: false,
+		file: false,
+	})
+	const [folderName, setFolderName] = React.useState('')
+	const [fileName, setFileName] = React.useState('')
+	const refetchOptions = {
+		query: GET_FOLDER,
+		variables: {
+			path: path
+				.split('/')
+				.slice(0, -1)
+				.join('/'),
+		},
+	}
 	const [deleteFolder] = useMutation(DELETE_FOLDER, {
-		refetchQueries: [
-			{
-				query: GET_FOLDER,
-				variables: {
-					path: path
-						.split('/')
-						.slice(0, -1)
-						.join('/'),
-				},
-			},
-		],
+		refetchQueries: [refetchOptions],
 	})
 	const [deleteFile] = useMutation(DELETE_FILE, {
-		refetchQueries: [
-			{
-				query: GET_FOLDER,
-				variables: {
-					path: path
-						.split('/')
-						.slice(0, -1)
-						.join('/'),
-				},
-			},
-		],
+		refetchQueries: [refetchOptions],
+	})
+	const [renameFile] = useMutation(RENAME_FILE, {
+		refetchQueries: [refetchOptions],
+	})
+	const [renameFolder] = useMutation(RENAME_FOLDER, {
+		refetchQueries: [refetchOptions],
 	})
 	const Delete = (
 		<button
@@ -96,18 +102,132 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 			</svg>
 		</button>
 	)
+	const CreatePopup = (
+		<Modal>
+			<Modal.Header>
+				{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
+			</Modal.Header>
+			<Modal.Body>
+				<label htmlFor="rename__folder__input">
+					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
+				</label>
+				<input
+					type="text"
+					name="createFolder"
+					id="rename__folder__input"
+					value={isCreateModalVisible.file ? fileName : folderName}
+					placeholder={
+						isCreateModalVisible.file
+							? 'Enter a file name'
+							: 'Enter a folder name'
+					}
+					onChange={e =>
+						isCreateModalVisible.file
+							? setFileName(e.target.value)
+							: setFolderName(e.target.value)
+					}
+				/>
+			</Modal.Body>
+			<Modal.Footer>
+				<button
+					onClick={() => {
+						if (isCreateModalVisible.folder) {
+							renameFolder({
+								variables: {
+									oldPath: path,
+									newPath: `${path
+										.split('/')
+										.slice(0, -1)
+										.join('/')}/${folderName}`,
+								},
+							})
+						} else {
+							renameFile({
+								variables: {
+									oldPath: path,
+									newPath: `${path
+										.split('/')
+										.slice(0, -1)
+										.join('/')}/${fileName}.json`,
+								},
+							})
+						}
+						setCreateModalVisibility({
+							folder: false,
+							file: false,
+						})
+					}}
+				>
+					{isCreateModalVisible.file
+						? 'Rename File'
+						: 'Rename Folder'}
+				</button>
+				<button
+					onClick={() =>
+						setCreateModalVisibility({
+							folder: false,
+							file: false,
+						})
+					}
+				>
+					Cancel
+				</button>
+			</Modal.Footer>
+		</Modal>
+	)
+	const generateId = `table__row__menu${Math.random()}`
+	const TableRowMenu = () =>
+		path.split('/').length > 3 && (
+			<Menu id={generateId}>
+				<Item
+					onClick={() => {
+						if (type === 'file') {
+							setCreateModalVisibility({
+								file: !isCreateModalVisible.file,
+							})
+							return
+						}
+						setCreateModalVisibility({
+							folder: !isCreateModalVisible.folder,
+						})
+					}}
+				>
+					Rename {type === 'file' ? 'file' : 'folder'}
+				</Item>
+				<Item>Delete {type === 'file' ? 'file' : 'folder'}</Item>
+			</Menu>
+		)
 	return (
-		<div className="table__row">
-			<div className="item__name">{name}</div>
-			<div className="item__type">{type}</div>
-			<div className="item__size">
-				{size && `${convertFileSize(size)}`}
-			</div>
-			<div className="item__options">
-				{Preview}
-				{path.split('/').length > 3 && Delete}
-			</div>
-		</div>
+		<React.Fragment>
+			<MenuProvider id={generateId}>
+				{isCreateModalVisible.folder && CreatePopup}
+				{isCreateModalVisible.file && CreatePopup}
+				<div className="table__row">
+					<div
+						className="item__name"
+						onClick={() =>
+							showHidePreview({
+								name,
+								type,
+								size,
+								showHidePreview,
+							})
+						}
+					>
+						{name}
+					</div>
+					<div className="item__type">{type}</div>
+					<div className="item__size">
+						{size && `${convertFileSize(size)}`}
+					</div>
+					<div className="item__options">
+						{Preview}
+						{path.split('/').length > 3 && Delete}
+					</div>
+				</div>
+			</MenuProvider>
+			<TableRowMenu />
+		</React.Fragment>
 	)
 }
 
