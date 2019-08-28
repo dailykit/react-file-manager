@@ -29,3 +29,35 @@ export const CollapseIcon = (
 		/>
 	</svg>
 )
+
+export const FolderIcon = (
+	<svg
+		width="40"
+		height="35"
+		viewBox="0 0 40 35"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			d="M21.2892 5.5144H38.6677C39.4031 5.5144 40 6.11055 40 6.84671V12.4375L40 30.9856C40 33.1948 38.2092 34.9856 36 34.9856H4.00005C1.79091 34.9856 5.06512e-05 33.1948 5.06512e-05 30.9856V4.12977C5.06512e-05 1.92063 1.79092 0.129764 4.00006 0.129767L13.3261 0.129782C14.6179 0.129784 15.8302 0.753646 16.5811 1.80483L18.0343 3.83935C18.7852 4.89054 19.9974 5.5144 21.2892 5.5144Z"
+			fill="#6A91EE"
+		/>
+	</svg>
+)
+
+export const FileText = ({ size = 18, color = '#000000' }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke={color}
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+		<path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+	</svg>
+)

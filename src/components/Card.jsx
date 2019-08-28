@@ -1,6 +1,7 @@
 import React from 'react'
 import { useMutation } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
+import PropTypes from 'prop-types'
 
 import Modal from '../components/Modal'
 
@@ -9,6 +10,8 @@ import DELETE_FOLDER from '../queries/deleteFolder'
 import DELETE_FILE from '../queries/deleteFile'
 import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
+
+import { FolderIcon, FileText } from '../assets/Icon'
 
 const Card = props => {
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
@@ -159,16 +162,30 @@ const Card = props => {
 				<div
 					className="item"
 					onClick={() => props.showHidePreview(props)}
+					title={props.name}
 				>
 					<div className="item__thumbnail">
-						<div />
+						{props.type === 'folder' ? (
+							FolderIcon
+						) : (
+							<FileText size={35} color="#6A91EE" />
+						)}
 					</div>
-					<span className="item__name">{props.name}</span>
+					<span className="item__name">
+						{props.name.slice(0, 12) + '...'}
+					</span>
 				</div>
 			</MenuProvider>
 			<CardMenu />
 		</React.Fragment>
 	)
+}
+
+Card.propTypes = {
+	name: PropTypes.string,
+	showHidePreview: PropTypes.func,
+	path: PropTypes.string,
+	type: PropTypes.string,
 }
 
 export default Card
