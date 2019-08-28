@@ -135,6 +135,11 @@ main.preview__main {
     }
 }
 
+#file__preview {
+    position: fixed;
+    width: 288px;
+}
+
 .preview__header {
     @include flex(center, space-between);
 }
