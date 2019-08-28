@@ -1,7 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Navbar = ({ breadcrumbs, toggleView, togglePreview, setFolderPath }) => {
+const Navbar = ({
+	breadcrumbs,
+	toggleView,
+	togglePreview,
+	setFolderPath,
+	setSearchTerm,
+}) => {
 	const [search, setSearch] = React.useState('')
 	const [route, setRoute] = React.useState('')
 	React.useEffect(() => {
@@ -27,6 +33,11 @@ const Navbar = ({ breadcrumbs, toggleView, togglePreview, setFolderPath }) => {
 					.join('/')
 			)
 		}
+	}
+
+	const searchFolder = e => {
+		setSearch(e.target.value)
+		setSearchTerm(e.target.value)
 	}
 
 	return (
@@ -80,7 +91,7 @@ const Navbar = ({ breadcrumbs, toggleView, togglePreview, setFolderPath }) => {
 					type="text"
 					placeholder="Search files or folders..."
 					value={search}
-					onChange={e => setSearch(e.target.value)}
+					onChange={e => searchFolder(e)}
 				/>
 			</div>
 			<div className="window__main__view">

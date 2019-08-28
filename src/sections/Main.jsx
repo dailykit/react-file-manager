@@ -21,7 +21,13 @@ import 'react-contexify/dist/ReactContexify.min.css'
 
 import { initialState, reducers } from '../state/main'
 
-const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
+const Main = ({
+	currentFolderPath,
+	view,
+	preview,
+	togglePreview,
+	searchTerm,
+}) => {
 	const [state, dispatch] = React.useReducer(reducers, initialState)
 	const {
 		loading: queryLoading,
@@ -45,16 +51,19 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 
 	React.useEffect(() => {
 		if (queryData.getFolderWithFiles) {
+			const childrens = queryData.getFolderWithFiles.children.filter(
+				item => item.name.toLowerCase().includes(searchTerm)
+			)
 			dispatch({
 				type: 'setFolderData',
 				payload: {
 					name: queryData.getFolderWithFiles.name,
 					path: queryData.getFolderWithFiles.path,
-					children: queryData.getFolderWithFiles.children,
+					children: childrens,
 				},
 			})
 		}
-	}, [queryData])
+	}, [queryData, searchTerm])
 
 	let items = _.mapValues(
 		_.groupBy(state.folderData.children || [], 'type'),
@@ -196,7 +205,7 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 		)
 	if (queryLoading) return <div>Loading...</div>
 	if (queryError) return console.log(queryError) || <div>Error!</div>
-	if (Object.keys(items).length === 0) {
+	if (Object.keys(items).length === 0 && searchTerm === '') {
 		return (
 			<div className="window__main empty__state">
 				{state.isModalVisible.folder && CreatePopup}
@@ -237,6 +246,13 @@ const Main = ({ currentFolderPath, view, preview, togglePreview }) => {
 							</button>
 						)}
 				</div>
+			</div>
+		)
+	}
+	if (Object.keys(items).length === 0 && searchTerm !== '') {
+		return (
+			<div className="window__main empty__state">
+				No file or folder matched the search term {searchTerm}
 			</div>
 		)
 	}

@@ -13,6 +13,7 @@ const App = () => {
 	)
 	const [preview, togglePreview] = React.useState(false)
 	const [view, toggleView] = React.useState('list')
+	const [searchTerm, setSearchTerm] = React.useState('')
 
 	const isCollapsed = () => {
 		toggleSidebar(!isSidebarVisible)
@@ -33,9 +34,11 @@ const App = () => {
 					togglePreview={togglePreview}
 					breadcrumbs={currentFolderPath}
 					setFolderPath={setFolderPath}
+					setSearchTerm={setSearchTerm}
 				/>
 				<Main
 					currentFolderPath={currentFolderPath}
+					searchTerm={searchTerm}
 					view={view}
 					preview={preview}
 					togglePreview={togglePreview}
