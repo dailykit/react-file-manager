@@ -18,10 +18,21 @@ const Navbar = ({ breadcrumbs, toggleView, togglePreview, setFolderPath }) => {
 		setFolderPath(fullPath)
 	}
 
+	const goBack = () => {
+		if (breadcrumbs.split('/').length > 2) {
+			return setFolderPath(
+				breadcrumbs
+					.split('/')
+					.slice(0, -1)
+					.join('/')
+			)
+		}
+	}
+
 	return (
 		<div className="window__main__navbar">
 			<div className="window__main__nav">
-				<button>
+				<button onClick={() => goBack()}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="18"
@@ -34,21 +45,6 @@ const Navbar = ({ breadcrumbs, toggleView, togglePreview, setFolderPath }) => {
 						strokeLinejoin="round"
 					>
 						<path d="M15 18l-6-6 6-6" />
-					</svg>
-				</button>
-				<button>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="18"
-						height="18"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="#000000"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<path d="M9 18l6-6-6-6" />
 					</svg>
 				</button>
 			</div>
