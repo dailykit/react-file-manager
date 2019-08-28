@@ -46,8 +46,15 @@
 .window__sidebar__actions {
     @include flex(center, null);
     height: 40px;
-    padding: 0 var(--spacer-2);
     border-bottom: 1px solid var(--border);
+    button {
+        height: 40px;
+        width: 40px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        border-right: 1px solid var(--border);
+    }
 }
 
 .window__sidebar__content {

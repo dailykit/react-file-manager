@@ -4,11 +4,15 @@ import PropTypes from 'prop-types'
 // Components
 import RenderTree from '../components/RenderTree'
 
-const Sidebar = ({ isCollapsed, setFolderPath }) => {
+import { ExpandIcon, CollapseIcon } from '../assets/Icon'
+
+const Sidebar = ({ isCollapsed, setFolderPath, isSidebarVisible }) => {
 	return (
 		<aside className="window__sidebar">
 			<div className="window__sidebar__actions">
-				<span onClick={() => isCollapsed()}>{'<'}</span>
+				<button onClick={() => isCollapsed()}>
+					{isSidebarVisible ? CollapseIcon : ExpandIcon}
+				</button>
 			</div>
 			<div className="window__sidebar__content">
 				<RenderTree setFolderPath={setFolderPath} />

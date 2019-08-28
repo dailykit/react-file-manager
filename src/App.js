@@ -28,6 +28,7 @@ const App = () => {
 				<Sidebar
 					isCollapsed={isCollapsed}
 					setFolderPath={setFolderPath}
+					isSidebarVisible={isSidebarVisible}
 				/>
 				<Navbar
 					toggleView={toggleView}
