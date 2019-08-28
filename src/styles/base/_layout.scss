@@ -22,13 +22,11 @@
     }
 }
 
-.window__main__navbar {
-    grid-area: nav;
-    border-bottom: 1px solid var(--border);
-}
-
 /* Window's Sidebar Styles */
 .window__sidebar {
+    -ms-grid-row: 2;
+    -ms-grid-row-span: 3;
+    -ms-grid-column: 1;
     grid-row: 2;
     -ms-grid-row: 2;
     -ms-grid-row-span: 2;
@@ -48,8 +46,15 @@
 .window__sidebar__actions {
     @include flex(center, null);
     height: 40px;
-    padding: 0 var(--spacer-2);
     border-bottom: 1px solid var(--border);
+    button {
+        height: 40px;
+        width: 40px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        border-right: 1px solid var(--border);
+    }
 }
 
 .window__sidebar__content {
@@ -62,6 +67,8 @@
         -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
         -ms-grid-template-columns: 1fr;
+        -ms-grid-rows: 32px 80px 1fr 32px;
+        grid-template-rows: 32px 80px 1fr 32px;
         grid-template-areas: "head" "nav" "main" "foot";
     }
 
@@ -97,6 +104,34 @@
 
     .window__sidebar__content {
         display: none;
+    }
+
+    .window__main__navbar {
+        height: 80px !important;
+        -ms-grid-columns: 40px 1fr 80px !important;
+        grid-template-columns: 40px 1fr 80px !important;
+        grid-auto-rows: 40px 40px;
+    }
+
+    .window__main__breadcrumbs {
+        grid-column: 1;
+        -ms-grid-column: 1;
+        grid-column-start: 1;
+        -ms-grid-column-span: 3;
+        grid-column-end: 4;
+        grid-row: 2;
+        -ms-grid-row: 2;
+        grid-row-start: 2;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .window__main__nav,
+    .window__main__view {
+        border-bottom: 1px solid var(--border);
+    }
+
+    .window__main__content {
+        height: calc(100vh - 144px);
     }
 
     .window__footer,

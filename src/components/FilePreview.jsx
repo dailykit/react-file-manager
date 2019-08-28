@@ -4,17 +4,17 @@ import PropTypes from 'prop-types'
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
 
-const FilePreview = props => {
+const FilePreview = ({ name, size, type, showHidePreview }) => {
 	return (
 		<div id="file__preview">
 			<header className="preview__header">
-				<span>{props.name}</span>
-				<button onClick={() => props.togglePreview({}, 'fromPreview')}>
+				<span>{name}</span>
+				<button onClick={() => showHidePreview({}, 'fromPreview')}>
 					x
 				</button>
 			</header>
 			<div className="preview__thumbnail">
-				{props.type === 'file' ? (
+				{type === 'file' ? (
 					<span>File Preview</span>
 				) : (
 					<span>No preview</span>
@@ -23,14 +23,12 @@ const FilePreview = props => {
 			<main className="preview__main">
 				<div>
 					<span>File type</span>
-					<span>{props.type}</span>
+					<span>{type}</span>
 				</div>
-				{props.size && (
-					<div>
-						<span>File size</span>
-						<span>{`${convertFileSize(props.size)}`}</span>
-					</div>
-				)}
+				<div>
+					<span>File size</span>
+					<span>{`${convertFileSize(size)}`}</span>
+				</div>
 			</main>
 		</div>
 	)
@@ -39,6 +37,8 @@ const FilePreview = props => {
 FilePreview.propTypes = {
 	name: PropTypes.string,
 	size: PropTypes.number,
+	type: PropTypes.string,
+	showHidePreview: PropTypes.func,
 }
 
 export default FilePreview

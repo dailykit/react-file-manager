@@ -1,50 +1,67 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+// Apollo Client Imports
+import { ApolloProvider } from '@apollo/react-hooks'
+import { ApolloClient } from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { HttpLink } from 'apollo-link-http'
+import { onError } from 'apollo-link-error'
+import { ApolloLink } from 'apollo-link'
+import { persistCache } from 'apollo-cache-persist'
+
+// Schema
+import typeDefs from './queries/typeDefs'
+import resolvers from './queries/resolvers'
+
+// Components
+import App from './App'
+
+// Styles
 import './styles/index.scss'
 
-const Header = React.lazy(() => import('./sections/Header'))
-const Sidebar = React.lazy(() => import('./sections/Sidebar'))
-const Main = React.lazy(() => import('./sections/Main'))
-const Footer = React.lazy(() => import('./sections/Footer'))
-const Navbar = React.lazy(() => import('./sections/Navbar'))
+const cache = new InMemoryCache()
 
-const App = () => {
-	const [isSidebarVisible, toggleSidebar] = React.useState(false)
-	const [folderData, setFolderData] = React.useState({})
-	const [preview, togglePreview] = React.useState(false)
-	const [view, toggleView] = React.useState('list')
+// const persistData = async () =>
+// 	await persistCache({
+// 		cache,
+// 		storage: window.localStorage,
+// 	})
 
-	const isCollapsed = () => {
-		toggleSidebar(!isSidebarVisible)
-	}
-	const openFolder = value => setFolderData(value)
+// persistData()
+
+const client = new ApolloClient({
+	link: ApolloLink.from([
+		onError(({ graphQLErrors, networkError }) => {
+			if (graphQLErrors)
+				graphQLErrors.map(({ message, locations, path }) =>
+					console.log(
+						`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+					)
+				)
+			if (networkError) console.log(`[Network error]: ${networkError}`)
+		}),
+		new HttpLink({
+			uri: process.env.REACT_APP_GRAPHQL_URI,
+		}),
+	]),
+	cache,
+	typeDefs,
+	resolvers,
+})
+
+cache.writeData({
+	data: {
+		history: [],
+	},
+})
+
+const Main = () => {
 	return (
-		<div
-			className={`window ${isSidebarVisible ? 'window-isCollapsed' : ''}`}
-		>
-			<React.Suspense fallback={<span>Loading...</span>}>
-				<Header title={'File Manager'} />
-				<Sidebar isCollapsed={isCollapsed} openFolder={openFolder} />
-				<Navbar
-					toggleView={toggleView}
-					togglePreview={togglePreview}
-					breadcrumbs={folderData.path}
-				/>
-				<Main
-					data={folderData}
-					view={view}
-					preview={preview}
-					togglePreview={togglePreview}
-				/>
-				<Footer
-					itemCount={
-						folderData.children && folderData.children.length
-					}
-				/>
-			</React.Suspense>
-		</div>
+		<ApolloProvider client={client}>
+			<App />
+		</ApolloProvider>
 	)
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<Main />, document.getElementById('root'))

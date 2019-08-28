@@ -1,0 +1,37 @@
+#modal {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.2);
+    @include flex(center, center);
+}
+
+#modal__card {
+    height: 200px;
+    width: 480px;
+    background: #fff;
+    border-radius: 3px;
+    @include flex(null, space-between);
+    flex-direction: column;
+}
+
+#modal__card__header {
+    height: 32px;
+    padding: 0 12px;
+    @include flex(center, null);
+    border-bottom: 1px solid var(--border);
+}
+
+#modal__card__body {
+    padding: 12px;
+    flex: 1;
+}
+
+#modal__card__footer {
+    height: 40px;
+    padding: 0 12px;
+    @include flex(center, null);
+    border-top: 1px solid var(--border);
+}

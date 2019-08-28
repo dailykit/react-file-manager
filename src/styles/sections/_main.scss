@@ -2,37 +2,38 @@
     grid-area: main;
     position: relative;
     width: calc(100vw - 240px);
+    overflow-y: auto;
 }
 
 .empty__state {
     height: 100%;
     width: 100%;
     @include flex(center, center);
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
 }
-
 
 .window__main__content {
     display: -ms-grid;
     display: grid;
+    -ms-grid-columns: 1fr 0;
     grid-template-columns: 1fr 0;
     height: calc(100vh - 104px);
     &.with__preview {
+        -ms-grid-columns: 1fr 321px;
         grid-template-columns: 1fr 321px;
     }
 }
 
 .window__main__grid__view {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     .item {
-        -webkit-box-flex: 1;
-            -ms-flex: 1 1 120px;
-                flex: 1 1 120px;
         max-width: 130px;
+        cursor: pointer;
         height: 150px;
         border-top: none;
         margin: -1px 0 0 -1px;
@@ -43,13 +44,8 @@
     }
     .item__thumbnail {
         width: 100%;
-        height: 120px;
+        height: 100px;
         @include flex(center,center);
-        div {
-            height: 50px;
-            width: 50px;
-            background: var(--border);
-        }
     }
 }
 
@@ -58,9 +54,11 @@
     display: grid;
     -ms-grid-rows: 32px 1fr;
     grid-template-rows: 32px 1fr;
-    .table__header, .table__row {
+    .table__header,
+    .table__row {
+        display: -ms-grid;
         display: grid;
-        grid-template-columns: repeat(auto-fill, calc(100% / 3));
+        grid-template-columns: 3fr 1fr 1fr;
     }
     .table__header {
         line-height: 32px;
@@ -78,14 +76,49 @@
             pointer-events: none;
         }
     }
+    .table__main {
+        margin-top: -1px;
+    }
     .table__row {
         height: 40px;
         line-height: 40px;
+        position: relative;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid transparent;
         div {
             padding: 0 var(--spacer-2);
+
         }
-        &:hover {
-            background: rgba(#000, 0.05);
+        div.item__options {
+            position: absolute;
+            right: 0;
+            background: #fff;
+            width: auto;
+            height: 38px;
+            visibility: hidden;
+            @include flex(center, null);
+            button {
+                background: transparent;
+                border: none;
+                height: 32px;
+                width: 32px;
+                cursor: pointer;
+                border-radius: 2px;
+                @include flex(center,center);
+                &:hover {
+                    border: 1px solid var(--border);
+                }
+            }
+        }
+        div.item__name {
+            cursor: pointer;
+        }
+        &:hover{
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            div.item__options {
+                visibility: visible;
+            }
         }
     }
 }
@@ -102,7 +135,6 @@ main.preview__main {
     }
 }
 
-
 .preview__header {
     @include flex(center, space-between);
 }
@@ -114,15 +146,27 @@ main.preview__main {
     @include flex(center, center);
     margin: 16px 0;
 }
-
 @media screen and (max-width: 980px) {
     .window__main__content.with__preview {
+        -ms-grid-columns: 1fr 0;
         grid-template-columns: 1fr 0;
+        height: calc(100vh - 144px);
     }
     .window__main__content__right {
-        position: absolute;
+        position: fixed;
         right: 0;
-        top: 1px;
+        top: 72px;
+        bottom: 0;
+        width: 321px;
+        background: #fff;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .window__main__content__right {
+        position: fixed;
+        right: 0;
+        top: 112px;
         bottom: 0;
         width: 321px;
         background: #fff;
