@@ -55,6 +55,33 @@ const TableRow = ({
 	const [addFileToSocketChannel] = useMutation(ADD_FILE_TO_SOCKET_CHANNEL)
 	const openFile = () => addFileToSocketChannel({ variables: { path } })
 	const openFolder = () => setFolderPath(path)
+
+	let clickCount = 0
+	let singleClickTimer
+	const singleClick = () => {
+		showHidePreview({
+			name,
+			type,
+			size,
+			showHidePreview,
+		})
+	}
+	const handleDoubleClick = () =>
+		type === 'file' ? openFile() : openFolder()
+	const handleClicks = () => {
+		clickCount++
+		if (clickCount === 1) {
+			singleClickTimer = setTimeout(function() {
+				clickCount = 0
+				singleClick()
+			}, 300)
+		} else if (clickCount === 2) {
+			clearTimeout(singleClickTimer)
+			clickCount = 0
+			handleDoubleClick()
+		}
+	}
+
 	const Delete = (
 		<button
 			onClick={() => {
@@ -241,17 +268,7 @@ const TableRow = ({
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
 				<div className="table__row">
-					<div
-						className="item__name"
-						onClick={() =>
-							showHidePreview({
-								name,
-								type,
-								size,
-								showHidePreview,
-							})
-						}
-					>
+					<div className="item__name" onClick={() => handleClicks()}>
 						{name}
 					</div>
 					<div className="item__type">{type}</div>

@@ -46,6 +46,30 @@ const Card = props => {
 	const openFile = () =>
 		addFileToSocketChannel({ variables: { path: props.path } })
 	const openFolder = () => props.setFolderPath(props.path)
+
+	let clickCount = 0
+	let singleClickTimer
+	const singleClick = () => {
+		props.showHidePreview({
+			props,
+		})
+	}
+	const handleDoubleClick = () =>
+		props.type === 'file' ? openFile() : openFolder()
+	const handleClicks = () => {
+		clickCount++
+		if (clickCount === 1) {
+			singleClickTimer = setTimeout(function() {
+				clickCount = 0
+				singleClick()
+			}, 300)
+		} else if (clickCount === 2) {
+			clearTimeout(singleClickTimer)
+			clickCount = 0
+			handleDoubleClick()
+		}
+	}
+
 	const CreatePopup = (
 		<Modal>
 			<Modal.Header>
@@ -175,7 +199,7 @@ const Card = props => {
 				{isCreateModalVisible.file && CreatePopup}
 				<div
 					className="item"
-					onClick={() => props.showHidePreview(props)}
+					onClick={() => handleClicks()}
 					title={props.name}
 				>
 					<div className="item__thumbnail">
