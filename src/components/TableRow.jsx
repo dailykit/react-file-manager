@@ -12,6 +12,7 @@ import DELETE_FOLDER from '../queries/deleteFolder'
 import DELETE_FILE from '../queries/deleteFile'
 import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
+import ADD_FILE_TO_SOCKET_CHANNEL from '../queries/addFileToSocketChannel'
 
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
@@ -44,6 +45,8 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 	const [renameFolder] = useMutation(RENAME_FOLDER, {
 		refetchQueries: [refetchOptions],
 	})
+	const [addFileToSocketChannel] = useMutation(ADD_FILE_TO_SOCKET_CHANNEL)
+	const openFile = () => addFileToSocketChannel({ variables: { path } })
 	const Delete = (
 		<button
 			onClick={() => {
@@ -179,6 +182,9 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 	const TableRowMenu = () =>
 		path.split('/').length > 3 && (
 			<Menu id={generateId}>
+				{type === 'file' && (
+					<Item onClick={() => openFile()}>Open File</Item>
+				)}
 				<Item
 					onClick={() => {
 						if (type === 'file') {
