@@ -268,8 +268,12 @@ const TableRow = ({
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
 				<div className="table__row">
-					<div className="item__name" onClick={() => handleClicks()}>
-						{name}
+					<div
+						className="item__name"
+						onClick={() => handleClicks()}
+						title={name}
+					>
+						{name.length > 20 ? name.slice(0, 20) + '...' : name}
 					</div>
 					<div className="item__type">{type}</div>
 					<div className="item__size">

@@ -210,7 +210,9 @@ const Card = props => {
 						)}
 					</div>
 					<span className="item__name">
-						{props.name.slice(0, 12) + '...'}
+						{props.name.length > 12
+							? props.name.slice(0, 12) + '...'
+							: props.name}
 					</span>
 				</div>
 			</MenuProvider>
