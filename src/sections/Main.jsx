@@ -300,6 +300,16 @@ const Main = ({
 											<span>{state.sortBy.order}</span>
 										)}
 									</div>
+									<div
+										className="item__date"
+										onClick={() => sortItems('createdAt')}
+									>
+										<span>Date</span>
+										{state.sortBy.column ===
+											'createdAt' && (
+											<span>{state.sortBy.order}</span>
+										)}
+									</div>
 									<div className="item__type">
 										<span>Type</span>
 									</div>

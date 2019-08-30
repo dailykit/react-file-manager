@@ -8,12 +8,14 @@ const GET_FOLDER = gql`
 			path
 			size
 			type
+			createdAt
 			children {
 				createdAt
 				name
 				path
 				size
 				type
+				createdAt
 			}
 		}
 	}

@@ -23,6 +23,7 @@ const TableRow = ({
 	type,
 	size,
 	path,
+	createdAt,
 	setFolderPath,
 }) => {
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
@@ -274,6 +275,15 @@ const TableRow = ({
 						title={name}
 					>
 						{name.length > 20 ? name.slice(0, 20) + '...' : name}
+					</div>
+					<div className="item__date">
+						{new Intl.DateTimeFormat('en-US', {
+							year: 'numeric',
+							month: 'short',
+							day: 'numeric',
+							hour: 'numeric',
+							minute: 'numeric',
+						}).format(createdAt)}
 					</div>
 					<div className="item__type">{type}</div>
 					<div className="item__size">
