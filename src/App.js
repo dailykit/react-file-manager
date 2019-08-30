@@ -42,6 +42,7 @@ const App = () => {
 					searchTerm={searchTerm}
 					view={view}
 					preview={preview}
+					setFolderPath={setFolderPath}
 					togglePreview={togglePreview}
 				/>
 				<Footer />

@@ -27,6 +27,7 @@ const Main = ({
 	preview,
 	togglePreview,
 	searchTerm,
+	setFolderPath,
 }) => {
 	const [state, dispatch] = React.useReducer(reducers, initialState)
 	const {
@@ -274,6 +275,7 @@ const Main = ({
 										<Card
 											{...item}
 											key={index}
+											setFolderPath={setFolderPath}
 											showHidePreview={showHidePreview}
 										/>
 									))}
@@ -317,6 +319,7 @@ const Main = ({
 											<TableRow
 												{...item}
 												key={index}
+												setFolderPath={setFolderPath}
 												showHidePreview={
 													showHidePreview
 												}

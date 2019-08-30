@@ -17,7 +17,14 @@ import ADD_FILE_TO_SOCKET_CHANNEL from '../queries/addFileToSocketChannel'
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
 
-const TableRow = ({ showHidePreview, name, type, size, path }) => {
+const TableRow = ({
+	showHidePreview,
+	name,
+	type,
+	size,
+	path,
+	setFolderPath,
+}) => {
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
@@ -47,6 +54,7 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 	})
 	const [addFileToSocketChannel] = useMutation(ADD_FILE_TO_SOCKET_CHANNEL)
 	const openFile = () => addFileToSocketChannel({ variables: { path } })
+	const openFolder = () => setFolderPath(path)
 	const Delete = (
 		<button
 			onClick={() => {
@@ -179,12 +187,14 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 		</Modal>
 	)
 	const generateId = `table__row__menu${Math.random()}`
-	const TableRowMenu = () =>
-		path.split('/').length > 3 && (
-			<Menu id={generateId}>
-				{type === 'file' && (
-					<Item onClick={() => openFile()}>Open File</Item>
-				)}
+	const TableRowMenu = () => (
+		<Menu id={generateId}>
+			{type === 'file' ? (
+				<Item onClick={() => openFile()}>Open File</Item>
+			) : (
+				<Item onClick={() => openFolder()}>Open Folder</Item>
+			)}
+			{path.split('/').length > 3 && (
 				<Item
 					onClick={() => {
 						if (type === 'file') {
@@ -200,6 +210,8 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 				>
 					Rename {type === 'file' ? 'file' : 'folder'}
 				</Item>
+			)}
+			{path.split('/').length > 3 && (
 				<Item
 					onClick={() => {
 						if (type === 'file') {
@@ -219,8 +231,10 @@ const TableRow = ({ showHidePreview, name, type, size, path }) => {
 				>
 					Delete {type === 'file' ? 'file' : 'folder'}
 				</Item>
-			</Menu>
-		)
+			)}
+		</Menu>
+	)
+
 	return (
 		<React.Fragment>
 			<MenuProvider id={generateId}>

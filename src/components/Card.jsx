@@ -10,6 +10,7 @@ import DELETE_FOLDER from '../queries/deleteFolder'
 import DELETE_FILE from '../queries/deleteFile'
 import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
+import ADD_FILE_TO_SOCKET_CHANNEL from '../queries/addFileToSocketChannel'
 
 import { FolderIcon, FileText } from '../assets/Icon'
 
@@ -41,6 +42,10 @@ const Card = props => {
 	const [renameFolder] = useMutation(RENAME_FOLDER, {
 		refetchQueries: [refetchOptions],
 	})
+	const [addFileToSocketChannel] = useMutation(ADD_FILE_TO_SOCKET_CHANNEL)
+	const openFile = () =>
+		addFileToSocketChannel({ variables: { path: props.path } })
+	const openFolder = () => props.setFolderPath(props.path)
 	const CreatePopup = (
 		<Modal>
 			<Modal.Header>
@@ -115,9 +120,14 @@ const Card = props => {
 		</Modal>
 	)
 	const generateId = `table__row__menu${Math.random()}`
-	const CardMenu = () =>
-		props.path.split('/').length > 3 && (
-			<Menu id={generateId}>
+	const CardMenu = () => (
+		<Menu id={generateId}>
+			{props.type === 'file' ? (
+				<Item onClick={() => openFile()}>Open File</Item>
+			) : (
+				<Item onClick={() => openFolder()}>Open Folder</Item>
+			)}
+			{props.path.split('/').length > 3 && (
 				<Item
 					onClick={() => {
 						if (props.type === 'file') {
@@ -133,6 +143,8 @@ const Card = props => {
 				>
 					Rename {props.type === 'file' ? 'file' : 'folder'}
 				</Item>
+			)}
+			{props.path.split('/').length > 3 && (
 				<Item
 					onClick={() => {
 						if (props.type === 'file') {
@@ -152,8 +164,10 @@ const Card = props => {
 				>
 					Delete {props.type === 'file' ? 'file' : 'folder'}
 				</Item>
-			</Menu>
-		)
+			)}
+		</Menu>
+	)
+
 	return (
 		<React.Fragment>
 			<MenuProvider id={generateId}>
