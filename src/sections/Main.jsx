@@ -6,6 +6,8 @@ import { useQuery } from '@apollo/react-hooks'
 import { useMutation } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 
+import { useToasts } from 'react-toast-notifications'
+
 // Components
 import FilePreview from '../components/FilePreview'
 import Card from '../components/Card'
@@ -39,12 +41,26 @@ const Main = ({
 			path: currentFolderPath,
 		},
 	})
+
+	const { addToast } = useToasts()
 	const [createFolder] = useMutation(CREATE_FOLDER, {
+		onCompleted: () => {
+			addToast('Folder created successfully!', {
+				appearance: 'success',
+				autoDismiss: true,
+			})
+		},
 		refetchQueries: [
 			{ query: GET_FOLDER, variables: { path: currentFolderPath } },
 		],
 	})
 	const [createFile] = useMutation(CREATE_FILE, {
+		onCompleted: () => {
+			addToast('File created successfully!', {
+				appearance: 'success',
+				autoDismiss: true,
+			})
+		},
 		refetchQueries: [
 			{ query: GET_FOLDER, variables: { path: currentFolderPath } },
 		],

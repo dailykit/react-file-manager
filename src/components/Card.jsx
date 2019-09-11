@@ -3,6 +3,8 @@ import { useMutation } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 import PropTypes from 'prop-types'
 
+import { useToasts } from 'react-toast-notifications'
+
 import Modal from '../components/Modal'
 
 import GET_FOLDER from '../queries/getFolder'
@@ -30,16 +32,41 @@ const Card = props => {
 				.join('/'),
 		},
 	}
+	const { addToast } = useToasts()
 	const [deleteFolder] = useMutation(DELETE_FOLDER, {
+		onCompleted: () => {
+			addToast('Folder deleted successfully!', {
+				appearance: 'warning',
+				autoDismiss: true,
+			})
+		},
 		refetchQueries: [refetchOptions],
 	})
 	const [deleteFile] = useMutation(DELETE_FILE, {
+		onCompleted: () => {
+			addToast('File deleted successfully!', {
+				appearance: 'warning',
+				autoDismiss: true,
+			})
+		},
 		refetchQueries: [refetchOptions],
 	})
 	const [renameFile] = useMutation(RENAME_FILE, {
+		onCompleted: () => {
+			addToast('File renamed successfully!', {
+				appearance: 'success',
+				autoDismiss: true,
+			})
+		},
 		refetchQueries: [refetchOptions],
 	})
 	const [renameFolder] = useMutation(RENAME_FOLDER, {
+		onCompleted: () => {
+			addToast('Folder renamed successfully!', {
+				appearance: 'success',
+				autoDismiss: true,
+			})
+		},
 		refetchQueries: [refetchOptions],
 	})
 	const [addFileToSocketChannel] = useMutation(ADD_FILE_TO_SOCKET_CHANNEL)
