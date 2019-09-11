@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import { ToastProvider } from 'react-toast-notifications'
+
 // Apollo Client Imports
 import { ApolloProvider } from '@apollo/react-hooks'
 import { ApolloClient } from 'apollo-client'
@@ -8,7 +10,6 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { ApolloLink } from 'apollo-link'
-import { persistCache } from 'apollo-cache-persist'
 
 // Schema
 import typeDefs from './queries/typeDefs'
@@ -16,19 +17,12 @@ import resolvers from './queries/resolvers'
 
 // Components
 import App from './App'
+import ToastContainer from './components/ToastContainer'
 
 // Styles
 import './styles/index.scss'
 
 const cache = new InMemoryCache()
-
-// const persistData = async () =>
-// 	await persistCache({
-// 		cache,
-// 		storage: window.localStorage,
-// 	})
-
-// persistData()
 
 const client = new ApolloClient({
 	link: ApolloLink.from([
@@ -59,7 +53,13 @@ cache.writeData({
 const Main = () => {
 	return (
 		<ApolloProvider client={client}>
-			<App />
+			<ToastProvider
+				placement="bottom-right"
+				components={{ ToastContainer }}
+				autoDismissTimeout={2000}
+			>
+				<App />
+			</ToastProvider>
 		</ApolloProvider>
 	)
 }
