@@ -1,5 +1,6 @@
 node_modules/
-.env
+.env.development
+.env.production
 debug.log
 key.pem
 build
