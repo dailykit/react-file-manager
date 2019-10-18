@@ -14,10 +14,10 @@ import DELETE_FOLDER from '../queries/deleteFolder'
 import DELETE_FILE from '../queries/deleteFile'
 import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
-import ADD_FILE_TO_SOCKET_CHANNEL from '../queries/addFileToSocketChannel'
 
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
+import { TrashIcon, InfoIcon } from '../assets/Icon'
 
 const TableRow = ({
 	showHidePreview,
@@ -81,8 +81,7 @@ const TableRow = ({
 		},
 		refetchQueries: [refetchOptions],
 	})
-	const [addFileToSocketChannel] = useMutation(ADD_FILE_TO_SOCKET_CHANNEL)
-	const openFile = () => addFileToSocketChannel({ variables: { path } })
+	const openFile = () => {}
 	const openFolder = () => setFolderPath(path)
 
 	let clickCount = 0
@@ -128,22 +127,7 @@ const TableRow = ({
 				})
 			}}
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="#000000"
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			>
-				<polyline points="3 6 5 6 21 6" />
-				<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-				<line x1="10" y1="11" x2="10" y2="17" />
-				<line x1="14" y1="11" x2="14" y2="17" />
-			</svg>
+			<TrashIcon />
 		</button>
 	)
 	const Preview = (
@@ -152,21 +136,7 @@ const TableRow = ({
 				showHidePreview({ name, type, size, showHidePreview })
 			}
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="#000000"
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			>
-				<circle cx="12" cy="12" r="10" />
-				<line x1="12" y1="16" x2="12" y2="12" />
-				<line x1="12" y1="8" x2="12" y2="8" />
-			</svg>
+			<InfoIcon />
 		</button>
 	)
 	const CreatePopup = (
@@ -250,44 +220,41 @@ const TableRow = ({
 			) : (
 				<Item onClick={() => openFolder()}>Open Folder</Item>
 			)}
-			{path.split('/').length > 3 && (
-				<Item
-					onClick={() => {
-						if (type === 'file') {
-							setCreateModalVisibility({
-								file: !isCreateModalVisible.file,
-							})
-							return
-						}
+			<Item
+				onClick={() => {
+					if (type === 'file') {
 						setCreateModalVisibility({
-							folder: !isCreateModalVisible.folder,
+							file: !isCreateModalVisible.file,
 						})
-					}}
-				>
-					Rename {type === 'file' ? 'file' : 'folder'}
-				</Item>
-			)}
-			{path.split('/').length > 3 && (
-				<Item
-					onClick={() => {
-						if (type === 'file') {
-							deleteFile({
-								variables: {
-									path,
-								},
-							})
-							return
-						}
-						return deleteFolder({
+						return
+					}
+					setCreateModalVisibility({
+						folder: !isCreateModalVisible.folder,
+					})
+				}}
+			>
+				Rename {type === 'file' ? 'file' : 'folder'}
+			</Item>
+
+			<Item
+				onClick={() => {
+					if (type === 'file') {
+						deleteFile({
 							variables: {
 								path,
 							},
 						})
-					}}
-				>
-					Delete {type === 'file' ? 'file' : 'folder'}
-				</Item>
-			)}
+						return
+					}
+					return deleteFolder({
+						variables: {
+							path,
+						},
+					})
+				}}
+			>
+				Delete {type === 'file' ? 'file' : 'folder'}
+			</Item>
 		</Menu>
 	)
 

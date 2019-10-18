@@ -17,6 +17,30 @@ const GET_NESTED_FOLDERS = gql`
 						children {
 							name
 							path
+							children {
+								name
+								path
+								children {
+									name
+									path
+									children {
+										name
+										path
+										children {
+											name
+											path
+											children {
+												name
+												path
+												children {
+													name
+													path
+												}
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}

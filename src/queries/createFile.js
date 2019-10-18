@@ -1,8 +1,17 @@
 import gql from 'graphql-tag'
 
 const CREATE_FILE = gql`
-	mutation createFile($path: String!, $type: String!) {
-		createFile(path: $path, type: $type)
+	mutation createFile($path: String, $content: String) {
+		createFile(path: $path, content: $content) {
+			... on Error {
+				success
+				error
+			}
+			... on Success {
+				success
+				message
+			}
+		}
 	}
 `
 

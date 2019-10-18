@@ -1,15 +1,13 @@
 import React from 'react'
 
-const Header = React.lazy(() => import('./sections/Header'))
 const Sidebar = React.lazy(() => import('./sections/Sidebar'))
 const Main = React.lazy(() => import('./sections/Main'))
-const Footer = React.lazy(() => import('./sections/Footer'))
 const Navbar = React.lazy(() => import('./sections/Navbar'))
 
 const App = () => {
 	const [isSidebarVisible, toggleSidebar] = React.useState(false)
 	const [currentFolderPath, setCurrentFolderPath] = React.useState(
-		'./filesystem'
+		'./../apps'
 	)
 	const [preview, togglePreview] = React.useState(false)
 	const [view, toggleView] = React.useState('list')
@@ -24,7 +22,6 @@ const App = () => {
 			className={`window ${isSidebarVisible ? 'window-isCollapsed' : ''}`}
 		>
 			<React.Suspense fallback={<span>Loading...</span>}>
-				<Header title={'File Manager'} />
 				<Sidebar
 					isCollapsed={isCollapsed}
 					setFolderPath={setFolderPath}
@@ -45,7 +42,6 @@ const App = () => {
 					setFolderPath={setFolderPath}
 					togglePreview={togglePreview}
 				/>
-				<Footer />
 			</React.Suspense>
 		</div>
 	)

@@ -12,9 +12,8 @@ import DELETE_FOLDER from '../queries/deleteFolder'
 import DELETE_FILE from '../queries/deleteFile'
 import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
-import ADD_FILE_TO_SOCKET_CHANNEL from '../queries/addFileToSocketChannel'
 
-import { FolderIcon, FileText } from '../assets/Icon'
+import { FolderCloseIcon, FileText } from '../assets/Icon'
 
 const Card = props => {
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
@@ -69,16 +68,17 @@ const Card = props => {
 		},
 		refetchQueries: [refetchOptions],
 	})
-	const [addFileToSocketChannel] = useMutation(ADD_FILE_TO_SOCKET_CHANNEL)
-	const openFile = () =>
-		addFileToSocketChannel({ variables: { path: props.path } })
+	const openFile = () => {}
 	const openFolder = () => props.setFolderPath(props.path)
 
 	let clickCount = 0
 	let singleClickTimer
 	const singleClick = () => {
 		props.showHidePreview({
-			props,
+			name: props.name,
+			type: props.type,
+			size: props.size,
+			showHidePreview: props.showHidePreview,
 		})
 	}
 	const handleDoubleClick = () =>
@@ -178,44 +178,40 @@ const Card = props => {
 			) : (
 				<Item onClick={() => openFolder()}>Open Folder</Item>
 			)}
-			{props.path.split('/').length > 3 && (
-				<Item
-					onClick={() => {
-						if (props.type === 'file') {
-							setCreateModalVisibility({
-								file: !isCreateModalVisible.file,
-							})
-							return
-						}
+			<Item
+				onClick={() => {
+					if (props.type === 'file') {
 						setCreateModalVisibility({
-							folder: !isCreateModalVisible.folder,
+							file: !isCreateModalVisible.file,
 						})
-					}}
-				>
-					Rename {props.type === 'file' ? 'file' : 'folder'}
-				</Item>
-			)}
-			{props.path.split('/').length > 3 && (
-				<Item
-					onClick={() => {
-						if (props.type === 'file') {
-							deleteFile({
-								variables: {
-									path: props.path,
-								},
-							})
-							return
-						}
-						return deleteFolder({
+						return
+					}
+					setCreateModalVisibility({
+						folder: !isCreateModalVisible.folder,
+					})
+				}}
+			>
+				Rename {props.type === 'file' ? 'file' : 'folder'}
+			</Item>
+			<Item
+				onClick={() => {
+					if (props.type === 'file') {
+						deleteFile({
 							variables: {
 								path: props.path,
 							},
 						})
-					}}
-				>
-					Delete {props.type === 'file' ? 'file' : 'folder'}
-				</Item>
-			)}
+						return
+					}
+					return deleteFolder({
+						variables: {
+							path: props.path,
+						},
+					})
+				}}
+			>
+				Delete {props.type === 'file' ? 'file' : 'folder'}
+			</Item>
 		</Menu>
 	)
 
@@ -231,7 +227,7 @@ const Card = props => {
 				>
 					<div className="item__thumbnail">
 						{props.type === 'folder' ? (
-							FolderIcon
+							<FolderCloseIcon />
 						) : (
 							<FileText size={35} color="#6A91EE" />
 						)}

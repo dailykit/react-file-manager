@@ -11,7 +11,7 @@ const Sidebar = ({ isCollapsed, setFolderPath, isSidebarVisible }) => {
 		<aside className="window__sidebar">
 			<div className="window__sidebar__actions">
 				<button onClick={() => isCollapsed()}>
-					{isSidebarVisible ? CollapseIcon : ExpandIcon}
+					{isSidebarVisible ? <CollapseIcon /> : <ExpandIcon />}
 				</button>
 			</div>
 			<div className="window__sidebar__content">

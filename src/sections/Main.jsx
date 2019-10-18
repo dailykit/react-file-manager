@@ -67,7 +67,7 @@ const Main = ({
 	})
 
 	React.useEffect(() => {
-		if (queryData.getFolderWithFiles) {
+		if (queryData && queryData.getFolderWithFiles) {
 			const childrens = queryData.getFolderWithFiles.children.filter(
 				item => item.name.toLowerCase().includes(searchTerm)
 			)
@@ -187,39 +187,36 @@ const Main = ({
 			</Modal.Footer>
 		</Modal>
 	)
-	const MainMenu = () =>
-		currentFolderPath.split('/').length > 2 && (
-			<Menu id="main__menu">
-				<Item
-					onClick={() =>
-						dispatch({
-							type: 'toggleModal',
-							payload: {
-								folder: false,
-								file: !state.isModalVisible.file,
-							},
-						})
-					}
-				>
-					Create File
-				</Item>
-				{currentFolderPath.split('/').length < 6 && (
-					<Item
-						onClick={() =>
-							dispatch({
-								type: 'toggleModal',
-								payload: {
-									folder: !state.isModalVisible.folder,
-									file: false,
-								},
-							})
-						}
-					>
-						Create Folder
-					</Item>
-				)}
-			</Menu>
-		)
+	const MainMenu = () => (
+		<Menu id="main__menu">
+			<Item
+				onClick={() =>
+					dispatch({
+						type: 'toggleModal',
+						payload: {
+							folder: false,
+							file: !state.isModalVisible.file,
+						},
+					})
+				}
+			>
+				Create File
+			</Item>
+			<Item
+				onClick={() =>
+					dispatch({
+						type: 'toggleModal',
+						payload: {
+							folder: !state.isModalVisible.folder,
+							file: false,
+						},
+					})
+				}
+			>
+				Create Folder
+			</Item>
+		</Menu>
+	)
 	if (queryLoading) return <div>Loading...</div>
 	if (queryError) return console.log(queryError) || <div>Error!</div>
 	if (Object.keys(items).length === 0 && searchTerm === '') {
@@ -245,23 +242,19 @@ const Main = ({
 					>
 						Create File
 					</button>
-					{currentFolderPath.split('/').length > 2 &&
-						currentFolderPath.split('/').length < 6 && (
-							<button
-								onClick={() =>
-									dispatch({
-										type: 'toggleModal',
-										payload: {
-											folder: !state.isModalVisible
-												.folder,
-											file: false,
-										},
-									})
-								}
-							>
-								Create Folder
-							</button>
-						)}
+					<button
+						onClick={() =>
+							dispatch({
+								type: 'toggleModal',
+								payload: {
+									folder: !state.isModalVisible.folder,
+									file: false,
+								},
+							})
+						}
+					>
+						Create Folder
+					</button>
 				</div>
 			</div>
 		)
