@@ -18,16 +18,10 @@ import RENAME_FOLDER from '../queries/renameFolder'
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
 import { TrashIcon, InfoIcon } from '../assets/Icon'
+import { Context } from '../state/context'
 
-const TableRow = ({
-	showHidePreview,
-	name,
-	type,
-	size,
-	path,
-	createdAt,
-	setFolderPath,
-}) => {
+const TableRow = ({ name, type, size, path, createdAt }) => {
+	const { dispatch } = React.useContext(Context)
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
@@ -82,17 +76,21 @@ const TableRow = ({
 		refetchQueries: [refetchOptions],
 	})
 	const openFile = () => {}
-	const openFolder = () => setFolderPath(path)
+	const openFolder = () =>
+		dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
 
 	let clickCount = 0
 	let singleClickTimer
-	const singleClick = () => {
-		showHidePreview({
-			name,
-			type,
-			size,
-			showHidePreview,
+	const showPreview = () => {
+		dispatch({
+			type: 'SET_PREVIEW_DATA',
+			payload: {
+				name,
+				type,
+				size,
+			},
 		})
+		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
 	const handleDoubleClick = () =>
 		type === 'file' ? openFile() : openFolder()
@@ -101,7 +99,7 @@ const TableRow = ({
 		if (clickCount === 1) {
 			singleClickTimer = setTimeout(function() {
 				clickCount = 0
-				singleClick()
+				showPreview()
 			}, 300)
 		} else if (clickCount === 2) {
 			clearTimeout(singleClickTimer)
@@ -131,11 +129,7 @@ const TableRow = ({
 		</button>
 	)
 	const Preview = (
-		<button
-			onClick={() =>
-				showHidePreview({ name, type, size, showHidePreview })
-			}
-		>
+		<button onClick={() => showPreview()}>
 			<InfoIcon />
 		</button>
 	)
@@ -299,7 +293,7 @@ TableRow.propTypes = {
 	name: PropTypes.string,
 	size: PropTypes.number,
 	type: PropTypes.string,
-	showHidePreview: PropTypes.func,
+	path: PropTypes.string,
 }
 
 export default TableRow

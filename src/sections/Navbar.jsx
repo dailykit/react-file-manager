@@ -1,44 +1,45 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '../assets/Icon'
+import { Context } from '../state/context'
 
-const Navbar = ({
-	breadcrumbs,
-	toggleView,
-	togglePreview,
-	setFolderPath,
-	setSearchTerm,
-}) => {
+const Navbar = () => {
+	const { state, dispatch } = React.useContext(Context)
 	const [search, setSearch] = React.useState('')
 	const [route, setRoute] = React.useState('')
 	React.useEffect(() => {
-		if (breadcrumbs) {
-			setRoute(breadcrumbs.split('./../')[1])
+		if (state.currentFolder) {
+			setRoute(state.currentFolder.split('./../')[1])
 		}
-	}, [breadcrumbs])
+	}, [state.currentFolder])
+
 	const goToFolder = async folderName => {
 		const path = await route.split('/')
 		const index = await path.indexOf(folderName)
 		const slicePath = await path.slice(0, index + 1)
 		const fullPath = './../' + slicePath.join('/')
-		setFolderPath(fullPath)
+		dispatch({
+			type: 'SET_CURRENT_FOLDER',
+			payload: fullPath,
+		})
 	}
 
 	const goBack = () => {
-		if (breadcrumbs.split('/').length > 2) {
-			return setFolderPath(
-				breadcrumbs
-					.split('/')
-					.slice(0, -1)
-					.join('/')
-			)
-		}
+		return dispatch({
+			type: 'SET_CURRENT_FOLDER',
+			payload: state.currentFolder
+				.split('/')
+				.slice(0, -1)
+				.join('/'),
+		})
 	}
 
 	const searchFolder = e => {
 		setSearch(e.target.value)
-		setSearchTerm(e.target.value)
+		dispatch({
+			type: 'SET_SEARCH_TEXT',
+			payload: e.target.value.toLowerCase(),
+		})
 	}
 
 	return (
@@ -73,25 +74,24 @@ const Navbar = ({
 			</div>
 			<div className="window__main__view">
 				<button
-					onClick={() => toggleView('list') || togglePreview(false)}
+					onClick={() =>
+						dispatch({ type: 'TOGGLE_VIEW', payload: 'list' }) ||
+						dispatch({ type: 'TOGGLE_PREVIEW', payload: false })
+					}
 				>
 					L
 				</button>
 				<button
-					onClick={() => toggleView('grid') || togglePreview(false)}
+					onClick={() =>
+						dispatch({ type: 'TOGGLE_VIEW', payload: 'grid' }) ||
+						dispatch({ type: 'TOGGLE_PREVIEW', payload: false })
+					}
 				>
 					G
 				</button>
 			</div>
 		</div>
 	)
-}
-
-Navbar.propTypes = {
-	breadcrumbs: PropTypes.string.isRequired,
-	toggleView: PropTypes.func.isRequired,
-	togglePreview: PropTypes.func.isRequired,
-	setFolderPath: PropTypes.func.isRequired,
 }
 
 export default Navbar
