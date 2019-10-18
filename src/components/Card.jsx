@@ -14,8 +14,10 @@ import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
 
 import { FolderCloseIcon, FileText } from '../assets/Icon'
+import { Context } from '../state/context'
 
 const Card = props => {
+	const { dispatch } = React.useContext(Context)
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
@@ -69,17 +71,21 @@ const Card = props => {
 		refetchQueries: [refetchOptions],
 	})
 	const openFile = () => {}
-	const openFolder = () => props.setFolderPath(props.path)
+	const openFolder = () =>
+		dispatch({ type: 'SET_CURRENT_FOLDER', payload: props.path })
 
 	let clickCount = 0
 	let singleClickTimer
 	const singleClick = () => {
-		props.showHidePreview({
-			name: props.name,
-			type: props.type,
-			size: props.size,
-			showHidePreview: props.showHidePreview,
+		dispatch({
+			type: 'SET_PREVIEW_DATA',
+			payload: {
+				name: props.name,
+				type: props.type,
+				size: props.size,
+			},
 		})
+		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
 	const handleDoubleClick = () =>
 		props.type === 'file' ? openFile() : openFolder()
@@ -246,7 +252,6 @@ const Card = props => {
 
 Card.propTypes = {
 	name: PropTypes.string,
-	showHidePreview: PropTypes.func,
 	path: PropTypes.string,
 	type: PropTypes.string,
 }

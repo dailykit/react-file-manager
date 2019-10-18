@@ -1,6 +1,5 @@
 import React from 'react'
 import _ from 'lodash'
-import PropTypes from 'prop-types'
 
 import { useQuery } from '@apollo/react-hooks'
 import { useMutation } from '@apollo/react-hooks'
@@ -21,24 +20,17 @@ import CREATE_FILE from '../queries/createFile'
 
 import 'react-contexify/dist/ReactContexify.min.css'
 
-import { initialState, reducers } from '../state/main'
+import { Context } from '../state/context'
 
-const Main = ({
-	currentFolderPath,
-	view,
-	preview,
-	togglePreview,
-	searchTerm,
-	setFolderPath,
-}) => {
-	const [state, dispatch] = React.useReducer(reducers, initialState)
+const Main = () => {
+	const { state, dispatch } = React.useContext(Context)
 	const {
 		loading: queryLoading,
 		error: queryError,
 		data: queryData,
 	} = useQuery(GET_FOLDER, {
 		variables: {
-			path: currentFolderPath,
+			path: state.currentFolder,
 		},
 	})
 
@@ -51,7 +43,7 @@ const Main = ({
 			})
 		},
 		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: currentFolderPath } },
+			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
 		],
 	})
 	const [createFile] = useMutation(CREATE_FILE, {
@@ -62,17 +54,17 @@ const Main = ({
 			})
 		},
 		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: currentFolderPath } },
+			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
 		],
 	})
 
 	React.useEffect(() => {
 		if (queryData && queryData.getFolderWithFiles) {
 			const childrens = queryData.getFolderWithFiles.children.filter(
-				item => item.name.toLowerCase().includes(searchTerm)
+				item => item.name.toLowerCase().includes(state.searchText)
 			)
 			dispatch({
-				type: 'setFolderData',
+				type: 'SET_FOLDER_DATA',
 				payload: {
 					name: queryData.getFolderWithFiles.name,
 					path: queryData.getFolderWithFiles.path,
@@ -80,26 +72,16 @@ const Main = ({
 				},
 			})
 		}
-	}, [queryData, searchTerm])
+	}, [queryData, state.searchText])
 
 	let items = _.mapValues(
 		_.groupBy(state.folderData.children || [], 'type'),
 		v => _.orderBy(v, [state.sortBy.column], [state.sortBy.order])
 	)
 
-	const showHidePreview = (data, from) => {
-		if (from === 'fromPreview') {
-			togglePreview(false)
-		}
-		if (!preview && from !== 'fromPreview') {
-			togglePreview(!preview)
-		}
-		dispatch({ type: 'setPreviewData', payload: data })
-	}
-
 	const sortItems = by => {
 		dispatch({
-			type: 'sortBy',
+			type: 'SORT_BY',
 			payload: {
 				column: by,
 				order: state.sortBy.order === 'asc' ? 'desc' : 'asc',
@@ -111,19 +93,19 @@ const Main = ({
 		if (state.isModalVisible.folder) {
 			createFolder({
 				variables: {
-					path: `${currentFolderPath}/${state.folderName}`,
+					path: `${state.currentFolder}/${state.folderName}`,
 				},
 			})
 		} else {
 			createFile({
 				variables: {
-					path: `${currentFolderPath}/${state.fileName}.json`,
-					type: currentFolderPath.split('/')[2].toLowerCase(),
+					path: `${state.currentFolder}/${state.fileName}.json`,
+					type: state.currentFolder.split('/')[2].toLowerCase(),
 				},
 			})
 		}
 		dispatch({
-			type: 'toggleModal',
+			type: 'TOGGLE_MODAL',
 			payload: {
 				folder: false,
 				file: false,
@@ -133,7 +115,7 @@ const Main = ({
 
 	const onModalClose = () => {
 		return dispatch({
-			type: 'toggleModal',
+			type: 'TOGGLE_MODAL',
 			payload: {
 				folder: false,
 				file: false,
@@ -167,11 +149,11 @@ const Main = ({
 					onChange={e =>
 						state.isModalVisible.file
 							? dispatch({
-									type: 'setFileName',
+									type: 'SET_FILE_NAME',
 									payload: e.target.value,
 							  })
 							: dispatch({
-									type: 'setFolderName',
+									type: 'SET_FOLDER_NAME',
 									payload: e.target.value,
 							  })
 					}
@@ -192,7 +174,7 @@ const Main = ({
 			<Item
 				onClick={() =>
 					dispatch({
-						type: 'toggleModal',
+						type: 'TOGGLE_MODAL',
 						payload: {
 							folder: false,
 							file: !state.isModalVisible.file,
@@ -205,7 +187,7 @@ const Main = ({
 			<Item
 				onClick={() =>
 					dispatch({
-						type: 'toggleModal',
+						type: 'TOGGLE_MODAL',
 						payload: {
 							folder: !state.isModalVisible.folder,
 							file: false,
@@ -219,7 +201,7 @@ const Main = ({
 	)
 	if (queryLoading) return <div>Loading...</div>
 	if (queryError) return console.log(queryError) || <div>Error!</div>
-	if (Object.keys(items).length === 0 && searchTerm === '') {
+	if (Object.keys(items).length === 0 && state.searchText === '') {
 		return (
 			<div className="window__main empty__state">
 				{state.isModalVisible.folder && CreatePopup}
@@ -232,7 +214,7 @@ const Main = ({
 					<button
 						onClick={() =>
 							dispatch({
-								type: 'toggleModal',
+								type: 'TOGGLE_MODAL',
 								payload: {
 									folder: false,
 									file: !state.isModalVisible.file,
@@ -245,7 +227,7 @@ const Main = ({
 					<button
 						onClick={() =>
 							dispatch({
-								type: 'toggleModal',
+								type: 'TOGGLE_MODAL',
 								payload: {
 									folder: !state.isModalVisible.folder,
 									file: false,
@@ -259,10 +241,10 @@ const Main = ({
 			</div>
 		)
 	}
-	if (Object.keys(items).length === 0 && searchTerm !== '') {
+	if (Object.keys(items).length === 0 && state.searchText !== '') {
 		return (
 			<div className="window__main empty__state">
-				No file or folder matched the search term {searchTerm}
+				No file or folder matched the search term {state.searchText}
 			</div>
 		)
 	}
@@ -273,28 +255,19 @@ const Main = ({
 				{state.isModalVisible.file && CreatePopup}
 				<div
 					className={`window__main__content ${
-						preview ? 'with__preview' : ''
+						state.isPreviewVisible ? 'with__preview' : ''
 					}`}
 				>
 					<div className="window__main__content__left">
-						{view === 'grid' ? (
+						{state.folderView === 'grid' ? (
 							<div className="window__main__grid__view">
 								{items.folder &&
 									items.folder.map((item, index) => (
-										<Card
-											{...item}
-											key={index}
-											setFolderPath={setFolderPath}
-											showHidePreview={showHidePreview}
-										/>
+										<Card {...item} key={index} />
 									))}
 								{items.file &&
 									items.file.map((item, index) => (
-										<Card
-											{...item}
-											key={index}
-											showHidePreview={showHidePreview}
-										/>
+										<Card {...item} key={index} />
 									))}
 							</div>
 						) : (
@@ -335,30 +308,17 @@ const Main = ({
 								<div className="table__main">
 									{items.folder &&
 										items.folder.map((item, index) => (
-											<TableRow
-												{...item}
-												key={index}
-												setFolderPath={setFolderPath}
-												showHidePreview={
-													showHidePreview
-												}
-											/>
+											<TableRow {...item} key={index} />
 										))}
 									{items.file &&
 										items.file.map((item, index) => (
-											<TableRow
-												{...item}
-												key={index}
-												showHidePreview={
-													showHidePreview
-												}
-											/>
+											<TableRow {...item} key={index} />
 										))}
 								</div>
 							</div>
 						)}
 					</div>
-					{preview ? (
+					{state.isPreviewVisible ? (
 						<div className="window__main__content__right">
 							<FilePreview {...state.previewData} />
 						</div>
@@ -368,13 +328,6 @@ const Main = ({
 			<MainMenu id="main__menu" />
 		</main>
 	)
-}
-
-Main.propTypes = {
-	currentFolderPath: PropTypes.string,
-	view: PropTypes.string,
-	preview: PropTypes.bool,
-	togglePreview: PropTypes.func,
 }
 
 export default Main

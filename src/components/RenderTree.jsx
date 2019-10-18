@@ -1,14 +1,16 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Treebeard } from 'react-treebeard'
 import { useQuery } from '@apollo/react-hooks'
+
+import { Context } from '../state/context'
 
 // Queries
 import GET_NESTED_FOLDERS from '../queries/getNestedFolders'
 
 import { FolderCloseIcon, FolderOpenIcon } from '../assets/Icon'
 
-const RenderTree = ({ setFolderPath, currentFolderPath }) => {
+const RenderTree = () => {
+	const { dispatch } = React.useContext(Context)
 	const {
 		loading: queryLoading,
 		error: queryError,
@@ -21,7 +23,10 @@ const RenderTree = ({ setFolderPath, currentFolderPath }) => {
 	React.useEffect(() => {
 		if (queryData && queryData.getNestedFolders) {
 			setData({ ...queryData.getNestedFolders, toggled: true })
-			setFolderPath(queryData.getNestedFolders.path)
+			dispatch({
+				type: 'SET_CURRENT_FOLDER',
+				payload: queryData.getNestedFolders.path,
+			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [queryData])
@@ -34,7 +39,7 @@ const RenderTree = ({ setFolderPath, currentFolderPath }) => {
 			node.toggled = toggled
 		}
 		setCursor(node)
-		setFolderPath(node.path)
+		dispatch({ type: 'SET_CURRENT_FOLDER', payload: node.path })
 		setData(Object.assign({}, data))
 	}
 	const decorators = {
@@ -86,10 +91,6 @@ const RenderTree = ({ setFolderPath, currentFolderPath }) => {
 			decorators={decorators}
 		/>
 	)
-}
-
-RenderTree.propTypes = {
-	setFolderPath: PropTypes.func.isRequired,
 }
 
 export default RenderTree
