@@ -5,17 +5,16 @@
     -ms-grid-columns: 240px 1fr;
     grid-template-columns: 240px 1fr;
     -ms-grid-template-columns: 240px 1fr;
-    -ms-grid-rows: 32px 40px 1fr 32px;
-    grid-template-rows: 32px 40px 1fr 32px;
-    -ms-grid-template-rows: 32px 40px 1fr 32px;
-    grid-template-areas: "head head" "aside nav" "aside main" "aside foot";
+    -ms-grid-rows: 40px 1fr;
+    grid-template-rows: 40px 1fr;
+    -ms-grid-template-rows: 40px 1fr;
+    grid-template-areas: "aside nav" "aside main";
 }
 
 .window-isCollapsed {
     -ms-grid-columns: 40px 1fr;
     grid-template-columns: 40px 1fr;
     -ms-grid-template-columns: 40px 1fr;
-    .window__footer,
     .window__main,
     .window__main__navbar {
         width: calc(100vw - 40px);
@@ -67,15 +66,15 @@
         -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
         -ms-grid-template-columns: 1fr;
-        -ms-grid-rows: 32px 80px 1fr 32px;
-        grid-template-rows: 32px 80px 1fr 32px;
-        grid-template-areas: "head" "nav" "main" "foot";
+        -ms-grid-rows: 80px 1fr;
+        grid-template-rows: 80px 1fr;
+        grid-template-areas: "nav" "main";
     }
 
     .window__sidebar {
         width: 40px;
         position: absolute;
-        top: 32px;
+        top: 0;
         left: 0;
         bottom: 0;
         z-index: 10;
@@ -87,7 +86,6 @@
             -webkit-box-shadow: 1px 0 20px 2px rgba(0,0,0,0.2);
             box-shadow: 1px 0 20px 2px rgba(0,0,0,0.2);
         }
-        .window__footer,
         .window__main,
         .window__main__navbar {
             width: calc(100vw - 40px);
@@ -134,7 +132,6 @@
         height: calc(100vh - 144px);
     }
 
-    .window__footer,
     .window__main,
     .window__main__navbar {
         width: calc(100vw - 40px) !important;

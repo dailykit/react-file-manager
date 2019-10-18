@@ -11,10 +11,6 @@ import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { ApolloLink } from 'apollo-link'
 
-// Schema
-import typeDefs from './queries/typeDefs'
-import resolvers from './queries/resolvers'
-
 // Components
 import App from './App'
 import ToastContainer from './components/ToastContainer'
@@ -40,14 +36,6 @@ const client = new ApolloClient({
 		}),
 	]),
 	cache,
-	typeDefs,
-	resolvers,
-})
-
-cache.writeData({
-	data: {
-		history: [],
-	},
 })
 
 const Main = () => {

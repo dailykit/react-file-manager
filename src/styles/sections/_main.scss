@@ -20,7 +20,7 @@
     display: grid;
     -ms-grid-columns: 1fr 0;
     grid-template-columns: 1fr 0;
-    height: calc(100vh - 104px);
+    height: calc(100vh - 40px);
     &.with__preview {
         -ms-grid-columns: 1fr 321px;
         grid-template-columns: 1fr 321px;
@@ -155,12 +155,12 @@ main.preview__main {
     .window__main__content.with__preview {
         -ms-grid-columns: 1fr 0;
         grid-template-columns: 1fr 0;
-        height: calc(100vh - 144px);
+        height: calc(100vh - 40px);
     }
     .window__main__content__right {
         position: fixed;
         right: 0;
-        top: 72px;
+        top: 40px;
         bottom: 0;
         width: 321px;
         background: #fff;
@@ -171,7 +171,7 @@ main.preview__main {
     .window__main__content__right {
         position: fixed;
         right: 0;
-        top: 112px;
+        top: 80px;
         bottom: 0;
         width: 321px;
         background: #fff;

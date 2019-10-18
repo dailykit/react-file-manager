@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { ChevronLeftIcon, ChevronRightIcon } from '../assets/Icon'
+
 const Navbar = ({
 	breadcrumbs,
 	toggleView,
@@ -12,15 +14,14 @@ const Navbar = ({
 	const [route, setRoute] = React.useState('')
 	React.useEffect(() => {
 		if (breadcrumbs) {
-			setRoute(breadcrumbs.split('./')[1])
+			setRoute(breadcrumbs.split('./../')[1])
 		}
 	}, [breadcrumbs])
-
 	const goToFolder = async folderName => {
 		const path = await route.split('/')
 		const index = await path.indexOf(folderName)
 		const slicePath = await path.slice(0, index + 1)
-		const fullPath = './' + slicePath.join('/')
+		const fullPath = './../' + slicePath.join('/')
 		setFolderPath(fullPath)
 	}
 
@@ -44,19 +45,7 @@ const Navbar = ({
 		<div className="window__main__navbar">
 			<div className="window__main__nav">
 				<button onClick={() => goBack()}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="18"
-						height="18"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="#000000"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<path d="M15 18l-6-6 6-6" />
-					</svg>
+					<ChevronLeftIcon />
 				</button>
 			</div>
 			<ul className="window__main__breadcrumbs">
@@ -68,19 +57,7 @@ const Navbar = ({
 							</li>
 							{index === route.split('/').length - 1 ? null : (
 								<span>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="18"
-										height="18"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="#000000"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									>
-										<path d="M9 18l6-6-6-6" />
-									</svg>
+									<ChevronRightIcon />
 								</span>
 							)}
 						</React.Fragment>
