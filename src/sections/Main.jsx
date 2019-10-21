@@ -36,8 +36,8 @@ const Main = () => {
 
 	const { addToast } = useToasts()
 	const [createFolder] = useMutation(CREATE_FOLDER, {
-		onCompleted: () => {
-			addToast('Folder created successfully!', {
+		onCompleted: ({ createFolder }) => {
+			addToast(createFolder.message, {
 				appearance: 'success',
 				autoDismiss: true,
 			})
@@ -47,8 +47,8 @@ const Main = () => {
 		],
 	})
 	const [createFile] = useMutation(CREATE_FILE, {
-		onCompleted: () => {
-			addToast('File created successfully!', {
+		onCompleted: ({ createFile }) => {
+			addToast(createFile.message, {
 				appearance: 'success',
 				autoDismiss: true,
 			})

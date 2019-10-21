@@ -40,8 +40,8 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 
 	const { addToast } = useToasts()
 	const [deleteFolder] = useMutation(DELETE_FOLDER, {
-		onCompleted: () => {
-			addToast('Folder deleted successfully!', {
+		onCompleted: ({ deleteFolder }) => {
+			addToast(deleteFolder.message, {
 				appearance: 'warning',
 				autoDismiss: true,
 			})
@@ -49,8 +49,8 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		refetchQueries: [refetchOptions],
 	})
 	const [deleteFile] = useMutation(DELETE_FILE, {
-		onCompleted: () => {
-			addToast('File deleted successfully!', {
+		onCompleted: ({ deleteFile }) => {
+			addToast(deleteFile.message, {
 				appearance: 'warning',
 				autoDismiss: true,
 			})
@@ -58,8 +58,8 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		refetchQueries: [refetchOptions],
 	})
 	const [renameFile] = useMutation(RENAME_FILE, {
-		onCompleted: () => {
-			addToast('File renamed successfully!', {
+		onCompleted: ({ renameFile }) => {
+			addToast(renameFile.message, {
 				appearance: 'success',
 				autoDismiss: true,
 			})
@@ -67,8 +67,8 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		refetchQueries: [refetchOptions],
 	})
 	const [renameFolder] = useMutation(RENAME_FOLDER, {
-		onCompleted: () => {
-			addToast('Folder renamed successfully!', {
+		onCompleted: ({ renameFolder }) => {
+			addToast(renameFolder.message, {
 				appearance: 'success',
 				autoDismiss: true,
 			})
