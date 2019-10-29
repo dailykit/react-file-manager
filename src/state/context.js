@@ -13,8 +13,6 @@ const initialState = {
 		file: false,
 		image: false,
 	},
-	folderName: '',
-	fileName: '',
 	previewData: {},
 	folderData: {
 		name: '',

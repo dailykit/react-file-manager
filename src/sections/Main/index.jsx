@@ -108,13 +108,13 @@ const Main = () => {
 		if (state.isModalVisible.folder) {
 			createFolder({
 				variables: {
-					path: `${state.currentFolder}/${state.folderName}`,
+					path: `${state.currentFolder}/${value}`,
 				},
 			})
 		} else if (state.isModalVisible.file) {
 			createFile({
 				variables: {
-					path: `${state.currentFolder}/${state.fileName}.json`,
+					path: `${state.currentFolder}/${value}.json`,
 					type: state.currentFolder.split('/')[2].toLowerCase(),
 				},
 			})
