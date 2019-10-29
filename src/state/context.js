@@ -8,11 +8,6 @@ const initialState = {
 	folderView: 'list',
 	isPreviewVisible: false,
 	searchText: '',
-	isModalVisible: {
-		folder: false,
-		file: false,
-		image: false,
-	},
 	previewData: {},
 	folderData: {
 		name: '',
@@ -80,11 +75,7 @@ const reducers = (state, action) => {
 		case 'TOGGLE_MODAL':
 			return {
 				...state,
-				isModalVisible: {
-					folder: action.payload.folder,
-					file: action.payload.file,
-					image: action.payload.image,
-				},
+				isModalVisible: !state.isModalVisible,
 			}
 		case 'SET_FOLDER_NAME':
 			return {

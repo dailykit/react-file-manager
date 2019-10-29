@@ -14,7 +14,27 @@
     background: #fff;
     border-radius: 3px;
     @include flex(null, space-between);
-    flex-direction: column;
+    flex-direction: column;    
+    label {
+        display: block;
+        margin-bottom: 6px;
+    }
+    [data-reach-tab-list] {
+        height: 32px;
+        border-bottom: 1px solid var(--border);
+    }
+    [data-reach-tab] {
+        background: transparent;
+        border: none;
+        padding: 0 16px;
+        height: 31px;
+    }
+    [data-selected] {
+        border-bottom: 2px solid var(--border);
+    }
+    [data-reach-tab-panels] {
+        padding: 16px;
+    }
 }
 
 #modal__card__header {
@@ -26,11 +46,7 @@
 
 #modal__card__body {
     padding: 12px;
-    flex: 1;
-    label {
-        display: block;
-        margin-bottom: 6px;
-    }
+    flex: 1;    
 }
 
 #modal__card__footer {

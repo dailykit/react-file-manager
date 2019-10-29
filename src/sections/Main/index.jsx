@@ -22,12 +22,11 @@ import 'react-contexify/dist/ReactContexify.min.css'
 
 import { Context } from '../../state/context'
 
-import CreateFileModal from './CreateFileModal'
-import CreateFolderModal from './CreateFolderModal'
-import UploadImageModal from './UploadImageModal'
+import CreateModal from './CreateModal'
 
 const Main = () => {
 	const { state, dispatch } = React.useContext(Context)
+	const [isModalVisible, setIsModalVisible] = React.useState(false)
 	const {
 		loading: queryLoading,
 		error: queryError,
@@ -104,14 +103,14 @@ const Main = () => {
 		})
 	}
 
-	const onModalSubmit = value => {
-		if (state.isModalVisible.folder) {
+	const onModalSubmit = ({ value, type }) => {
+		if (type === 'folder') {
 			createFolder({
 				variables: {
 					path: `${state.currentFolder}/${value}`,
 				},
 			})
-		} else if (state.isModalVisible.file) {
+		} else if (type === 'file') {
 			createFile({
 				variables: {
 					path: `${state.currentFolder}/${value}.json`,
@@ -129,51 +128,19 @@ const Main = () => {
 				},
 			})
 		}
-		dispatch({
-			type: 'TOGGLE_MODAL',
-			payload: {
-				folder: false,
-				file: false,
-			},
-		})
+		setIsModalVisible(!isModalVisible)
 	}
 
 	const onModalClose = () => {
-		return dispatch({
-			type: 'TOGGLE_MODAL',
-			payload: {
-				folder: false,
-				file: false,
-			},
-		})
+		return setIsModalVisible(!isModalVisible)
 	}
 
 	const MainMenu = () => (
 		<Menu id="main__menu">
-			<Item
-				onClick={() =>
-					dispatch({
-						type: 'TOGGLE_MODAL',
-						payload: {
-							folder: false,
-							file: !state.isModalVisible.file,
-						},
-					})
-				}
-			>
+			<Item onClick={() => setIsModalVisible(!isModalVisible)}>
 				Create File
 			</Item>
-			<Item
-				onClick={() =>
-					dispatch({
-						type: 'TOGGLE_MODAL',
-						payload: {
-							folder: !state.isModalVisible.folder,
-							file: false,
-						},
-					})
-				}
-			>
+			<Item onClick={() => setIsModalVisible(!isModalVisible)}>
 				Create Folder
 			</Item>
 		</Menu>
@@ -183,20 +150,8 @@ const Main = () => {
 	if (Object.keys(items).length === 0 && state.searchText === '') {
 		return (
 			<div className="window__main empty__state">
-				{state.isModalVisible.folder && (
-					<CreateFolderModal
-						onModalSubmit={onModalSubmit}
-						onModalClose={onModalClose}
-					/>
-				)}
-				{state.isModalVisible.file && (
-					<CreateFileModal
-						onModalSubmit={onModalSubmit}
-						onModalClose={onModalClose}
-					/>
-				)}
-				{state.isModalVisible.image && (
-					<UploadImageModal
+				{isModalVisible && (
+					<CreateModal
 						onModalSubmit={onModalSubmit}
 						onModalClose={onModalClose}
 					/>
@@ -206,46 +161,13 @@ const Main = () => {
 					file
 				</h3>
 				<div>
-					<button
-						onClick={() =>
-							dispatch({
-								type: 'TOGGLE_MODAL',
-								payload: {
-									image: false,
-									folder: false,
-									file: !state.isModalVisible.file,
-								},
-							})
-						}
-					>
+					<button onClick={() => setIsModalVisible(!isModalVisible)}>
 						Create File
 					</button>
-					<button
-						onClick={() =>
-							dispatch({
-								type: 'TOGGLE_MODAL',
-								payload: {
-									file: false,
-									folder: false,
-									image: !state.isModalVisible.image,
-								},
-							})
-						}
-					>
+					<button onClick={() => setIsModalVisible(!isModalVisible)}>
 						Upload Image
 					</button>
-					<button
-						onClick={() =>
-							dispatch({
-								type: 'TOGGLE_MODAL',
-								payload: {
-									folder: !state.isModalVisible.folder,
-									file: false,
-									image: false,
-								},
-							})
-						}
-					>
+					<button onClick={() => setIsModalVisible(!isModalVisible)}>
 						Create Folder
 					</button>
 				</div>
@@ -262,20 +184,8 @@ const Main = () => {
 	return (
 		<main className="window__main">
 			<MenuProvider id="main__menu">
-				{state.isModalVisible.folder && (
-					<CreateFolderModal
-						onModalSubmit={onModalSubmit}
-						onModalClose={onModalClose}
-					/>
-				)}
-				{state.isModalVisible.file && (
-					<CreateFileModal
-						onModalSubmit={onModalSubmit}
-						onModalClose={onModalClose}
-					/>
-				)}
-				{state.isModalVisible.image && (
-					<UploadImageModal
+				{isModalVisible && (
+					<CreateModal
 						onModalSubmit={onModalSubmit}
 						onModalClose={onModalClose}
 					/>
