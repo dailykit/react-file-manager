@@ -8,19 +8,21 @@ import { Menu, Item, MenuProvider } from 'react-contexify'
 import { useToasts } from 'react-toast-notifications'
 
 // Components
-import FilePreview from '../components/FilePreview'
-import Card from '../components/Card'
-import TableRow from '../components/TableRow'
-import Modal from '../components/Modal'
+import FilePreview from '../../components/FilePreview'
+import Card from '../../components/Card'
+import TableRow from '../../components/TableRow'
 
 // Queries
-import GET_FOLDER from '../queries/getFolder'
-import CREATE_FOLDER from '../queries/createFolder'
-import CREATE_FILE from '../queries/createFile'
+import GET_FOLDER from '../../queries/getFolder'
+import CREATE_FOLDER from '../../queries/createFolder'
+import CREATE_FILE from '../../queries/createFile'
 
 import 'react-contexify/dist/ReactContexify.min.css'
 
-import { Context } from '../state/context'
+import { Context } from '../../state/context'
+
+import CreateFileModal from './CreateFileModal'
+import CreateFolderModal from './CreateFolderModal'
 
 const Main = () => {
 	const { state, dispatch } = React.useContext(Context)
@@ -123,52 +125,6 @@ const Main = () => {
 		})
 	}
 
-	const CreatePopup = (
-		<Modal>
-			<Modal.Header>
-				{state.isModalVisible.file ? 'Create File' : 'Create Folder'}
-			</Modal.Header>
-			<Modal.Body>
-				<label htmlFor="modal__input">
-					{state.isModalVisible.file ? 'File Name' : 'Folder Name'}
-				</label>
-				<input
-					type="text"
-					name="createFolder"
-					id="modal__input"
-					value={
-						state.isModalVisible.file
-							? state.fileName
-							: state.folderName
-					}
-					placeholder={
-						state.isModalVisible.file
-							? 'Enter a file name'
-							: 'Enter a folder name'
-					}
-					onChange={e =>
-						state.isModalVisible.file
-							? dispatch({
-									type: 'SET_FILE_NAME',
-									payload: e.target.value,
-							  })
-							: dispatch({
-									type: 'SET_FOLDER_NAME',
-									payload: e.target.value,
-							  })
-					}
-				/>
-			</Modal.Body>
-			<Modal.Footer>
-				<button onClick={() => onModalSubmit()}>
-					{state.isModalVisible.file
-						? 'Create File'
-						: 'Create Folder'}
-				</button>
-				<button onClick={() => onModalClose()}>Cancel</button>
-			</Modal.Footer>
-		</Modal>
-	)
 	const MainMenu = () => (
 		<Menu id="main__menu">
 			<Item
@@ -204,8 +160,18 @@ const Main = () => {
 	if (Object.keys(items).length === 0 && state.searchText === '') {
 		return (
 			<div className="window__main empty__state">
-				{state.isModalVisible.folder && CreatePopup}
-				{state.isModalVisible.file && CreatePopup}
+				{state.isModalVisible.folder && (
+					<CreateFolderModal
+						onModalSubmit={onModalSubmit}
+						onModalClose={onModalClose}
+					/>
+				)}
+				{state.isModalVisible.file && (
+					<CreateFileModal
+						onModalSubmit={onModalSubmit}
+						onModalClose={onModalClose}
+					/>
+				)}
 				<h3>
 					This folder is empty. Start by creating a new folder or a
 					file
@@ -251,8 +217,18 @@ const Main = () => {
 	return (
 		<main className="window__main">
 			<MenuProvider id="main__menu">
-				{state.isModalVisible.folder && CreatePopup}
-				{state.isModalVisible.file && CreatePopup}
+				{state.isModalVisible.folder && (
+					<CreateFolderModal
+						onModalSubmit={onModalSubmit}
+						onModalClose={onModalClose}
+					/>
+				)}
+				{state.isModalVisible.file && (
+					<CreateFileModal
+						onModalSubmit={onModalSubmit}
+						onModalClose={onModalClose}
+					/>
+				)}
 				<div
 					className={`window__main__content ${
 						state.isPreviewVisible ? 'with__preview' : ''
