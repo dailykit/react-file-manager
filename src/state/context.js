@@ -11,6 +11,7 @@ const initialState = {
 	isModalVisible: {
 		folder: false,
 		file: false,
+		image: false,
 	},
 	folderName: '',
 	fileName: '',
@@ -84,6 +85,7 @@ const reducers = (state, action) => {
 				isModalVisible: {
 					folder: action.payload.folder,
 					file: action.payload.file,
+					image: action.payload.image,
 				},
 			}
 		case 'SET_FOLDER_NAME':

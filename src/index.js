@@ -31,7 +31,7 @@ const client = new ApolloClient({
 				)
 			if (networkError) console.log(`[Network error]: ${networkError}`)
 		}),
-		new createUploadLink({
+		createUploadLink({
 			uri: process.env.REACT_APP_GRAPHQL_URI,
 		}),
 	]),

@@ -16,6 +16,7 @@ import TableRow from '../../components/TableRow'
 import GET_FOLDER from '../../queries/getFolder'
 import CREATE_FOLDER from '../../queries/createFolder'
 import CREATE_FILE from '../../queries/createFile'
+import IMAGE_UPLOAD from '../../queries/imageUpload'
 
 import 'react-contexify/dist/ReactContexify.min.css'
 
@@ -23,6 +24,7 @@ import { Context } from '../../state/context'
 
 import CreateFileModal from './CreateFileModal'
 import CreateFolderModal from './CreateFolderModal'
+import UploadImageModal from './UploadImageModal'
 
 const Main = () => {
 	const { state, dispatch } = React.useContext(Context)
@@ -51,6 +53,17 @@ const Main = () => {
 	const [createFile] = useMutation(CREATE_FILE, {
 		onCompleted: ({ createFile }) => {
 			addToast(createFile.message, {
+				appearance: 'success',
+				autoDismiss: true,
+			})
+		},
+		refetchQueries: [
+			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
+		],
+	})
+	const [imageUpload] = useMutation(IMAGE_UPLOAD, {
+		onCompleted: ({ imageUpload }) => {
+			addToast(imageUpload.message, {
 				appearance: 'success',
 				autoDismiss: true,
 			})
@@ -91,18 +104,28 @@ const Main = () => {
 		})
 	}
 
-	const onModalSubmit = () => {
+	const onModalSubmit = value => {
 		if (state.isModalVisible.folder) {
 			createFolder({
 				variables: {
 					path: `${state.currentFolder}/${state.folderName}`,
 				},
 			})
-		} else {
+		} else if (state.isModalVisible.file) {
 			createFile({
 				variables: {
 					path: `${state.currentFolder}/${state.fileName}.json`,
 					type: state.currentFolder.split('/')[2].toLowerCase(),
+				},
+			})
+		} else {
+			const {
+				files: [file],
+			} = value
+			imageUpload({
+				variables: {
+					file,
+					path: state.currentFolder,
 				},
 			})
 		}
@@ -172,6 +195,12 @@ const Main = () => {
 						onModalClose={onModalClose}
 					/>
 				)}
+				{state.isModalVisible.image && (
+					<UploadImageModal
+						onModalSubmit={onModalSubmit}
+						onModalClose={onModalClose}
+					/>
+				)}
 				<h3>
 					This folder is empty. Start by creating a new folder or a
 					file
@@ -182,6 +211,7 @@ const Main = () => {
 							dispatch({
 								type: 'TOGGLE_MODAL',
 								payload: {
+									image: false,
 									folder: false,
 									file: !state.isModalVisible.file,
 								},
@@ -195,8 +225,23 @@ const Main = () => {
 							dispatch({
 								type: 'TOGGLE_MODAL',
 								payload: {
+									file: false,
+									folder: false,
+									image: !state.isModalVisible.image,
+								},
+							})
+						}
+					>
+						Upload Image
+					</button>
+					<button
+						onClick={() =>
+							dispatch({
+								type: 'TOGGLE_MODAL',
+								payload: {
 									folder: !state.isModalVisible.folder,
 									file: false,
+									image: false,
 								},
 							})
 						}
@@ -225,6 +270,12 @@ const Main = () => {
 				)}
 				{state.isModalVisible.file && (
 					<CreateFileModal
+						onModalSubmit={onModalSubmit}
+						onModalClose={onModalClose}
+					/>
+				)}
+				{state.isModalVisible.image && (
+					<UploadImageModal
 						onModalSubmit={onModalSubmit}
 						onModalClose={onModalClose}
 					/>
