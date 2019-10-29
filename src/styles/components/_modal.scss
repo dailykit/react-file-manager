@@ -27,6 +27,10 @@
 #modal__card__body {
     padding: 12px;
     flex: 1;
+    label {
+        display: block;
+        margin-bottom: 6px;
+    }
 }
 
 #modal__card__footer {

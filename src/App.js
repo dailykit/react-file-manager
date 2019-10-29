@@ -3,7 +3,7 @@ import React from 'react'
 import { Context, initialState, reducers } from './state/context'
 
 const Sidebar = React.lazy(() => import('./sections/Sidebar'))
-const Main = React.lazy(() => import('./sections/Main'))
+const Main = React.lazy(() => import('./sections/Main/index'))
 const Navbar = React.lazy(() => import('./sections/Navbar'))
 
 const App = () => {
