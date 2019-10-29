@@ -7,9 +7,9 @@ import { ToastProvider } from 'react-toast-notifications'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { ApolloLink } from 'apollo-link'
+import { createUploadLink } from 'apollo-upload-client'
 
 // Components
 import App from './App'
@@ -31,7 +31,7 @@ const client = new ApolloClient({
 				)
 			if (networkError) console.log(`[Network error]: ${networkError}`)
 		}),
-		new HttpLink({
+		new createUploadLink({
 			uri: process.env.REACT_APP_GRAPHQL_URI,
 		}),
 	]),
