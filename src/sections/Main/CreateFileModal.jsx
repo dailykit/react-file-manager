@@ -1,10 +1,9 @@
 import React from 'react'
 
 import Modal from '../../components/Modal'
-import { Context } from '../../state/context'
 
 const CreateFileModal = ({ onModalClose, onModalSubmit }) => {
-	const { state, dispatch } = React.useContext(Context)
+	const [value, setValue] = React.useState('')
 	return (
 		<Modal>
 			<Modal.Header>Create File</Modal.Header>
@@ -14,18 +13,15 @@ const CreateFileModal = ({ onModalClose, onModalSubmit }) => {
 					type="text"
 					name="createFolder"
 					id="modal__input"
-					value={state.fileName}
+					value={value}
 					placeholder="Enter a file name"
-					onChange={e =>
-						dispatch({
-							type: 'SET_FILE_NAME',
-							payload: e.target.value,
-						})
-					}
+					onChange={e => setValue(e.target.value)}
 				/>
 			</Modal.Body>
 			<Modal.Footer>
-				<button onClick={() => onModalSubmit()}>Create File</button>
+				<button onClick={() => onModalSubmit(value)}>
+					Create File
+				</button>
 				<button onClick={() => onModalClose()}>Cancel</button>
 			</Modal.Footer>
 		</Modal>
