@@ -1,6 +1,11 @@
 import React from 'react'
 
-import { ChevronLeftIcon, ChevronRightIcon } from '../assets/Icon'
+import {
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	ListIcon,
+	GridIcon,
+} from '../assets/Icon'
 import { Context } from '../state/context'
 
 const Navbar = () => {
@@ -79,7 +84,7 @@ const Navbar = () => {
 						dispatch({ type: 'TOGGLE_PREVIEW', payload: false })
 					}
 				>
-					L
+					<ListIcon />
 				</button>
 				<button
 					onClick={() =>
@@ -87,7 +92,7 @@ const Navbar = () => {
 						dispatch({ type: 'TOGGLE_PREVIEW', payload: false })
 					}
 				>
-					G
+					<GridIcon />
 				</button>
 			</div>
 		</div>

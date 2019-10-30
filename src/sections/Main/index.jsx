@@ -143,6 +143,9 @@ const Main = () => {
 			<Item onClick={() => setIsModalVisible(!isModalVisible)}>
 				Create Folder
 			</Item>
+			<Item onClick={() => setIsModalVisible(!isModalVisible)}>
+				Upload Image
+			</Item>
 		</Menu>
 	)
 	if (queryLoading) return <div>Loading...</div>
