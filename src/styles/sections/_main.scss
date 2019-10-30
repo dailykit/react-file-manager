@@ -142,6 +142,11 @@ main.preview__main {
 
 .preview__header {
     @include flex(center, space-between);
+    button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
 }
 
 .preview__thumbnail {

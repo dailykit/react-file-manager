@@ -41,10 +41,12 @@ ul.window__main__breadcrumbs {
     border-right: 1px solid var(--border); 
     li {
         height: 40px;
-        line-height: 40px;
+        line-height: 37px;
         cursor: pointer;
     }
     span {
+        height: 40px;
+        @include flex(center, null);
         margin: 0 var(--spacer-1);
     }
 }

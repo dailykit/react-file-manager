@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
 import { Context } from '../state/context'
+import { CloseIcon } from '../assets/Icon'
 
 const FilePreview = ({ name, size, type }) => {
 	const { dispatch } = React.useContext(Context)
@@ -16,7 +17,7 @@ const FilePreview = ({ name, size, type }) => {
 						dispatch({ type: 'TOGGLE_PREVIEW', payload: false })
 					}
 				>
-					x
+					<CloseIcon />
 				</button>
 			</header>
 			<div className="preview__thumbnail">
