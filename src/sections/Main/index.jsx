@@ -118,12 +118,10 @@ const Main = () => {
 				},
 			})
 		} else {
-			const {
-				files: [file],
-			} = value
+			const { files } = value
 			imageUpload({
 				variables: {
-					file,
+					files,
 					path: state.currentFolder,
 				},
 			})

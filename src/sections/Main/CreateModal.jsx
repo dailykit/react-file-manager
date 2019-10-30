@@ -61,6 +61,7 @@ const CreateModal = ({ onModalClose, onModalSubmit }) => {
 						<input
 							type="file"
 							name="image"
+							multiple
 							id="modal__input"
 							onChange={e =>
 								setImage(e.target) || setType('image')
