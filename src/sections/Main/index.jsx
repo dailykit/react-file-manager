@@ -26,12 +26,11 @@ import CreateModal from './CreateModal'
 
 const Main = () => {
 	const { state, dispatch } = React.useContext(Context)
-	const [isModalVisible, setIsModalVisible] = React.useState(false)
-	const {
-		loading: queryLoading,
-		error: queryError,
-		data: queryData,
-	} = useQuery(GET_FOLDER, {
+	const [modal, setModal] = React.useState({
+		isVisible: false,
+		tabIndex: 0,
+	})
+	const { loading: queryLoading, error: queryError, data: queryData } = useQuery(GET_FOLDER, {
 		variables: {
 			path: state.currentFolder,
 		},
@@ -45,9 +44,7 @@ const Main = () => {
 				autoDismiss: true,
 			})
 		},
-		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
-		],
+		refetchQueries: [{ query: GET_FOLDER, variables: { path: state.currentFolder } }],
 	})
 	const [createFile] = useMutation(CREATE_FILE, {
 		onCompleted: ({ createFile }) => {
@@ -56,9 +53,7 @@ const Main = () => {
 				autoDismiss: true,
 			})
 		},
-		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
-		],
+		refetchQueries: [{ query: GET_FOLDER, variables: { path: state.currentFolder } }],
 	})
 	const [imageUpload] = useMutation(IMAGE_UPLOAD, {
 		onCompleted: ({ imageUpload }) => {
@@ -67,15 +62,13 @@ const Main = () => {
 				autoDismiss: true,
 			})
 		},
-		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
-		],
+		refetchQueries: [{ query: GET_FOLDER, variables: { path: state.currentFolder } }],
 	})
 
 	React.useEffect(() => {
 		if (queryData && queryData.getFolderWithFiles) {
-			const childrens = queryData.getFolderWithFiles.children.filter(
-				item => item.name.toLowerCase().includes(state.searchText)
+			const childrens = queryData.getFolderWithFiles.children.filter(item =>
+				item.name.toLowerCase().includes(state.searchText)
 			)
 			dispatch({
 				type: 'SET_FOLDER_DATA',
@@ -88,9 +81,8 @@ const Main = () => {
 		}
 	}, [queryData, state.searchText])
 
-	let items = _.mapValues(
-		_.groupBy(state.folderData.children || [], 'type'),
-		v => _.orderBy(v, [state.sortBy.column], [state.sortBy.order])
+	let items = _.mapValues(_.groupBy(state.folderData.children || [], 'type'), v =>
+		_.orderBy(v, [state.sortBy.column], [state.sortBy.order])
 	)
 
 	const sortItems = by => {
@@ -126,22 +118,49 @@ const Main = () => {
 				},
 			})
 		}
-		setIsModalVisible(!isModalVisible)
+		setModal({
+			isVisible: false,
+			tabIndex: 0,
+		})
 	}
 
 	const onModalClose = () => {
-		return setIsModalVisible(!isModalVisible)
+		return setModal({
+			isVisible: false,
+			tabIndex: 0,
+		})
 	}
 
 	const MainMenu = () => (
 		<Menu id="main__menu">
-			<Item onClick={() => setIsModalVisible(!isModalVisible)}>
+			<Item
+				onClick={() =>
+					setModal({
+						isVisible: true,
+						tabIndex: 0,
+					})
+				}
+			>
 				Create File
 			</Item>
-			<Item onClick={() => setIsModalVisible(!isModalVisible)}>
+			<Item
+				onClick={() =>
+					setModal({
+						isVisible: true,
+						tabIndex: 1,
+					})
+				}
+			>
 				Create Folder
 			</Item>
-			<Item onClick={() => setIsModalVisible(!isModalVisible)}>
+			<Item
+				onClick={() =>
+					setModal({
+						isVisible: true,
+						tabIndex: 2,
+					})
+				}
+			>
 				Upload Image
 			</Item>
 		</Menu>
@@ -151,25 +170,40 @@ const Main = () => {
 	if (Object.keys(items).length === 0 && state.searchText === '') {
 		return (
 			<div className="window__main empty__state">
-				{isModalVisible && (
-					<CreateModal
-						onModalSubmit={onModalSubmit}
-						onModalClose={onModalClose}
-					/>
+				{modal.isVisible && (
+					<CreateModal tabIndex={modal.tabIndex} onModalSubmit={onModalSubmit} onModalClose={onModalClose} />
 				)}
-				<h3>
-					This folder is empty. Start by creating a new folder or a
-					file
-				</h3>
+				<h3>This folder is empty. Start by creating a new folder or a file</h3>
 				<div>
-					<button onClick={() => setIsModalVisible(!isModalVisible)}>
+					<button
+						onClick={() =>
+							setModal({
+								isVisible: true,
+								tabIndex: 0,
+							})
+						}
+					>
 						Create File
 					</button>
-					<button onClick={() => setIsModalVisible(!isModalVisible)}>
-						Upload Image
-					</button>
-					<button onClick={() => setIsModalVisible(!isModalVisible)}>
+					<button
+						onClick={() =>
+							setModal({
+								isVisible: true,
+								tabIndex: 1,
+							})
+						}
+					>
 						Create Folder
+					</button>
+					<button
+						onClick={() =>
+							setModal({
+								isVisible: true,
+								tabIndex: 2,
+							})
+						}
+					>
+						Upload Image
 					</button>
 				</div>
 			</div>
@@ -185,73 +219,39 @@ const Main = () => {
 	return (
 		<main className="window__main">
 			<MenuProvider id="main__menu">
-				{isModalVisible && (
-					<CreateModal
-						onModalSubmit={onModalSubmit}
-						onModalClose={onModalClose}
-					/>
+				{modal.isVisible && (
+					<CreateModal tabIndex={modal.tabIndex} onModalSubmit={onModalSubmit} onModalClose={onModalClose} />
 				)}
-				<div
-					className={`window__main__content ${
-						state.isPreviewVisible ? 'with__preview' : ''
-					}`}
-				>
+				<div className={`window__main__content ${state.isPreviewVisible ? 'with__preview' : ''}`}>
 					<div className="window__main__content__left">
 						{state.folderView === 'grid' ? (
 							<div className="window__main__grid__view">
-								{items.folder &&
-									items.folder.map((item, index) => (
-										<Card {...item} key={index} />
-									))}
-								{items.file &&
-									items.file.map((item, index) => (
-										<Card {...item} key={index} />
-									))}
+								{items.folder && items.folder.map((item, index) => <Card {...item} key={index} />)}
+								{items.file && items.file.map((item, index) => <Card {...item} key={index} />)}
 							</div>
 						) : (
 							<div className="window__main__list__view">
 								<div className="table__header">
-									<div
-										className="item__name"
-										onClick={() => sortItems('name')}
-									>
+									<div className="item__name" onClick={() => sortItems('name')}>
 										<span>Name</span>
-										{state.sortBy.column === 'name' && (
-											<span>{state.sortBy.order}</span>
-										)}
+										{state.sortBy.column === 'name' && <span>{state.sortBy.order}</span>}
 									</div>
-									<div
-										className="item__date"
-										onClick={() => sortItems('createdAt')}
-									>
+									<div className="item__date" onClick={() => sortItems('createdAt')}>
 										<span>Date</span>
-										{state.sortBy.column ===
-											'createdAt' && (
-											<span>{state.sortBy.order}</span>
-										)}
+										{state.sortBy.column === 'createdAt' && <span>{state.sortBy.order}</span>}
 									</div>
 									<div className="item__type">
 										<span>Type</span>
 									</div>
-									<div
-										className="item__size"
-										onClick={() => sortItems('size')}
-									>
+									<div className="item__size" onClick={() => sortItems('size')}>
 										<span>Size</span>
-										{state.sortBy.column === 'size' && (
-											<span>{state.sortBy.order}</span>
-										)}
+										{state.sortBy.column === 'size' && <span>{state.sortBy.order}</span>}
 									</div>
 								</div>
 								<div className="table__main">
 									{items.folder &&
-										items.folder.map((item, index) => (
-											<TableRow {...item} key={index} />
-										))}
-									{items.file &&
-										items.file.map((item, index) => (
-											<TableRow {...item} key={index} />
-										))}
+										items.folder.map((item, index) => <TableRow {...item} key={index} />)}
+									{items.file && items.file.map((item, index) => <TableRow {...item} key={index} />)}
 								</div>
 							</div>
 						)}
@@ -263,9 +263,7 @@ const Main = () => {
 					) : null}
 				</div>
 			</MenuProvider>
-			{state.currentFolder.split('/').length > 5 && (
-				<MainMenu id="main__menu" />
-			)}
+			{state.currentFolder.split('/').length > 5 && <MainMenu id="main__menu" />}
 		</main>
 	)
 }
