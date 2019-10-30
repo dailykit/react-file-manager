@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 const IMAGE_UPLOAD = gql`
-	mutation imageUpload($file: Upload!, $path: String!) {
-		imageUpload(file: $file, path: $path) {
+	mutation imageUpload($files: [Upload!]!, $path: String!) {
+		imageUpload(files: $files, path: $path) {
 			... on Error {
 				success
 				error
