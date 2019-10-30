@@ -114,7 +114,7 @@ const Main = () => {
 			createFile({
 				variables: {
 					path: `${state.currentFolder}/${value}.json`,
-					type: state.currentFolder.split('/')[2].toLowerCase(),
+					content: '',
 				},
 			})
 		} else {
