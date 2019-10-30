@@ -21,7 +21,7 @@ import { TrashIcon, InfoIcon } from '../assets/Icon'
 import { Context } from '../state/context'
 
 const TableRow = ({ name, type, size, path, createdAt }) => {
-	const { dispatch } = React.useContext(Context)
+	const { state, dispatch } = React.useContext(Context)
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
@@ -214,41 +214,45 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 			) : (
 				<Item onClick={() => openFolder()}>Open Folder</Item>
 			)}
-			<Item
-				onClick={() => {
-					if (type === 'file') {
+			{state.currentFolder.split('/').length > 5 && (
+				<Item
+					onClick={() => {
+						if (type === 'file') {
+							setCreateModalVisibility({
+								file: !isCreateModalVisible.file,
+							})
+							return
+						}
 						setCreateModalVisibility({
-							file: !isCreateModalVisible.file,
+							folder: !isCreateModalVisible.folder,
 						})
-						return
-					}
-					setCreateModalVisibility({
-						folder: !isCreateModalVisible.folder,
-					})
-				}}
-			>
-				Rename {type === 'file' ? 'file' : 'folder'}
-			</Item>
+					}}
+				>
+					Rename {type === 'file' ? 'file' : 'folder'}
+				</Item>
+			)}
 
-			<Item
-				onClick={() => {
-					if (type === 'file') {
-						deleteFile({
+			{state.currentFolder.split('/').length > 5 && (
+				<Item
+					onClick={() => {
+						if (type === 'file') {
+							deleteFile({
+								variables: {
+									path,
+								},
+							})
+							return
+						}
+						return deleteFolder({
 							variables: {
 								path,
 							},
 						})
-						return
-					}
-					return deleteFolder({
-						variables: {
-							path,
-						},
-					})
-				}}
-			>
-				Delete {type === 'file' ? 'file' : 'folder'}
-			</Item>
+					}}
+				>
+					Delete {type === 'file' ? 'file' : 'folder'}
+				</Item>
+			)}
 		</Menu>
 	)
 

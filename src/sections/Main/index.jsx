@@ -265,7 +265,9 @@ const Main = () => {
 					) : null}
 				</div>
 			</MenuProvider>
-			<MainMenu id="main__menu" />
+			{state.currentFolder.split('/').length > 5 && (
+				<MainMenu id="main__menu" />
+			)}
 		</main>
 	)
 }
