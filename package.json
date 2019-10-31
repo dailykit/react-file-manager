@@ -30,6 +30,7 @@
         "react": "^16.10.2",
         "react-contexify": "^4.1.1",
         "react-dom": "^16.10.2",
+        "react-dropzone": "^10.1.10",
         "react-scripts": "3.2.0",
         "react-toast-notifications": "^2.2.5",
         "react-treebeard": "^3.2.4"

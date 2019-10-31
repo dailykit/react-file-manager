@@ -1,4 +1,5 @@
 import React from 'react'
+import Dropzone from 'react-dropzone'
 
 import Modal from '../../components/Modal'
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs'
@@ -6,7 +7,7 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs'
 const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => {
 	const [fileName, setFileName] = React.useState(null)
 	const [folderName, setFolderName] = React.useState(null)
-	const [image, setImage] = React.useState(null)
+	const [images, setImages] = React.useState([])
 	const [type, setType] = React.useState('')
 	const [tabIndex, setTabIndex] = React.useState(0)
 	React.useEffect(() => {
@@ -15,12 +16,13 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 	React.useEffect(() => {
 		setFileName(null)
 		setFolderName(null)
-		setImage(null)
+		setImages([])
 	}, [tabIndex])
 	const args = {
-		value: type === 'file' ? fileName : type === 'folder' ? folderName : image,
+		value: type === 'file' ? fileName : type === 'folder' ? folderName : images,
 		type,
 	}
+	const onDrop = files => setImages(images.concat(...files))
 	return (
 		<Modal>
 			<Tabs index={tabIndex} onChange={index => setTabIndex(index)}>
@@ -54,14 +56,23 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 						/>
 					</TabPanel>
 					<TabPanel>
-						<label htmlFor="modal__input">Select Image</label>
-						<input
-							type="file"
-							name="image"
-							multiple
-							id="modal__input"
-							onChange={e => setImage(e.target) || setType('image')}
-						/>
+						<Dropzone onDrop={files => onDrop(files)}>
+							{({ getRootProps, getInputProps }) => (
+								<section id="dropzone">
+									<div {...getRootProps()}>
+										<input {...getInputProps()} />
+										<p>Drag 'n' drop some files here, or click to select files</p>
+									</div>
+								</section>
+							)}
+						</Dropzone>
+						<div id="images">
+							{images &&
+								images.length > 0 &&
+								images.map(image => (
+									<img src={URL.createObjectURL(image)} alt={image.name} key={image.name} />
+								))}
+						</div>
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
