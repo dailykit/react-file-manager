@@ -4,6 +4,8 @@ import Dropzone from 'react-dropzone'
 import Modal from '../../components/Modal'
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs'
 
+import { CloseIcon } from '../../assets/Icon'
+
 const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => {
 	const [fileName, setFileName] = React.useState(null)
 	const [folderName, setFolderName] = React.useState(null)
@@ -23,6 +25,7 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 		type,
 	}
 	const onDrop = files => setImages(images.concat(...files))
+	const removeImage = index => setImages(images.filter((_, imgIndex) => imgIndex !== index))
 	return (
 		<Modal>
 			<Tabs index={tabIndex} onChange={index => setTabIndex(index)}>
@@ -69,8 +72,13 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 						<div id="images">
 							{images &&
 								images.length > 0 &&
-								images.map(image => (
-									<img src={URL.createObjectURL(image)} alt={image.name} key={image.name} />
+								images.map((image, index) => (
+									<div key={image.name} className="image">
+										<img src={URL.createObjectURL(image)} alt={image.name} />
+										<span onClick={() => removeImage(index)}>
+											<CloseIcon color="#fff" />
+										</span>
+									</div>
 								))}
 						</div>
 					</TabPanel>
