@@ -76,8 +76,7 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		refetchQueries: [refetchOptions],
 	})
 	const openFile = () => {}
-	const openFolder = () =>
-		dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
+	const openFolder = () => dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
 
 	let clickCount = 0
 	let singleClickTimer
@@ -92,8 +91,7 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		})
 		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
-	const handleDoubleClick = () =>
-		type === 'file' ? openFile() : openFolder()
+	const handleDoubleClick = () => (type === 'file' ? openFile() : openFolder())
 	const handleClicks = () => {
 		clickCount++
 		if (clickCount === 1) {
@@ -135,27 +133,17 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 	)
 	const CreatePopup = (
 		<Modal>
-			<Modal.Header>
-				{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
-			</Modal.Header>
+			<Modal.Header>{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}</Modal.Header>
 			<Modal.Body>
-				<label htmlFor="rename__folder__input">
-					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
-				</label>
+				<label htmlFor="rename__folder__input">{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}</label>
 				<input
 					type="text"
 					name="createFolder"
 					id="rename__folder__input"
 					value={isCreateModalVisible.file ? fileName : folderName}
-					placeholder={
-						isCreateModalVisible.file
-							? 'Enter a file name'
-							: 'Enter a folder name'
-					}
+					placeholder={isCreateModalVisible.file ? 'Enter a file name' : 'Enter a folder name'}
 					onChange={e =>
-						isCreateModalVisible.file
-							? setFileName(e.target.value)
-							: setFolderName(e.target.value)
+						isCreateModalVisible.file ? setFileName(e.target.value) : setFolderName(e.target.value)
 					}
 				/>
 			</Modal.Body>
@@ -189,9 +177,7 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 						})
 					}}
 				>
-					{isCreateModalVisible.file
-						? 'Rename File'
-						: 'Rename Folder'}
+					{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
 				</button>
 				<button
 					onClick={() =>
@@ -262,11 +248,7 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
 				<div className="table__row">
-					<div
-						className="item__name"
-						onClick={() => handleClicks()}
-						title={name}
-					>
+					<div className="item__name" onClick={() => handleClicks()} title={name}>
 						{name.length > 20 ? name.slice(0, 20) + '...' : name}
 					</div>
 					<div className="item__date">
@@ -279,12 +261,10 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 						}).format(createdAt)}
 					</div>
 					<div className="item__type">{type}</div>
-					<div className="item__size">
-						{size && `${convertFileSize(size)}`}
-					</div>
+					<div className="item__size">{size && `${convertFileSize(size)}`}</div>
 					<div className="item__options">
 						{Preview}
-						{path.split('/').length > 3 && Delete}
+						{state.currentFolder.split('/').length > 5 && Delete}
 					</div>
 				</div>
 			</MenuProvider>
