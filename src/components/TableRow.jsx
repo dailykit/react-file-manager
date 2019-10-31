@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation, useLazyQuery } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 
 import { useToasts } from 'react-toast-notifications'
@@ -19,6 +19,7 @@ import RENAME_FOLDER from '../queries/renameFolder'
 import convertFileSize from '../utils/convertFileSize'
 import { TrashIcon, InfoIcon } from '../assets/Icon'
 import { Context } from '../state/context'
+import OPEN_FILE from '../queries/openFile'
 
 const TableRow = ({ name, type, size, path, createdAt }) => {
 	const { state, dispatch } = React.useContext(Context)
@@ -75,7 +76,23 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		},
 		refetchQueries: [refetchOptions],
 	})
-	const openFile = () => {}
+
+	const [openFileQuery] = useLazyQuery(OPEN_FILE, {
+		onCompleted: () => {
+			addToast('Opened file in editor!', {
+				appearance: 'success',
+				autoDismiss: true,
+			})
+		},
+	})
+
+	const openFile = () => {
+		openFileQuery({
+			variables: {
+				path: path,
+			},
+		})
+	}
 	const openFolder = () => dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
 
 	let clickCount = 0

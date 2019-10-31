@@ -1,5 +1,5 @@
 import React from 'react'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation, useLazyQuery } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 import PropTypes from 'prop-types'
 
@@ -12,6 +12,7 @@ import DELETE_FOLDER from '../queries/deleteFolder'
 import DELETE_FILE from '../queries/deleteFile'
 import RENAME_FILE from '../queries/renameFile'
 import RENAME_FOLDER from '../queries/renameFolder'
+import OPEN_FILE from '../queries/openFile'
 
 import { FolderCloseIcon, FileText } from '../assets/Icon'
 import { Context } from '../state/context'
@@ -70,9 +71,24 @@ const Card = props => {
 		},
 		refetchQueries: [refetchOptions],
 	})
-	const openFile = () => {}
-	const openFolder = () =>
-		dispatch({ type: 'SET_CURRENT_FOLDER', payload: props.path })
+	const [openFileQuery] = useLazyQuery(OPEN_FILE, {
+		onCompleted: () => {
+			addToast('Opened file in editor!', {
+				appearance: 'success',
+				autoDismiss: true,
+			})
+		},
+	})
+
+	const openFile = () => {
+		openFileQuery({
+			variables: {
+				path: props.path,
+			},
+		})
+	}
+
+	const openFolder = () => dispatch({ type: 'SET_CURRENT_FOLDER', payload: props.path })
 
 	let clickCount = 0
 	let singleClickTimer
@@ -87,8 +103,7 @@ const Card = props => {
 		})
 		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
-	const handleDoubleClick = () =>
-		props.type === 'file' ? openFile() : openFolder()
+	const handleDoubleClick = () => (props.type === 'file' ? openFile() : openFolder())
 	const handleClicks = () => {
 		clickCount++
 		if (clickCount === 1) {
@@ -105,27 +120,17 @@ const Card = props => {
 
 	const CreatePopup = (
 		<Modal>
-			<Modal.Header>
-				{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
-			</Modal.Header>
+			<Modal.Header>{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}</Modal.Header>
 			<Modal.Body>
-				<label htmlFor="rename__folder__input">
-					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
-				</label>
+				<label htmlFor="rename__folder__input">{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}</label>
 				<input
 					type="text"
 					name="createFolder"
 					id="rename__folder__input"
 					value={isCreateModalVisible.file ? fileName : folderName}
-					placeholder={
-						isCreateModalVisible.file
-							? 'Enter a file name'
-							: 'Enter a folder name'
-					}
+					placeholder={isCreateModalVisible.file ? 'Enter a file name' : 'Enter a folder name'}
 					onChange={e =>
-						isCreateModalVisible.file
-							? setFileName(e.target.value)
-							: setFolderName(e.target.value)
+						isCreateModalVisible.file ? setFileName(e.target.value) : setFolderName(e.target.value)
 					}
 				/>
 			</Modal.Body>
@@ -159,9 +164,7 @@ const Card = props => {
 						})
 					}}
 				>
-					{isCreateModalVisible.file
-						? 'Rename File'
-						: 'Rename Folder'}
+					{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
 				</button>
 				<button
 					onClick={() =>
@@ -230,22 +233,12 @@ const Card = props => {
 			<MenuProvider id={generateId}>
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
-				<div
-					className="item"
-					onClick={() => handleClicks()}
-					title={props.name}
-				>
+				<div className="item" onClick={() => handleClicks()} title={props.name}>
 					<div className="item__thumbnail">
-						{props.type === 'folder' ? (
-							<FolderCloseIcon />
-						) : (
-							<FileText size={35} color="#6A91EE" />
-						)}
+						{props.type === 'folder' ? <FolderCloseIcon /> : <FileText size={35} color="#6A91EE" />}
 					</div>
 					<span className="item__name">
-						{props.name.length > 12
-							? props.name.slice(0, 12) + '...'
-							: props.name}
+						{props.name.length > 12 ? props.name.slice(0, 12) + '...' : props.name}
 					</span>
 				</div>
 			</MenuProvider>
