@@ -55,6 +55,25 @@
         grid-auto-flow: row;
         grid-gap: 16px;
         grid-template-columns: repeat(8, 40px);
+        .image {
+            position: relative;
+            &:hover span {                
+                display: flex;
+            }
+            span {
+                display: none;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 10;
+                background: rgba(0,0,0,0.2);
+                height: 40px;
+                width: 40px;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+        }
         img {
             width: 40px;
             height: 40px;
