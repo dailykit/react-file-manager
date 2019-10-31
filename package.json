@@ -1,6 +1,6 @@
 {
     "name": "react-file-manager",
-    "version": "0.1.0",
+    "version": "0.1.5",
     "private": true,
     "description": "A file manager built in ReactJs",
     "keywords": [
