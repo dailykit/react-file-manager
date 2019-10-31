@@ -23,6 +23,9 @@
         height: 32px;
         border-bottom: 1px solid var(--border);
     }
+    [data-reach-tabs] {
+        height: calc(100% - 40px);
+    }
     [data-reach-tab] {
         background: transparent;
         border: none;
@@ -32,8 +35,31 @@
     [data-selected] {
         border-bottom: 2px solid var(--border);
     }
+    [data-reach-tab-panel] {
+        height: 100%;
+    }
     [data-reach-tab-panels] {
         padding: 16px;
+        height: calc(100% - 32px);
+    }
+    #dropzone {
+        div {
+            height: 40px;
+            border: 2px dashed #d7d7d7;
+            @include flex(center, center);
+        }
+    }
+    #images {
+        margin-top: 16px;
+        display: grid;
+        grid-auto-flow: row;
+        grid-gap: 16px;
+        grid-template-columns: repeat(8, 40px);
+        img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
     }
 }
 
