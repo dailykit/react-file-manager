@@ -1,11 +1,7 @@
 import React from 'react'
+import styled from 'styled-components'
 
-import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	ListIcon,
-	GridIcon,
-} from '../assets/Icon'
+import { ChevronLeftIcon, ChevronRightIcon, ListIcon, GridIcon } from '../assets/Icon'
 import { Context } from '../state/context'
 
 const Navbar = () => {
@@ -29,16 +25,6 @@ const Navbar = () => {
 		})
 	}
 
-	const goBack = () => {
-		return dispatch({
-			type: 'SET_CURRENT_FOLDER',
-			payload: state.currentFolder
-				.split('/')
-				.slice(0, -1)
-				.join('/'),
-		})
-	}
-
 	const searchFolder = e => {
 		setSearch(e.target.value)
 		dispatch({
@@ -48,19 +34,12 @@ const Navbar = () => {
 	}
 
 	return (
-		<div className="window__main__navbar">
-			<div className="window__main__nav">
-				<button onClick={() => goBack()}>
-					<ChevronLeftIcon />
-				</button>
-			</div>
-			<ul className="window__main__breadcrumbs">
+		<NavbarWrapper className="window__main__navbar">
+			<Breadcrumbs className="window__main__breadcrumbs">
 				{route &&
 					route.split('/').map((breadcrumb, index) => (
 						<React.Fragment key={index}>
-							<li onClick={() => goToFolder(breadcrumb)}>
-								{breadcrumb}
-							</li>
+							<li onClick={() => goToFolder(breadcrumb)}>{breadcrumb}</li>
 							{index === route.split('/').length - 1 ? null : (
 								<span>
 									<ChevronRightIcon />
@@ -68,16 +47,16 @@ const Navbar = () => {
 							)}
 						</React.Fragment>
 					))}
-			</ul>
-			<div className="window__main__search">
+			</Breadcrumbs>
+			<Search className="window__main__search">
 				<input
 					type="text"
 					placeholder="Search files or folders..."
 					value={search}
 					onChange={e => searchFolder(e)}
 				/>
-			</div>
-			<div className="window__main__view">
+			</Search>
+			<SwitchView className="window__main__view">
 				<button
 					onClick={() =>
 						dispatch({ type: 'TOGGLE_VIEW', payload: 'list' }) ||
@@ -94,9 +73,84 @@ const Navbar = () => {
 				>
 					<GridIcon />
 				</button>
-			</div>
-		</div>
+			</SwitchView>
+		</NavbarWrapper>
 	)
 }
 
 export default Navbar
+
+const NavbarWrapper = styled.div`
+	width: calc(100vw - 240px);
+	height: 40px;
+	display: grid;
+	grid-template-columns: 1fr 240px 80px;
+	background: #fff;
+	z-index: 1;
+	grid-area: nav;
+	border-bottom: 1px solid var(--border);
+	@media (max-width: 567px) {
+		width: calc(100vw - 40px) !important;
+		margin-left: 40px;
+		height: 80px !important;
+		grid-template-columns: 1fr 80px !important;
+		grid-auto-rows: 40px 40px;
+	}
+`
+
+const Breadcrumbs = styled.div`
+	padding: 0 var(--spacer-2);
+	display: flex;
+	align-items: center;
+	border-right: 1px solid var(--border);
+	li {
+		list-style: none;
+		height: 40px;
+		line-height: 37px;
+		cursor: pointer;
+	}
+	span {
+		height: 40px;
+		display: flex;
+		align-items: center;
+		margin: 0 var(--spacer-1);
+	}
+	@media (max-width: 567px) {
+		grid-column: 1;
+		grid-column-start: 1;
+		grid-column-end: 4;
+		grid-row: 2;
+		grid-row-start: 2;
+		border-bottom: 1px solid var(--border);
+	}
+`
+
+const Search = styled.div`
+	border-bottom: 1px solid var(--border);
+	border-right: 1px solid var(--border);
+	input {
+		width: 100%;
+		height: 39px;
+		border: none;
+		padding-left: var(--spacer-2);
+	}
+`
+
+const SwitchView = styled.div`
+	button {
+		height: 40px;
+		width: 40px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		&:last-child {
+			border-right: none;
+		}
+		&:hover {
+			background: rgba(#000, 0.05);
+		}
+	}
+	@media (max-width: 567px) {
+		border-bottom: 1px solid var(--border);
+	}
+`

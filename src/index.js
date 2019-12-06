@@ -15,9 +15,6 @@ import { createUploadLink } from 'apollo-upload-client'
 import App from './App'
 import ToastContainer from './components/ToastContainer'
 
-// Styles
-import './styles/index.scss'
-
 const fragmentMatcher = new IntrospectionFragmentMatcher({
 	introspectionQueryResultData: {
 		__schema: {

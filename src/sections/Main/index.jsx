@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import styled from 'styled-components'
 
 import { useQuery } from '@apollo/react-hooks'
 import { useMutation } from '@apollo/react-hooks'
@@ -168,7 +169,7 @@ const Main = () => {
 	if (queryError) return console.log(queryError) || <div>Error!</div>
 	if (Object.keys(items).length === 0 && state.searchText === '') {
 		return (
-			<div className="window__main empty__state">
+			<MainWrapper className="window__main empty__state">
 				{modal.isVisible && (
 					<CreateModal tabIndex={modal.tabIndex} onModalSubmit={onModalSubmit} onModalClose={onModalClose} />
 				)}
@@ -205,31 +206,31 @@ const Main = () => {
 						Upload Image
 					</button>
 				</div>
-			</div>
+			</MainWrapper>
 		)
 	}
 	if (Object.keys(items).length === 0 && state.searchText !== '') {
 		return (
-			<div className="window__main empty__state">
+			<MainWrapper className="window__main empty__state">
 				No file or folder matched the search term {state.searchText}
-			</div>
+			</MainWrapper>
 		)
 	}
 	return (
-		<main className="window__main">
+		<MainWrapper className="window__main">
 			<MenuProvider id="main__menu">
 				{modal.isVisible && (
 					<CreateModal tabIndex={modal.tabIndex} onModalSubmit={onModalSubmit} onModalClose={onModalClose} />
 				)}
-				<div className={`window__main__content ${state.isPreviewVisible ? 'with__preview' : ''}`}>
+				<ContentWrapper className={`window__main__content ${state.isPreviewVisible ? 'with__preview' : ''}`}>
 					<div className="window__main__content__left">
 						{state.folderView === 'grid' ? (
-							<div className="window__main__grid__view">
+							<GridView className="window__main__grid__view">
 								{items.folder && items.folder.map((item, index) => <Card {...item} key={index} />)}
 								{items.file && items.file.map((item, index) => <Card {...item} key={index} />)}
-							</div>
+							</GridView>
 						) : (
-							<div className="window__main__list__view">
+							<ListView className="window__main__list__view">
 								<div className="table__header">
 									<div className="item__name" onClick={() => sortItems('name')}>
 										<span>Name</span>
@@ -252,19 +253,212 @@ const Main = () => {
 										items.folder.map((item, index) => <TableRow {...item} key={index} />)}
 									{items.file && items.file.map((item, index) => <TableRow {...item} key={index} />)}
 								</div>
-							</div>
+							</ListView>
 						)}
 					</div>
 					{state.isPreviewVisible ? (
-						<div className="window__main__content__right">
+						<FileDetails className="window__main__content__right">
 							<FilePreview {...state.previewData} />
-						</div>
+						</FileDetails>
 					) : null}
-				</div>
+				</ContentWrapper>
 			</MenuProvider>
 			{state.currentFolder.split('/').length > 5 && <MainMenu id="main__menu" />}
-		</main>
+		</MainWrapper>
 	)
 }
 
 export default Main
+
+const MainWrapper = styled.main`
+	grid-area: main;
+	position: relative;
+	width: calc(100vw - 240px);
+	overflow-y: auto;
+	&.empty__state {
+		height: 100%;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+	}
+	@media (max-width: 567px) {
+		width: calc(100vw - 40px) !important;
+		margin-left: 40px;
+	}
+`
+
+const ContentWrapper = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 0;
+	height: calc(100vh - 40px);
+	&.with__preview {
+		grid-template-columns: 1fr 321px;
+	}
+	@media (max-width: 980px) {
+		position: fixed;
+		right: 0;
+		top: 40px;
+		bottom: 0;
+		width: 321px;
+		background: #fff;
+		&.with__preview {
+			grid-template-columns: 1fr 0;
+			height: calc(100vh - 40px);
+		}
+	}
+	@media (max-width: 567px) {
+		height: calc(100vh - 144px);
+	}
+`
+
+const GridView = styled.div`
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	.item {
+		max-width: 130px;
+		cursor: pointer;
+		height: 150px;
+		border-top: none;
+		margin: -1px 0 0 -1px;
+		text-align: center;
+		&:hover {
+			background: rgba(#000, 0.05);
+		}
+	}
+	.item__thumbnail {
+		width: 100%;
+		height: 100px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+`
+
+const ListView = styled.div`
+	display: grid;
+	grid-template-rows: 32px 1fr;
+	.table__header,
+	.table__row {
+		display: grid;
+		grid-template-columns: 3fr 1fr 1fr 1fr;
+	}
+	.table__header {
+		line-height: 32px;
+		border-bottom: 1px solid var(--border);
+		div {
+			cursor: pointer;
+			padding: 0 var(--spacer-2);
+			display: flex;
+			justify-content: space-between;
+			&:hover {
+				background: rgba(#000, 0.05);
+			}
+		}
+		div.item__type {
+			pointer-events: none;
+		}
+	}
+	.table__main {
+		margin-top: -1px;
+	}
+	.table__row {
+		height: 40px;
+		line-height: 40px;
+		position: relative;
+		border-top: 1px solid transparent;
+		border-bottom: 1px solid transparent;
+		div {
+			padding: 0 var(--spacer-2);
+		}
+		div.item__options {
+			position: absolute;
+			right: 0;
+			background: #fff;
+			width: auto;
+			height: 38px;
+			visibility: hidden;
+			display: flex;
+			align-items: center;
+			button {
+				background: transparent;
+				border: none;
+				height: 32px;
+				width: 32px;
+				cursor: pointer;
+				border-radius: 2px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				&:hover {
+					border: 1px solid var(--border);
+				}
+			}
+		}
+		div.item__name {
+			cursor: pointer;
+		}
+		&:hover {
+			border-top: 1px solid var(--border);
+			border-bottom: 1px solid var(--border);
+			div.item__options {
+				visibility: visible;
+			}
+		}
+	}
+`
+
+const FileDetails = styled.div`
+	border-left: 1px solid var(--border);
+	padding: var(--spacer-2);
+	.preview__main {
+		div {
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+	}
+	#file__preview {
+		position: fixed;
+		width: 288px;
+	}
+
+	.preview__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		button {
+			background: transparent;
+			border: none;
+			cursor: pointer;
+		}
+	}
+
+	.preview__thumbnail {
+		height: 200px;
+		width: 100%;
+		background: rgba(0, 0, 0, 0.2);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 16px 0;
+	}
+	@media (max-width: 980px) {
+		position: fixed;
+		right: 0;
+		top: 40px;
+		bottom: 0;
+		width: 321px;
+		background: #fff;
+	}
+	@media (max-width: 567px) {
+		position: fixed;
+		right: 0;
+		top: 80px;
+		bottom: 0;
+		width: 321px;
+		background: #fff;
+	}
+`
