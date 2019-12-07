@@ -1,25 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
 import { useMutation, useLazyQuery } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
-
 import { useToasts } from 'react-toast-notifications'
 
-import Modal from '../components/Modal'
+// Context
+import { Context } from '../../../state/context'
+
+// Components
+import Modal from '../../Modal'
+
+// Styles
+import { Row, RowCell } from './styles'
 
 // Queries
-import GET_FOLDER from '../queries/getFolder'
-import DELETE_FOLDER from '../queries/deleteFolder'
-import DELETE_FILE from '../queries/deleteFile'
-import RENAME_FILE from '../queries/renameFile'
-import RENAME_FOLDER from '../queries/renameFolder'
+import {
+	GET_FOLDER,
+	DELETE_FOLDER,
+	DELETE_FILE,
+	RENAME_FILE,
+	RENAME_FOLDER,
+	OPEN_FILE,
+} from '../../../queries'
 
-// Helper Functions
-import convertFileSize from '../utils/convertFileSize'
-import { TrashIcon, InfoIcon } from '../assets/Icon'
-import { Context } from '../state/context'
-import OPEN_FILE from '../queries/openFile'
+// Helpers
+import convertFileSize from '../../../utils/convertFileSize'
+
+// Assets
+import { TrashIcon, InfoIcon } from '../../../assets/Icon'
 
 const TableRow = ({ name, type, size, path, createdAt }) => {
 	const { state, dispatch } = React.useContext(Context)
@@ -93,7 +101,8 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 			},
 		})
 	}
-	const openFolder = () => dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
+	const openFolder = () =>
+		dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
 
 	let clickCount = 0
 	let singleClickTimer
@@ -108,7 +117,8 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		})
 		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
-	const handleDoubleClick = () => (type === 'file' ? openFile() : openFolder())
+	const handleDoubleClick = () =>
+		type === 'file' ? openFile() : openFolder()
 	const handleClicks = () => {
 		clickCount++
 		if (clickCount === 1) {
@@ -150,17 +160,27 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 	)
 	const CreatePopup = (
 		<Modal>
-			<Modal.Header>{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}</Modal.Header>
+			<Modal.Header>
+				{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
+			</Modal.Header>
 			<Modal.Body>
-				<label htmlFor="rename__folder__input">{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}</label>
+				<label htmlFor="rename__folder__input">
+					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
+				</label>
 				<input
 					type="text"
 					name="createFolder"
 					id="rename__folder__input"
 					value={isCreateModalVisible.file ? fileName : folderName}
-					placeholder={isCreateModalVisible.file ? 'Enter a file name' : 'Enter a folder name'}
+					placeholder={
+						isCreateModalVisible.file
+							? 'Enter a file name'
+							: 'Enter a folder name'
+					}
 					onChange={e =>
-						isCreateModalVisible.file ? setFileName(e.target.value) : setFolderName(e.target.value)
+						isCreateModalVisible.file
+							? setFileName(e.target.value)
+							: setFolderName(e.target.value)
 					}
 				/>
 			</Modal.Body>
@@ -194,7 +214,9 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 						})
 					}}
 				>
-					{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
+					{isCreateModalVisible.file
+						? 'Rename File'
+						: 'Rename Folder'}
 				</button>
 				<button
 					onClick={() =>
@@ -264,11 +286,11 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 			<MenuProvider id={generateId}>
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
-				<div className="table__row">
-					<div className="item__name" onClick={() => handleClicks()} title={name}>
+				<Row>
+					<RowCell onClick={() => handleClicks()} title={name}>
 						{name.length > 20 ? name.slice(0, 20) + '...' : name}
-					</div>
-					<div className="item__date">
+					</RowCell>
+					<RowCell>
 						{new Intl.DateTimeFormat('en-US', {
 							year: 'numeric',
 							month: 'short',
@@ -276,14 +298,14 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 							hour: 'numeric',
 							minute: 'numeric',
 						}).format(createdAt)}
-					</div>
-					<div className="item__type">{type}</div>
-					<div className="item__size">{size && `${convertFileSize(size)}`}</div>
-					<div className="item__options">
+					</RowCell>
+					<RowCell>{type}</RowCell>
+					<RowCell>{size && `${convertFileSize(size)}`}</RowCell>
+					<RowCell withOptions className="item__options">
 						{Preview}
 						{state.currentFolder.split('/').length > 5 && Delete}
-					</div>
-				</div>
+					</RowCell>
+				</Row>
 			</MenuProvider>
 			<TableRowMenu />
 		</React.Fragment>
