@@ -1,12 +1,15 @@
 import React from 'react'
 import styled, { css, createGlobalStyle } from 'styled-components'
 
+// State
 import { Context, initialState, reducers } from './state/context'
 
+// Components
 const Sidebar = React.lazy(() => import('./sections/Sidebar'))
 const Main = React.lazy(() => import('./sections/Main'))
 const Navbar = React.lazy(() => import('./sections/Navbar'))
 
+// Styles
 const GlobalStyle = createGlobalStyle`
 	* {
 		box-sizing: border-box;

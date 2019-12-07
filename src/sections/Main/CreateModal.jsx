@@ -1,12 +1,18 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
-
-import Modal from '../../components/Modal'
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs'
 
+// Components
+import { Modal } from '../../components'
+
+// Assets
 import { CloseIcon } from '../../assets/Icon'
 
-const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => {
+const CreateModal = ({
+	tabIndex: selectedTab,
+	onModalClose,
+	onModalSubmit,
+}) => {
 	const [fileName, setFileName] = React.useState(null)
 	const [folderName, setFolderName] = React.useState(null)
 	const [images, setImages] = React.useState([])
@@ -21,11 +27,17 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 		setImages([])
 	}, [tabIndex])
 	const args = {
-		value: type === 'file' ? fileName : type === 'folder' ? folderName : images,
+		value:
+			type === 'file'
+				? fileName
+				: type === 'folder'
+				? folderName
+				: images,
 		type,
 	}
 	const onDrop = files => setImages(images.concat(...files))
-	const removeImage = index => setImages(images.filter((_, imgIndex) => imgIndex !== index))
+	const removeImage = index =>
+		setImages(images.filter((_, imgIndex) => imgIndex !== index))
 	return (
 		<Modal>
 			<Tabs index={tabIndex} onChange={index => setTabIndex(index)}>
@@ -44,7 +56,9 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 							id="modal__input"
 							value={fileName || ''}
 							placeholder="Enter a file name"
-							onChange={e => setFileName(e.target.value) || setType('file')}
+							onChange={e =>
+								setFileName(e.target.value) || setType('file')
+							}
 						/>
 					</TabPanel>
 					<TabPanel>
@@ -55,7 +69,10 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 							id="modal__input"
 							value={folderName || ''}
 							placeholder="Enter a folder name"
-							onChange={e => setFolderName(e.target.value) || setType('folder')}
+							onChange={e =>
+								setFolderName(e.target.value) ||
+								setType('folder')
+							}
 						/>
 					</TabPanel>
 					<TabPanel>
@@ -64,7 +81,10 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 								<section id="dropzone">
 									<div {...getRootProps()}>
 										<input {...getInputProps()} />
-										<p>Drag 'n' drop some files here, or click to select files</p>
+										<p>
+											Drag 'n' drop some files here, or
+											click to select files
+										</p>
 									</div>
 								</section>
 							)}
@@ -74,8 +94,13 @@ const CreateModal = ({ tabIndex: selectedTab, onModalClose, onModalSubmit }) => 
 								images.length > 0 &&
 								images.map((image, index) => (
 									<div key={image.name} className="image">
-										<img src={URL.createObjectURL(image)} alt={image.name} />
-										<span onClick={() => removeImage(index)}>
+										<img
+											src={URL.createObjectURL(image)}
+											alt={image.name}
+										/>
+										<span
+											onClick={() => removeImage(index)}
+										>
 											<CloseIcon color="#fff" />
 										</span>
 									</div>

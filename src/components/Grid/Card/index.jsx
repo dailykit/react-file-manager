@@ -2,11 +2,15 @@ import React from 'react'
 import { useMutation, useLazyQuery } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 import PropTypes from 'prop-types'
-
 import { useToasts } from 'react-toast-notifications'
 
-import Modal from '../../../components/Modal'
+// State
+import { Context } from '../../../state/context'
 
+// Components
+import Modal from '../../Modal'
+
+// Queries
 import {
 	GET_FOLDER,
 	DELETE_FOLDER,
@@ -16,9 +20,10 @@ import {
 	OPEN_FILE,
 } from '../../../queries'
 
+// Assets
 import { FolderCloseIcon, FileText } from '../../../assets/Icon'
-import { Context } from '../../../state/context'
 
+// Styles
 import { CardWrapper, Thumb } from './styles'
 
 const Card = ({ item }) => {

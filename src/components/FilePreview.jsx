@@ -1,9 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+// State
+import { Context } from '../state/context'
+
 // Helper Functions
 import convertFileSize from '../utils/convertFileSize'
-import { Context } from '../state/context'
+
+// Assets
 import { CloseIcon } from '../assets/Icon'
 
 const FilePreview = ({ name, size, type }) => {

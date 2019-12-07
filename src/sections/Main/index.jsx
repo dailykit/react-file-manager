@@ -5,7 +5,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Menu, Item, MenuProvider } from 'react-contexify'
 import { useToasts } from 'react-toast-notifications'
 
-// Context
+// State
 import { Context } from '../../state/context'
 
 // Components

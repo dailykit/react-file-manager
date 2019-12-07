@@ -2,11 +2,13 @@ import React from 'react'
 import { Treebeard } from 'react-treebeard'
 import { useQuery } from '@apollo/react-hooks'
 
+// State
 import { Context } from '../state/context'
 
 // Queries
 import GET_NESTED_FOLDERS from '../queries/getNestedFolders'
 
+// Assets
 import { FolderCloseIcon, FolderOpenIcon } from '../assets/Icon'
 
 const RenderTree = () => {
