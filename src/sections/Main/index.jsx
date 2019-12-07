@@ -290,39 +290,6 @@ const ContentWrapper = styled.div(
 const FileDetails = styled.div`
 	border-left: 1px solid var(--border);
 	padding: var(--spacer-2);
-	.preview__main {
-		div {
-			height: 32px;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-		}
-	}
-	#file__preview {
-		position: fixed;
-		width: 288px;
-	}
-
-	.preview__header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		button {
-			background: transparent;
-			border: none;
-			cursor: pointer;
-		}
-	}
-
-	.preview__thumbnail {
-		height: 200px;
-		width: 100%;
-		background: rgba(0, 0, 0, 0.2);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin: 16px 0;
-	}
 	@media (max-width: 567px) {
 		position: fixed;
 		right: 0;

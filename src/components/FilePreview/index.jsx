@@ -2,19 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // State
-import { Context } from '../state/context'
+import { Context } from '../../state/context'
+
+// Styles
+import { FilePreviewWrapper, Header, Details, Thumbnail } from './styles'
 
 // Helper Functions
-import convertFileSize from '../utils/convertFileSize'
+import convertFileSize from '../../utils/convertFileSize'
 
 // Assets
-import { CloseIcon } from '../assets/Icon'
+import { CloseIcon } from '../../assets/Icon'
 
 const FilePreview = ({ name, size, type }) => {
 	const { dispatch } = React.useContext(Context)
 	return (
-		<div id="file__preview">
-			<header className="preview__header">
+		<FilePreviewWrapper id="file__preview">
+			<Header className="preview__header">
 				<span>{name}</span>
 				<button
 					onClick={() =>
@@ -23,15 +26,15 @@ const FilePreview = ({ name, size, type }) => {
 				>
 					<CloseIcon />
 				</button>
-			</header>
-			<div className="preview__thumbnail">
+			</Header>
+			<Thumbnail className="preview__thumbnail">
 				{type === 'file' ? (
 					<span>File Preview</span>
 				) : (
 					<span>No preview</span>
 				)}
-			</div>
-			<main className="preview__main">
+			</Thumbnail>
+			<Details className="preview__main">
 				<div>
 					<span>File type</span>
 					<span>{type}</span>
@@ -40,8 +43,8 @@ const FilePreview = ({ name, size, type }) => {
 					<span>File size</span>
 					<span>{`${convertFileSize(size)}`}</span>
 				</div>
-			</main>
-		</div>
+			</Details>
+		</FilePreviewWrapper>
 	)
 }
 
