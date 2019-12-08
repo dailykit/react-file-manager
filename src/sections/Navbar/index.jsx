@@ -1,12 +1,13 @@
 import React from 'react'
 
-import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	ListIcon,
-	GridIcon,
-} from '../assets/Icon'
-import { Context } from '../state/context'
+// State
+import { Context } from '../../state/context'
+
+// Styles
+import { NavbarWrapper, Breadcrumbs, Search, SwitchView } from './styles'
+
+// Assets
+import { ChevronRightIcon, ListIcon, GridIcon } from '../../assets/Icon'
 
 const Navbar = () => {
 	const { state, dispatch } = React.useContext(Context)
@@ -29,16 +30,6 @@ const Navbar = () => {
 		})
 	}
 
-	const goBack = () => {
-		return dispatch({
-			type: 'SET_CURRENT_FOLDER',
-			payload: state.currentFolder
-				.split('/')
-				.slice(0, -1)
-				.join('/'),
-		})
-	}
-
 	const searchFolder = e => {
 		setSearch(e.target.value)
 		dispatch({
@@ -48,13 +39,8 @@ const Navbar = () => {
 	}
 
 	return (
-		<div className="window__main__navbar">
-			<div className="window__main__nav">
-				<button onClick={() => goBack()}>
-					<ChevronLeftIcon />
-				</button>
-			</div>
-			<ul className="window__main__breadcrumbs">
+		<NavbarWrapper isSidebarVisible={state.isSidebarVisible}>
+			<Breadcrumbs>
 				{route &&
 					route.split('/').map((breadcrumb, index) => (
 						<React.Fragment key={index}>
@@ -63,21 +49,21 @@ const Navbar = () => {
 							</li>
 							{index === route.split('/').length - 1 ? null : (
 								<span>
-									<ChevronRightIcon />
+									<ChevronRightIcon color="#CECECE" />
 								</span>
 							)}
 						</React.Fragment>
 					))}
-			</ul>
-			<div className="window__main__search">
+			</Breadcrumbs>
+			<Search>
 				<input
 					type="text"
 					placeholder="Search files or folders..."
 					value={search}
 					onChange={e => searchFolder(e)}
 				/>
-			</div>
-			<div className="window__main__view">
+			</Search>
+			<SwitchView>
 				<button
 					onClick={() =>
 						dispatch({ type: 'TOGGLE_VIEW', payload: 'list' }) ||
@@ -94,8 +80,8 @@ const Navbar = () => {
 				>
 					<GridIcon />
 				</button>
-			</div>
-		</div>
+			</SwitchView>
+		</NavbarWrapper>
 	)
 }
 

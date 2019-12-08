@@ -1,40 +1,55 @@
 import React from 'react'
 import { useMutation, useLazyQuery } from '@apollo/react-hooks'
-import { Menu, Item, MenuProvider } from 'react-contexify'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 import PropTypes from 'prop-types'
-
 import { useToasts } from 'react-toast-notifications'
 
-import Modal from '../components/Modal'
+// State
+import { Context } from '../../../state/context'
 
-import GET_FOLDER from '../queries/getFolder'
-import DELETE_FOLDER from '../queries/deleteFolder'
-import DELETE_FILE from '../queries/deleteFile'
-import RENAME_FILE from '../queries/renameFile'
-import RENAME_FOLDER from '../queries/renameFolder'
-import OPEN_FILE from '../queries/openFile'
+// Components
+import Modal from '../../Modal'
 
-import { FolderCloseIcon, FileText } from '../assets/Icon'
-import { Context } from '../state/context'
+// Queries
+import {
+	GET_FOLDER,
+	DELETE_FOLDER,
+	DELETE_FILE,
+	RENAME_FILE,
+	RENAME_FOLDER,
+	OPEN_FILE,
+} from '../../../queries'
 
-const Card = props => {
+// Helpers
+import useClick from '../../../utils/useClick'
+
+// Assets
+import { FolderCloseIcon, FileText } from '../../../assets/Icon'
+
+// Styles
+import { CardWrapper, Thumb } from './styles'
+
+const Card = ({ item }) => {
+	const { addToast } = useToasts()
 	const { state, dispatch } = React.useContext(Context)
+	const [folderName, setFolderName] = React.useState('')
+	const [fileName, setFileName] = React.useState('')
+	const [callSingleClick, callDoubleClick] = useClick()
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
 	})
-	const [folderName, setFolderName] = React.useState('')
-	const [fileName, setFileName] = React.useState('')
+
 	const refetchOptions = {
 		query: GET_FOLDER,
 		variables: {
-			path: props.path
+			path: item.path
 				.split('/')
 				.slice(0, -1)
 				.join('/'),
 		},
 	}
-	const { addToast } = useToasts()
+
 	const [deleteFolder] = useMutation(DELETE_FOLDER, {
 		onCompleted: ({ deleteFolder }) => {
 			addToast(deleteFolder.message, {
@@ -83,54 +98,50 @@ const Card = props => {
 	const openFile = () => {
 		openFileQuery({
 			variables: {
-				path: props.path,
+				path: item.path,
 			},
 		})
 	}
 
-	const openFolder = () => dispatch({ type: 'SET_CURRENT_FOLDER', payload: props.path })
+	const openFolder = () =>
+		dispatch({ type: 'SET_CURRENT_FOLDER', payload: item.path })
 
-	let clickCount = 0
-	let singleClickTimer
 	const singleClick = () => {
 		dispatch({
 			type: 'SET_PREVIEW_DATA',
 			payload: {
-				name: props.name,
-				type: props.type,
-				size: props.size,
+				name: item.name,
+				type: item.type,
+				size: item.size,
 			},
 		})
 		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
-	const handleDoubleClick = () => (props.type === 'file' ? openFile() : openFolder())
-	const handleClicks = () => {
-		clickCount++
-		if (clickCount === 1) {
-			singleClickTimer = setTimeout(function() {
-				clickCount = 0
-				singleClick()
-			}, 300)
-		} else if (clickCount === 2) {
-			clearTimeout(singleClickTimer)
-			clickCount = 0
-			handleDoubleClick()
-		}
-	}
+	const doubleClick = () => (item.type === 'file' ? openFile() : openFolder())
 
-	const CreatePopup = (
+	const CreatePopup = () => (
 		<Modal>
-			<Modal.Header>{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}</Modal.Header>
+			<Modal.Header>
+				{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
+			</Modal.Header>
 			<Modal.Body>
-				<label htmlFor="rename__folder__input">{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}</label>
+				<label htmlFor="rename__folder__input">
+					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
+				</label>
 				<input
 					type="text"
 					name="createFolder"
 					id="rename__folder__input"
 					value={isCreateModalVisible.file ? fileName : folderName}
-					placeholder={isCreateModalVisible.file ? 'Enter a file name' : 'Enter a folder name'}
+					placeholder={
+						isCreateModalVisible.file
+							? 'Enter a file name'
+							: 'Enter a folder name'
+					}
 					onChange={e =>
-						isCreateModalVisible.file ? setFileName(e.target.value) : setFolderName(e.target.value)
+						isCreateModalVisible.file
+							? setFileName(e.target.value)
+							: setFolderName(e.target.value)
 					}
 				/>
 			</Modal.Body>
@@ -140,8 +151,8 @@ const Card = props => {
 						if (isCreateModalVisible.folder) {
 							renameFolder({
 								variables: {
-									oldPath: props.path,
-									newPath: `${props.path
+									oldPath: item.path,
+									newPath: `${item.path
 										.split('/')
 										.slice(0, -1)
 										.join('/')}/${folderName}`,
@@ -150,8 +161,8 @@ const Card = props => {
 						} else {
 							renameFile({
 								variables: {
-									oldPath: props.path,
-									newPath: `${props.path
+									oldPath: item.path,
+									newPath: `${item.path
 										.split('/')
 										.slice(0, -1)
 										.join('/')}/${fileName}.json`,
@@ -164,7 +175,9 @@ const Card = props => {
 						})
 					}}
 				>
-					{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
+					{isCreateModalVisible.file
+						? 'Rename File'
+						: 'Rename Folder'}
 				</button>
 				<button
 					onClick={() =>
@@ -181,67 +194,71 @@ const Card = props => {
 	)
 	const generateId = `table__row__menu${Math.random()}`
 	const CardMenu = () => (
-		<Menu id={generateId}>
-			{props.type === 'file' ? (
-				<Item onClick={() => openFile()}>Open File</Item>
+		<ContextMenu id={generateId}>
+			{item.type === 'file' ? (
+				<MenuItem onClick={() => openFile()}>Open File</MenuItem>
 			) : (
-				<Item onClick={() => openFolder()}>Open Folder</Item>
+				<MenuItem onClick={() => openFolder()}>Open Folder</MenuItem>
 			)}
 			{state.currentFolder.split('/').length > 5 && (
-				<Item
+				<MenuItem
 					onClick={() => {
-						if (props.type === 'file') {
-							setCreateModalVisibility({
+						if (item.type === 'file') {
+							return setCreateModalVisibility({
 								file: !isCreateModalVisible.file,
 							})
-							return
 						}
 						setCreateModalVisibility({
 							folder: !isCreateModalVisible.folder,
 						})
 					}}
 				>
-					Rename {props.type === 'file' ? 'file' : 'folder'}
-				</Item>
+					Rename {item.type === 'file' ? 'file' : 'folder'}
+				</MenuItem>
 			)}
 			{state.currentFolder.split('/').length > 5 && (
-				<Item
+				<MenuItem
 					onClick={() => {
-						if (props.type === 'file') {
-							deleteFile({
-								variables: {
-									path: props.path,
-								},
-							})
-							return
-						}
-						return deleteFolder({
+						const args = {
 							variables: {
-								path: props.path,
+								path: item.path,
 							},
-						})
+						}
+						return item.type === 'file'
+							? deleteFile(args)
+							: deleteFolder(args)
 					}}
 				>
-					Delete {props.type === 'file' ? 'file' : 'folder'}
-				</Item>
+					Delete {item.type === 'file' ? 'file' : 'folder'}
+				</MenuItem>
 			)}
-		</Menu>
+		</ContextMenu>
 	)
 
 	return (
 		<React.Fragment>
-			<MenuProvider id={generateId}>
+			<ContextMenuTrigger id={generateId}>
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
-				<div className="item" onClick={() => handleClicks()} title={props.name}>
-					<div className="item__thumbnail">
-						{props.type === 'folder' ? <FolderCloseIcon /> : <FileText size={35} color="#6A91EE" />}
-					</div>
-					<span className="item__name">
-						{props.name.length > 12 ? props.name.slice(0, 12) + '...' : props.name}
+				<CardWrapper
+					onClick={() => callSingleClick(singleClick)}
+					onDoubleClick={() => callDoubleClick(doubleClick)}
+					title={item.name}
+				>
+					<Thumb>
+						{item.type === 'folder' ? (
+							<FolderCloseIcon />
+						) : (
+							<FileText size={35} color="#6A91EE" />
+						)}
+					</Thumb>
+					<span>
+						{item.name.length > 12
+							? item.name.slice(0, 12) + '...'
+							: item.name}
 					</span>
-				</div>
-			</MenuProvider>
+				</CardWrapper>
+			</ContextMenuTrigger>
 			<CardMenu />
 		</React.Fragment>
 	)
