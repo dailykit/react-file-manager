@@ -27,13 +27,15 @@ import { FolderCloseIcon, FileText } from '../../../assets/Icon'
 import { CardWrapper, Thumb } from './styles'
 
 const Card = ({ item }) => {
+	const { addToast } = useToasts()
 	const { state, dispatch } = React.useContext(Context)
+	const [folderName, setFolderName] = React.useState('')
+	const [fileName, setFileName] = React.useState('')
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
 	})
-	const [folderName, setFolderName] = React.useState('')
-	const [fileName, setFileName] = React.useState('')
+
 	const refetchOptions = {
 		query: GET_FOLDER,
 		variables: {
@@ -43,7 +45,7 @@ const Card = ({ item }) => {
 				.join('/'),
 		},
 	}
-	const { addToast } = useToasts()
+
 	const [deleteFolder] = useMutation(DELETE_FOLDER, {
 		onCompleted: ({ deleteFolder }) => {
 			addToast(deleteFolder.message, {
@@ -129,7 +131,7 @@ const Card = ({ item }) => {
 		}
 	}
 
-	const CreatePopup = (
+	const CreatePopup = () => (
 		<Modal>
 			<Modal.Header>
 				{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
@@ -214,10 +216,9 @@ const Card = ({ item }) => {
 				<Item
 					onClick={() => {
 						if (item.type === 'file') {
-							setCreateModalVisibility({
+							return setCreateModalVisibility({
 								file: !isCreateModalVisible.file,
 							})
-							return
 						}
 						setCreateModalVisibility({
 							folder: !isCreateModalVisible.folder,
@@ -230,19 +231,14 @@ const Card = ({ item }) => {
 			{state.currentFolder.split('/').length > 5 && (
 				<Item
 					onClick={() => {
-						if (item.type === 'file') {
-							deleteFile({
-								variables: {
-									path: item.path,
-								},
-							})
-							return
-						}
-						return deleteFolder({
+						const args = {
 							variables: {
 								path: item.path,
 							},
-						})
+						}
+						return item.type === 'file'
+							? deleteFile(args)
+							: deleteFolder(args)
 					}}
 				>
 					Delete {item.type === 'file' ? 'file' : 'folder'}

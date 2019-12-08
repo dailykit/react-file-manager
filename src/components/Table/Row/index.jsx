@@ -30,13 +30,16 @@ import convertFileSize from '../../../utils/convertFileSize'
 import { TrashIcon, InfoIcon } from '../../../assets/Icon'
 
 const TableRow = ({ name, type, size, path, createdAt }) => {
+	const { addToast } = useToasts()
 	const { state, dispatch } = React.useContext(Context)
+	const [folderName, setFolderName] = React.useState('')
+	const [fileName, setFileName] = React.useState('')
+
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
 	})
-	const [folderName, setFolderName] = React.useState('')
-	const [fileName, setFileName] = React.useState('')
+
 	const refetchOptions = {
 		query: GET_FOLDER,
 		variables: {
@@ -47,7 +50,6 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		},
 	}
 
-	const { addToast } = useToasts()
 	const [deleteFolder] = useMutation(DELETE_FOLDER, {
 		onCompleted: ({ deleteFolder }) => {
 			addToast(deleteFolder.message, {
@@ -132,33 +134,7 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 			handleDoubleClick()
 		}
 	}
-
-	const Delete = (
-		<button
-			onClick={() => {
-				if (type === 'folder') {
-					return deleteFolder({
-						variables: {
-							path,
-						},
-					})
-				}
-				return deleteFile({
-					variables: {
-						path,
-					},
-				})
-			}}
-		>
-			<TrashIcon color="#fff" />
-		</button>
-	)
-	const Preview = (
-		<button onClick={() => showPreview()}>
-			<InfoIcon color="#fff" />
-		</button>
-	)
-	const CreatePopup = (
+	const CreatePopup = () => (
 		<Modal>
 			<Modal.Header>
 				{isCreateModalVisible.file ? 'Rename File' : 'Rename Folder'}
@@ -260,19 +236,14 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 			{state.currentFolder.split('/').length > 5 && (
 				<Item
 					onClick={() => {
-						if (type === 'file') {
-							deleteFile({
-								variables: {
-									path,
-								},
-							})
-							return
-						}
-						return deleteFolder({
+						const args = {
 							variables: {
 								path,
 							},
-						})
+						}
+						return type === 'file'
+							? deleteFile(args)
+							: deleteFolder(args)
 					}}
 				>
 					Delete {type === 'file' ? 'file' : 'folder'}
@@ -284,8 +255,8 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 	return (
 		<React.Fragment>
 			<MenuProvider id={generateId}>
-				{isCreateModalVisible.folder && CreatePopup}
-				{isCreateModalVisible.file && CreatePopup}
+				{isCreateModalVisible.folder && <CreatePopup />}
+				{isCreateModalVisible.file && <CreatePopup />}
 				<Row>
 					<RowCell onClick={() => handleClicks()} title={name}>
 						{name.length > 20 ? name.slice(0, 20) + '...' : name}
@@ -302,8 +273,25 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 					<RowCell>{type}</RowCell>
 					<RowCell>{size && `${convertFileSize(size)}`}</RowCell>
 					<RowCell withOptions className="item__options">
-						{Preview}
-						{state.currentFolder.split('/').length > 5 && Delete}
+						<button onClick={() => showPreview()}>
+							<InfoIcon color="#fff" />
+						</button>
+						{state.currentFolder.split('/').length > 5 && (
+							<button
+								onClick={() => {
+									const args = {
+										variables: {
+											path,
+										},
+									}
+									return type === 'folder'
+										? deleteFolder(args)
+										: deleteFile(args)
+								}}
+							>
+								<TrashIcon color="#fff" />
+							</button>
+						)}
 					</RowCell>
 				</Row>
 			</MenuProvider>
