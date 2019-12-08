@@ -19,25 +19,22 @@ const Head = () => {
 	}
 	return (
 		<HeadWrapper>
-			<Column className="item__name" onClick={() => sortItems('name')}>
+			<Column onClick={() => sortItems('name')}>
 				<span>Name</span>
 				{state.sortBy.column === 'name' && (
 					<span>{state.sortBy.order}</span>
 				)}
 			</Column>
-			<Column
-				className="item__date"
-				onClick={() => sortItems('createdAt')}
-			>
+			<Column onClick={() => sortItems('createdAt')}>
 				<span>Date</span>
 				{state.sortBy.column === 'createdAt' && (
 					<span>{state.sortBy.order}</span>
 				)}
 			</Column>
-			<Column noHover className="item__type">
+			<Column noHover>
 				<span>Type</span>
 			</Column>
-			<Column className="item__size" onClick={() => sortItems('size')}>
+			<Column onClick={() => sortItems('size')}>
 				<span>Size</span>
 				{state.sortBy.column === 'size' && (
 					<span>{state.sortBy.order}</span>

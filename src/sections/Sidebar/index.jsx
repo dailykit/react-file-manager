@@ -18,7 +18,11 @@ const Sidebar = () => {
 		<SidebarWrapper isSidebarVisible={state.isSidebarVisible}>
 			<SidebarActions>
 				<button onClick={() => dispatch({ type: 'TOGGLE_SIDEBAR' })}>
-					{state.isSidebarVisible ? <ExpandIcon /> : <CollapseIcon />}
+					{state.isSidebarVisible ? (
+						<ExpandIcon color="#ababab" />
+					) : (
+						<CollapseIcon color="#ababab" />
+					)}
 				</button>
 			</SidebarActions>
 			<FileExplorer />

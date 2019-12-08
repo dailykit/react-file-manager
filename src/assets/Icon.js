@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const ExpandIcon = ({ size = 18, color = '#000000' }) => (
+export const ExpandIcon = ({ size = 16, color = '#000000' }) => (
 	<svg
 		width={size}
 		height={size}
@@ -15,7 +15,7 @@ export const ExpandIcon = ({ size = 18, color = '#000000' }) => (
 	</svg>
 )
 
-export const CollapseIcon = ({ size = 18, color = '#000000' }) => (
+export const CollapseIcon = ({ size = 16, color = '#000000' }) => (
 	<svg
 		width={size}
 		height={size}

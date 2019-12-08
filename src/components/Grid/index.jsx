@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import Card from './Card'
 
 const Grid = ({ items }) => {
-	console.log(items)
 	return (
 		<GridWrapper>
 			{items.folder && items.folder.map(item => <Card item={item} />)}

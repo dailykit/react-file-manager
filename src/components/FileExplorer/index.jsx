@@ -45,7 +45,7 @@ const FileExplorer = () => {
 	}
 
 	const onSelection = node => {
-		onToggle(node.name)
+		if (node.type === 'folder') onToggle(node.name)
 		dispatch({ type: 'SET_CURRENT_FOLDER', payload: node.path })
 	}
 

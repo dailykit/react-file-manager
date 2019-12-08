@@ -245,14 +245,14 @@ const Card = ({ item }) => {
 					onDoubleClick={() => callDoubleClick(doubleClick)}
 					title={item.name}
 				>
-					<Thumb className="item__thumbnail">
+					<Thumb>
 						{item.type === 'folder' ? (
 							<FolderCloseIcon />
 						) : (
 							<FileText size={35} color="#6A91EE" />
 						)}
 					</Thumb>
-					<span className="item__name">
+					<span>
 						{item.name.length > 12
 							? item.name.slice(0, 12) + '...'
 							: item.name}

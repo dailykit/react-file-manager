@@ -16,8 +16,8 @@ import { CloseIcon } from '../../assets/Icon'
 const FilePreview = ({ name, size, type }) => {
 	const { dispatch } = React.useContext(Context)
 	return (
-		<FilePreviewWrapper id="file__preview">
-			<Header className="preview__header">
+		<FilePreviewWrapper>
+			<Header>
 				<span>{name}</span>
 				<button
 					onClick={() =>
@@ -27,14 +27,14 @@ const FilePreview = ({ name, size, type }) => {
 					<CloseIcon />
 				</button>
 			</Header>
-			<Thumbnail className="preview__thumbnail">
+			<Thumbnail>
 				{type === 'file' ? (
 					<span>File Preview</span>
 				) : (
 					<span>No preview</span>
 				)}
 			</Thumbnail>
-			<Details className="preview__main">
+			<Details>
 				<div>
 					<span>File type</span>
 					<span>{type}</span>

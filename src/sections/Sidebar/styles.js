@@ -31,6 +31,9 @@ export const SidebarActions = styled.div`
 	button {
 		height: 40px;
 		width: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		background: transparent;
 		border: none;
 		cursor: pointer;

@@ -162,7 +162,7 @@ const Main = () => {
 		</ContextMenu>
 	)
 	if (queryLoading) return <div>Loading...</div>
-	if (queryError) return console.log(queryError) || <div>Error!</div>
+	if (queryError) return <div>Error!</div>
 	if (Object.keys(items).length === 0 && state.searchText === '') {
 		return (
 			<MainWrapper isEmpty>
