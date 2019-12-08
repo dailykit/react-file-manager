@@ -6,12 +6,15 @@ export const Row = styled.div`
 	height: 40px;
 	line-height: 40px;
 	position: relative;
-	border-top: 1px solid transparent;
-	border-bottom: 1px solid transparent;
+	cursor: pointer;
+	border-radius: 4px;
+	overflow: hidden;
 	&:hover {
-		border-top: 1px solid var(--border);
-		border-bottom: 1px solid var(--border);
+		background: #69a1f6;
+		color: #fff;
 		.item__options {
+			background: #69a1f6;
+			fill: #fff;
 			visibility: visible;
 		}
 	}

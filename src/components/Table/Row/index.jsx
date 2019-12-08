@@ -150,12 +150,12 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 				})
 			}}
 		>
-			<TrashIcon />
+			<TrashIcon color="#fff" />
 		</button>
 	)
 	const Preview = (
 		<button onClick={() => showPreview()}>
-			<InfoIcon />
+			<InfoIcon color="#fff" />
 		</button>
 	)
 	const CreatePopup = (
