@@ -13,6 +13,7 @@ const Navbar = React.lazy(() => import('./sections/Navbar'))
 const GlobalStyle = createGlobalStyle`
 	* {
 		box-sizing: border-box;
+		font-family: sans-serif;
 	}
 
 	html {
@@ -21,6 +22,7 @@ const GlobalStyle = createGlobalStyle`
 
 	body {
 		height: 100vh;
+		font-family: sans-serif;
 	}
 	:root {
 		--border: #E0C9C9;
