@@ -37,14 +37,3 @@ export const SidebarActions = styled.div`
 		border-right: 1px solid var(--border);
 	}
 `
-
-export const FileExplorer = styled.div(
-	({ isSidebarVisible }) => css`
-		padding: var(--spacer-2);
-		height: 100%;
-		overflow: auto;
-		@media (max-width: 567px) {
-			display: ${isSidebarVisible ? 'block' : 'none'};
-		}
-	`
-)

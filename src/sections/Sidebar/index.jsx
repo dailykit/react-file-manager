@@ -4,10 +4,10 @@ import React from 'react'
 import { Context } from '../../state/context'
 
 // Components
-import { RenderTree } from '../../components'
+import { FileExplorer } from '../../components'
 
 // Styles
-import { SidebarWrapper, SidebarActions, FileExplorer } from './styles'
+import { SidebarWrapper, SidebarActions } from './styles'
 
 // Assets
 import { ExpandIcon, CollapseIcon } from '../../assets/Icon'
@@ -21,9 +21,7 @@ const Sidebar = () => {
 					{state.isSidebarVisible ? <ExpandIcon /> : <CollapseIcon />}
 				</button>
 			</SidebarActions>
-			<FileExplorer isSidebarVisible={state.isSidebarVisible}>
-				{state.isSidebarVisible && <RenderTree />}
-			</FileExplorer>
+			<FileExplorer />
 		</SidebarWrapper>
 	)
 }

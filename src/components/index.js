@@ -1,8 +1,8 @@
 import Grid from './Grid'
 import FilePreview from './FilePreview'
 import Modal from './Modal'
-import RenderTree from './RenderTree'
 import Table from './Table'
 import ToastContainer from './ToastContainer'
+import FileExplorer from './FileExplorer'
 
-export { Grid, FilePreview, Modal, RenderTree, Table, ToastContainer }
+export { Grid, FilePreview, Modal, Table, ToastContainer, FileExplorer }
