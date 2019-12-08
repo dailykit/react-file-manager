@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useMutation, useLazyQuery } from '@apollo/react-hooks'
-import { Menu, Item, MenuProvider } from 'react-contexify'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 import { useToasts } from 'react-toast-notifications'
 
 // Context
@@ -208,53 +208,10 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		</Modal>
 	)
 	const generateId = `table__row__menu${Math.random()}`
-	const TableRowMenu = () => (
-		<Menu id={generateId}>
-			{type === 'file' ? (
-				<Item onClick={() => openFile()}>Open File</Item>
-			) : (
-				<Item onClick={() => openFolder()}>Open Folder</Item>
-			)}
-			{state.currentFolder.split('/').length > 5 && (
-				<Item
-					onClick={() => {
-						if (type === 'file') {
-							setCreateModalVisibility({
-								file: !isCreateModalVisible.file,
-							})
-							return
-						}
-						setCreateModalVisibility({
-							folder: !isCreateModalVisible.folder,
-						})
-					}}
-				>
-					Rename {type === 'file' ? 'file' : 'folder'}
-				</Item>
-			)}
-
-			{state.currentFolder.split('/').length > 5 && (
-				<Item
-					onClick={() => {
-						const args = {
-							variables: {
-								path,
-							},
-						}
-						return type === 'file'
-							? deleteFile(args)
-							: deleteFolder(args)
-					}}
-				>
-					Delete {type === 'file' ? 'file' : 'folder'}
-				</Item>
-			)}
-		</Menu>
-	)
 
 	return (
 		<React.Fragment>
-			<MenuProvider id={generateId}>
+			<ContextMenuTrigger id={generateId}>
 				{isCreateModalVisible.folder && <CreatePopup />}
 				{isCreateModalVisible.file && <CreatePopup />}
 				<Row>
@@ -294,8 +251,50 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 						)}
 					</RowCell>
 				</Row>
-			</MenuProvider>
-			<TableRowMenu />
+			</ContextMenuTrigger>
+			<ContextMenu id={generateId}>
+				{type === 'file' ? (
+					<MenuItem onClick={() => openFile()}>Open File</MenuItem>
+				) : (
+					<MenuItem onClick={() => openFolder()}>
+						Open Folder
+					</MenuItem>
+				)}
+				{state.currentFolder.split('/').length > 5 && (
+					<MenuItem
+						onClick={() => {
+							if (type === 'file') {
+								setCreateModalVisibility({
+									file: !isCreateModalVisible.file,
+								})
+								return
+							}
+							setCreateModalVisibility({
+								folder: !isCreateModalVisible.folder,
+							})
+						}}
+					>
+						Rename {type === 'file' ? 'file' : 'folder'}
+					</MenuItem>
+				)}
+
+				{state.currentFolder.split('/').length > 5 && (
+					<MenuItem
+						onClick={() => {
+							const args = {
+								variables: {
+									path,
+								},
+							}
+							return type === 'file'
+								? deleteFile(args)
+								: deleteFolder(args)
+						}}
+					>
+						Delete {type === 'file' ? 'file' : 'folder'}
+					</MenuItem>
+				)}
+			</ContextMenu>
 		</React.Fragment>
 	)
 }

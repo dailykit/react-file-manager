@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMutation, useLazyQuery } from '@apollo/react-hooks'
-import { Menu, Item, MenuProvider } from 'react-contexify'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 import PropTypes from 'prop-types'
 import { useToasts } from 'react-toast-notifications'
 
@@ -206,14 +206,14 @@ const Card = ({ item }) => {
 	)
 	const generateId = `table__row__menu${Math.random()}`
 	const CardMenu = () => (
-		<Menu id={generateId}>
+		<ContextMenu id={generateId}>
 			{item.type === 'file' ? (
-				<Item onClick={() => openFile()}>Open File</Item>
+				<MenuItem onClick={() => openFile()}>Open File</MenuItem>
 			) : (
-				<Item onClick={() => openFolder()}>Open Folder</Item>
+				<MenuItem onClick={() => openFolder()}>Open Folder</MenuItem>
 			)}
 			{state.currentFolder.split('/').length > 5 && (
-				<Item
+				<MenuItem
 					onClick={() => {
 						if (item.type === 'file') {
 							return setCreateModalVisibility({
@@ -226,10 +226,10 @@ const Card = ({ item }) => {
 					}}
 				>
 					Rename {item.type === 'file' ? 'file' : 'folder'}
-				</Item>
+				</MenuItem>
 			)}
 			{state.currentFolder.split('/').length > 5 && (
-				<Item
+				<MenuItem
 					onClick={() => {
 						const args = {
 							variables: {
@@ -242,14 +242,14 @@ const Card = ({ item }) => {
 					}}
 				>
 					Delete {item.type === 'file' ? 'file' : 'folder'}
-				</Item>
+				</MenuItem>
 			)}
-		</Menu>
+		</ContextMenu>
 	)
 
 	return (
 		<React.Fragment>
-			<MenuProvider id={generateId}>
+			<ContextMenuTrigger id={generateId}>
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
 				<CardWrapper onClick={() => handleClicks()} title={item.name}>
@@ -266,7 +266,7 @@ const Card = ({ item }) => {
 							: item.name}
 					</span>
 				</CardWrapper>
-			</MenuProvider>
+			</ContextMenuTrigger>
 			<CardMenu />
 		</React.Fragment>
 	)

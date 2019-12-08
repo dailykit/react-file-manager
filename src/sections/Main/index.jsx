@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import styled, { css } from 'styled-components'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Menu, Item, MenuProvider } from 'react-contexify'
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 import { useToasts } from 'react-toast-notifications'
 
 // State
@@ -19,9 +19,6 @@ import {
 	CREATE_FILE,
 	IMAGE_UPLOAD,
 } from '../../queries'
-
-// Styles
-import 'react-contexify/dist/ReactContexify.min.css'
 
 const Main = () => {
 	const { state, dispatch } = React.useContext(Context)
@@ -131,8 +128,8 @@ const Main = () => {
 	}
 
 	const MainMenu = () => (
-		<Menu id="main__menu">
-			<Item
+		<ContextMenu id="main__menu">
+			<MenuItem
 				onClick={() =>
 					setModal({
 						isVisible: true,
@@ -141,8 +138,8 @@ const Main = () => {
 				}
 			>
 				Create File
-			</Item>
-			<Item
+			</MenuItem>
+			<MenuItem
 				onClick={() =>
 					setModal({
 						isVisible: true,
@@ -151,8 +148,8 @@ const Main = () => {
 				}
 			>
 				Create Folder
-			</Item>
-			<Item
+			</MenuItem>
+			<MenuItem
 				onClick={() =>
 					setModal({
 						isVisible: true,
@@ -161,8 +158,8 @@ const Main = () => {
 				}
 			>
 				Upload Image
-			</Item>
-		</Menu>
+			</MenuItem>
+		</ContextMenu>
 	)
 	if (queryLoading) return <div>Loading...</div>
 	if (queryError) return console.log(queryError) || <div>Error!</div>
@@ -224,7 +221,7 @@ const Main = () => {
 	}
 	return (
 		<MainWrapper isSidebarVisible={state.isSidebarVisible}>
-			<MenuProvider id="main__menu">
+			<ContextMenuTrigger id="main__menu">
 				{modal.isVisible && (
 					<CreateModal
 						tabIndex={modal.tabIndex}
@@ -244,7 +241,7 @@ const Main = () => {
 						</FileDetails>
 					) : null}
 				</ContentWrapper>
-			</MenuProvider>
+			</ContextMenuTrigger>
 			{state.currentFolder.split('/').length > 5 && (
 				<MainMenu id="main__menu" />
 			)}
@@ -272,6 +269,22 @@ const MainWrapper = styled.main(
 		@media (max-width: 567px) {
 			width: calc(100vw - 40px) !important;
 			margin-left: 40px;
+		}
+		.react-contextmenu {
+			border: 1px solid rgba(0, 0, 0, 0.2);
+			padding: 4px 0;
+			border-radius: 4px;
+			width: 160px;
+			background: #fff;
+		}
+		.react-contextmenu-item {
+			height: 28px;
+			line-height: 28px;
+			padding: 0 12px;
+			cursor: pointer;
+			&:hover {
+				background: rgba(0, 0, 0, 0.1);
+			}
 		}
 	`
 )
