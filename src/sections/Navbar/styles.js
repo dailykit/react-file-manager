@@ -26,16 +26,29 @@ export const Breadcrumbs = styled.div`
 	align-items: center;
 	border-right: 1px solid var(--border);
 	li {
+		height: 26px;
+		line-height: 26px;
+		padding: 0 8px;
+		border-radius: 4px;
 		list-style: none;
-		height: 40px;
-		line-height: 37px;
 		cursor: pointer;
+		font-size: 14px;
+		text-transform: capitalize;
+		color: #9ca2a7;
+		&:nth-last-of-type(1) {
+			color: #000;
+		}
+		&:hover {
+			color: #000;
+			background: #eeeeee;
+		}
 	}
 	span {
-		height: 40px;
+		height: 24px;
+		width: 24px;
 		display: flex;
 		align-items: center;
-		margin: 0 var(--spacer-1);
+		justify-content: center;
 	}
 	@media (max-width: 567px) {
 		grid-column: 1;

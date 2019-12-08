@@ -39,11 +39,8 @@ const Navbar = () => {
 	}
 
 	return (
-		<NavbarWrapper
-			isSidebarVisible={state.isSidebarVisible}
-			className="window__main__navbar"
-		>
-			<Breadcrumbs className="window__main__breadcrumbs">
+		<NavbarWrapper isSidebarVisible={state.isSidebarVisible}>
+			<Breadcrumbs>
 				{route &&
 					route.split('/').map((breadcrumb, index) => (
 						<React.Fragment key={index}>
@@ -52,13 +49,13 @@ const Navbar = () => {
 							</li>
 							{index === route.split('/').length - 1 ? null : (
 								<span>
-									<ChevronRightIcon />
+									<ChevronRightIcon color="#CECECE" />
 								</span>
 							)}
 						</React.Fragment>
 					))}
 			</Breadcrumbs>
-			<Search className="window__main__search">
+			<Search>
 				<input
 					type="text"
 					placeholder="Search files or folders..."
@@ -66,7 +63,7 @@ const Navbar = () => {
 					onChange={e => searchFolder(e)}
 				/>
 			</Search>
-			<SwitchView className="window__main__view">
+			<SwitchView>
 				<button
 					onClick={() =>
 						dispatch({ type: 'TOGGLE_VIEW', payload: 'list' }) ||
