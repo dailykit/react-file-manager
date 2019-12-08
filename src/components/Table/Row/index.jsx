@@ -25,6 +25,7 @@ import {
 
 // Helpers
 import convertFileSize from '../../../utils/convertFileSize'
+import useClick from '../../../utils/useClick'
 
 // Assets
 import { TrashIcon, InfoIcon } from '../../../assets/Icon'
@@ -34,7 +35,7 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 	const { state, dispatch } = React.useContext(Context)
 	const [folderName, setFolderName] = React.useState('')
 	const [fileName, setFileName] = React.useState('')
-
+	const [callSingleClick, callDoubleClick] = useClick()
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
@@ -106,8 +107,6 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 	const openFolder = () =>
 		dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
 
-	let clickCount = 0
-	let singleClickTimer
 	const showPreview = () => {
 		dispatch({
 			type: 'SET_PREVIEW_DATA',
@@ -119,21 +118,9 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 		})
 		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
-	const handleDoubleClick = () =>
-		type === 'file' ? openFile() : openFolder()
-	const handleClicks = () => {
-		clickCount++
-		if (clickCount === 1) {
-			singleClickTimer = setTimeout(function() {
-				clickCount = 0
-				showPreview()
-			}, 300)
-		} else if (clickCount === 2) {
-			clearTimeout(singleClickTimer)
-			clickCount = 0
-			handleDoubleClick()
-		}
-	}
+
+	const doubleClick = () => (type === 'file' ? openFile() : openFolder())
+
 	const CreatePopup = () => (
 		<Modal>
 			<Modal.Header>
@@ -215,7 +202,11 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 				{isCreateModalVisible.folder && <CreatePopup />}
 				{isCreateModalVisible.file && <CreatePopup />}
 				<Row>
-					<RowCell onClick={() => handleClicks()} title={name}>
+					<RowCell
+						onClick={() => callSingleClick(showPreview)}
+						onDoubleClick={() => callDoubleClick(doubleClick)}
+						title={name}
+					>
 						{name.length > 20 ? name.slice(0, 20) + '...' : name}
 					</RowCell>
 					<RowCell>

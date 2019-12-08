@@ -20,6 +20,9 @@ import {
 	OPEN_FILE,
 } from '../../../queries'
 
+// Helpers
+import useClick from '../../../utils/useClick'
+
 // Assets
 import { FolderCloseIcon, FileText } from '../../../assets/Icon'
 
@@ -31,6 +34,7 @@ const Card = ({ item }) => {
 	const { state, dispatch } = React.useContext(Context)
 	const [folderName, setFolderName] = React.useState('')
 	const [fileName, setFileName] = React.useState('')
+	const [callSingleClick, callDoubleClick] = useClick()
 	const [isCreateModalVisible, setCreateModalVisibility] = React.useState({
 		folder: false,
 		file: false,
@@ -102,8 +106,6 @@ const Card = ({ item }) => {
 	const openFolder = () =>
 		dispatch({ type: 'SET_CURRENT_FOLDER', payload: item.path })
 
-	let clickCount = 0
-	let singleClickTimer
 	const singleClick = () => {
 		dispatch({
 			type: 'SET_PREVIEW_DATA',
@@ -115,21 +117,7 @@ const Card = ({ item }) => {
 		})
 		dispatch({ type: 'TOGGLE_PREVIEW', payload: true })
 	}
-	const handleDoubleClick = () =>
-		item.type === 'file' ? openFile() : openFolder()
-	const handleClicks = () => {
-		clickCount++
-		if (clickCount === 1) {
-			singleClickTimer = setTimeout(function() {
-				clickCount = 0
-				singleClick()
-			}, 300)
-		} else if (clickCount === 2) {
-			clearTimeout(singleClickTimer)
-			clickCount = 0
-			handleDoubleClick()
-		}
-	}
+	const doubleClick = () => (item.type === 'file' ? openFile() : openFolder())
 
 	const CreatePopup = () => (
 		<Modal>
@@ -252,7 +240,11 @@ const Card = ({ item }) => {
 			<ContextMenuTrigger id={generateId}>
 				{isCreateModalVisible.folder && CreatePopup}
 				{isCreateModalVisible.file && CreatePopup}
-				<CardWrapper onClick={() => handleClicks()} title={item.name}>
+				<CardWrapper
+					onClick={() => callSingleClick(singleClick)}
+					onDoubleClick={() => callDoubleClick(doubleClick)}
+					title={item.name}
+				>
 					<Thumb className="item__thumbnail">
 						{item.type === 'folder' ? (
 							<FolderCloseIcon />
