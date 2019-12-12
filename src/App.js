@@ -11,9 +11,10 @@ const Navbar = React.lazy(() => import('./sections/Navbar'))
 
 // Styles
 const GlobalStyle = createGlobalStyle`
+	@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:200,300,400,500,600,700&display=swap');
 	* {
 		box-sizing: border-box;
-		font-family: sans-serif;
+		font-family: 'IBM Plex Sans', sans-serif;
 	}
 
 	html {
@@ -22,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
 
 	body {
 		height: 100vh;
-		font-family: sans-serif;
+		font-family: 'IBM Plex Sans', sans-serif;
 	}
 	:root {
 		--border: #E0C9C9;
