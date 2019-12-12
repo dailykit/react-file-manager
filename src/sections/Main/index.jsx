@@ -276,6 +276,7 @@ const MainWrapper = styled.main(
 			border-radius: 4px;
 			width: 160px;
 			background: #fff;
+			z-index: 1000;
 		}
 		.react-contextmenu-item {
 			height: 28px;
