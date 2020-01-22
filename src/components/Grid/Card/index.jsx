@@ -31,7 +31,7 @@ import { CardWrapper, Thumb } from './styles'
 
 const Card = ({ item }) => {
 	const { addToast } = useToasts()
-	const { state, dispatch } = React.useContext(Context)
+	const { dispatch } = React.useContext(Context)
 	const [folderName, setFolderName] = React.useState('')
 	const [fileName, setFileName] = React.useState('')
 	const [callSingleClick, callDoubleClick] = useClick()
