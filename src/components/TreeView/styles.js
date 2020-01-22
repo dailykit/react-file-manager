@@ -13,7 +13,7 @@ export const Node = styled.ul(
 		border-radius: 4px 0 0 4px;
 		cursor: pointer;
 		font-size: 14px;
-		padding: 0 16px;
+		padding: 0 12px;
 		background: transparent;
 		color: ${isOpen ? '#000' : '#9ca2a7'};
 		border-right: ${isOpen ? '3px solid #69A1F6' : '3px solid transparent'};
