@@ -17,5 +17,6 @@ export default Grid
 
 const GridWrapper = styled.div`
 	display: grid;
+	grid-template-rows: 150px;
 	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
 `

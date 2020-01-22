@@ -207,11 +207,11 @@ const Card = ({ item }) => {
 				onClick={() => {
 					if (item.type === 'file') {
 						return setCreateModalVisibility({
-							file: !isCreateModalVisible.file,
+							file: true,
 						})
 					}
 					setCreateModalVisibility({
-						folder: !isCreateModalVisible.folder,
+						folder: true,
 					})
 				}}
 			>
@@ -237,8 +237,8 @@ const Card = ({ item }) => {
 	return (
 		<React.Fragment>
 			<ContextMenuTrigger id={generateId}>
-				{isCreateModalVisible.folder && CreatePopup}
-				{isCreateModalVisible.file && CreatePopup}
+				{isCreateModalVisible.folder && <CreatePopup />}
+				{isCreateModalVisible.file && <CreatePopup />}
 				<CardWrapper
 					onClick={() => callSingleClick(singleClick)}
 					onDoubleClick={() => callDoubleClick(doubleClick)}

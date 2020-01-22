@@ -133,22 +133,26 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 				<label htmlFor="rename__folder__input">
 					{isCreateModalVisible.file ? 'File Name' : 'Folder Name'}
 				</label>
-				<input
-					type="text"
-					name="createFolder"
-					id="rename__folder__input"
-					value={isCreateModalVisible.file ? fileName : folderName}
-					placeholder={
-						isCreateModalVisible.file
-							? 'Enter a file name'
-							: 'Enter a folder name'
-					}
-					onChange={e =>
-						isCreateModalVisible.file
-							? setFileName(e.target.value)
-							: setFolderName(e.target.value)
-					}
-				/>
+				{isCreateModalVisible.folder && (
+					<input
+						type="text"
+						name="renameFolder"
+						id="rename__folder__input"
+						value={folderName}
+						placeholder="Enter a folder name"
+						onChange={e => setFolderName(e.target.value)}
+					/>
+				)}
+				{isCreateModalVisible.file && (
+					<input
+						type="text"
+						name="createFolder"
+						id="rename__folder__input"
+						value={fileName}
+						placeholder="Enter a file name"
+						onChange={e => setFileName(e.target.value)}
+					/>
+				)}
 			</Modal.Body>
 			<Modal.Footer>
 				<button

@@ -81,7 +81,13 @@ const Main = () => {
 				payload: {
 					name: queryData.getFolderWithFiles.name,
 					path: queryData.getFolderWithFiles.path,
-					children: childrens,
+					children: childrens.map(children => ({
+						...children,
+						path: children.path.replace(
+							process.env.REACT_APP_ROOT_FOLDER,
+							''
+						),
+					})),
 				},
 			})
 		}
