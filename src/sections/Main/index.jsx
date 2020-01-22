@@ -91,7 +91,7 @@ const Main = () => {
 				},
 			})
 		}
-	}, [queryData, state.searchText])
+	}, [dispatch, queryData, state.searchText])
 
 	let items = _.mapValues(
 		_.groupBy(state.folderData.children || [], 'type'),
