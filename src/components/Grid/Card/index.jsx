@@ -98,13 +98,16 @@ const Card = ({ item }) => {
 	const openFile = () => {
 		openFileQuery({
 			variables: {
-				path: item.path,
+				path: item.path.replace(process.env.REACT_APP_ROOT_FOLDER, ''),
 			},
 		})
 	}
 
 	const openFolder = () =>
-		dispatch({ type: 'SET_CURRENT_FOLDER', payload: item.path })
+		dispatch({
+			type: 'SET_CURRENT_FOLDER',
+			payload: item.path.replace(process.env.REACT_APP_ROOT_FOLDER, ''),
+		})
 
 	const singleClick = () => {
 		dispatch({
@@ -200,38 +203,34 @@ const Card = ({ item }) => {
 			) : (
 				<MenuItem onClick={() => openFolder()}>Open Folder</MenuItem>
 			)}
-			{state.currentFolder.split('/').length > 5 && (
-				<MenuItem
-					onClick={() => {
-						if (item.type === 'file') {
-							return setCreateModalVisibility({
-								file: !isCreateModalVisible.file,
-							})
-						}
-						setCreateModalVisibility({
-							folder: !isCreateModalVisible.folder,
+			<MenuItem
+				onClick={() => {
+					if (item.type === 'file') {
+						return setCreateModalVisibility({
+							file: !isCreateModalVisible.file,
 						})
-					}}
-				>
-					Rename {item.type === 'file' ? 'file' : 'folder'}
-				</MenuItem>
-			)}
-			{state.currentFolder.split('/').length > 5 && (
-				<MenuItem
-					onClick={() => {
-						const args = {
-							variables: {
-								path: item.path,
-							},
-						}
-						return item.type === 'file'
-							? deleteFile(args)
-							: deleteFolder(args)
-					}}
-				>
-					Delete {item.type === 'file' ? 'file' : 'folder'}
-				</MenuItem>
-			)}
+					}
+					setCreateModalVisibility({
+						folder: !isCreateModalVisible.folder,
+					})
+				}}
+			>
+				Rename {item.type === 'file' ? 'file' : 'folder'}
+			</MenuItem>
+			<MenuItem
+				onClick={() => {
+					const args = {
+						variables: {
+							path: item.path,
+						},
+					}
+					return item.type === 'file'
+						? deleteFile(args)
+						: deleteFolder(args)
+				}}
+			>
+				Delete {item.type === 'file' ? 'file' : 'folder'}
+			</MenuItem>
 		</ContextMenu>
 	)
 

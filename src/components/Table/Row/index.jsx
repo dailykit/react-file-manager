@@ -32,7 +32,7 @@ import { TrashIcon, InfoIcon } from '../../../assets/Icon'
 
 const TableRow = ({ name, type, size, path, createdAt }) => {
 	const { addToast } = useToasts()
-	const { state, dispatch } = React.useContext(Context)
+	const { dispatch } = React.useContext(Context)
 	const [folderName, setFolderName] = React.useState('')
 	const [fileName, setFileName] = React.useState('')
 	const [callSingleClick, callDoubleClick] = useClick()
@@ -100,12 +100,15 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 	const openFile = () => {
 		openFileQuery({
 			variables: {
-				path: path,
+				path: path.replace(process.env.REACT_APP_ROOT_FOLDER, ''),
 			},
 		})
 	}
 	const openFolder = () =>
-		dispatch({ type: 'SET_CURRENT_FOLDER', payload: path })
+		dispatch({
+			type: 'SET_CURRENT_FOLDER',
+			payload: path.replace(process.env.REACT_APP_ROOT_FOLDER, ''),
+		})
 
 	const showPreview = () => {
 		dispatch({
@@ -224,22 +227,20 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 						<button onClick={() => showPreview()}>
 							<InfoIcon color="#fff" />
 						</button>
-						{state.currentFolder.split('/').length > 5 && (
-							<button
-								onClick={() => {
-									const args = {
-										variables: {
-											path,
-										},
-									}
-									return type === 'folder'
-										? deleteFolder(args)
-										: deleteFile(args)
-								}}
-							>
-								<TrashIcon color="#fff" />
-							</button>
-						)}
+						<button
+							onClick={() => {
+								const args = {
+									variables: {
+										path,
+									},
+								}
+								return type === 'folder'
+									? deleteFolder(args)
+									: deleteFile(args)
+							}}
+						>
+							<TrashIcon color="#fff" />
+						</button>
 					</RowCell>
 				</Row>
 			</ContextMenuTrigger>
@@ -251,40 +252,36 @@ const TableRow = ({ name, type, size, path, createdAt }) => {
 						Open Folder
 					</MenuItem>
 				)}
-				{state.currentFolder.split('/').length > 5 && (
-					<MenuItem
-						onClick={() => {
-							if (type === 'file') {
-								setCreateModalVisibility({
-									file: !isCreateModalVisible.file,
-								})
-								return
-							}
+				<MenuItem
+					onClick={() => {
+						if (type === 'file') {
 							setCreateModalVisibility({
-								folder: !isCreateModalVisible.folder,
+								file: !isCreateModalVisible.file,
 							})
-						}}
-					>
-						Rename {type === 'file' ? 'file' : 'folder'}
-					</MenuItem>
-				)}
+							return
+						}
+						setCreateModalVisibility({
+							folder: !isCreateModalVisible.folder,
+						})
+					}}
+				>
+					Rename {type === 'file' ? 'file' : 'folder'}
+				</MenuItem>
 
-				{state.currentFolder.split('/').length > 5 && (
-					<MenuItem
-						onClick={() => {
-							const args = {
-								variables: {
-									path,
-								},
-							}
-							return type === 'file'
-								? deleteFile(args)
-								: deleteFolder(args)
-						}}
-					>
-						Delete {type === 'file' ? 'file' : 'folder'}
-					</MenuItem>
-				)}
+				<MenuItem
+					onClick={() => {
+						const args = {
+							variables: {
+								path,
+							},
+						}
+						return type === 'file'
+							? deleteFile(args)
+							: deleteFolder(args)
+					}}
+				>
+					Delete {type === 'file' ? 'file' : 'folder'}
+				</MenuItem>
 			</ContextMenu>
 		</React.Fragment>
 	)

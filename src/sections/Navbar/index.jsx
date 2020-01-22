@@ -15,15 +15,13 @@ const Navbar = () => {
 	const [route, setRoute] = React.useState('')
 	React.useEffect(() => {
 		if (state.currentFolder) {
-			setRoute(state.currentFolder.split('./../')[1])
+			setRoute(state.currentFolder)
 		}
 	}, [state.currentFolder])
 
-	const goToFolder = async folderName => {
+	const goToFolder = async index => {
 		const path = await route.split('/')
-		const index = await path.indexOf(folderName)
-		const slicePath = await path.slice(0, index + 1)
-		const fullPath = './../' + slicePath.join('/')
+		const fullPath = await path.slice(0, index + 1).join('/')
 		dispatch({
 			type: 'SET_CURRENT_FOLDER',
 			payload: fullPath,
@@ -44,7 +42,7 @@ const Navbar = () => {
 				{route &&
 					route.split('/').map((breadcrumb, index) => (
 						<React.Fragment key={index}>
-							<li onClick={() => goToFolder(breadcrumb)}>
+							<li onClick={() => goToFolder(index)}>
 								{breadcrumb}
 							</li>
 							{index === route.split('/').length - 1 ? null : (

@@ -25,7 +25,7 @@ const FileExplorer = () => {
 		error: queryError,
 		data: queryData,
 	} = useQuery(GET_NESTED_FOLDER, {
-		variables: { path: './../apps' },
+		variables: { path: '' },
 	})
 
 	React.useEffect(() => {
@@ -33,7 +33,10 @@ const FileExplorer = () => {
 			setData(queryData.getNestedFolders.children)
 			dispatch({
 				type: 'SET_CURRENT_FOLDER',
-				payload: queryData.getNestedFolders.path,
+				payload: queryData.getNestedFolders.path.replace(
+					process.env.REACT_APP_ROOT_FOLDER,
+					''
+				),
 			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,7 +49,10 @@ const FileExplorer = () => {
 
 	const onSelection = node => {
 		if (node.type === 'folder') onToggle(node.name)
-		dispatch({ type: 'SET_CURRENT_FOLDER', payload: node.path })
+		dispatch({
+			type: 'SET_CURRENT_FOLDER',
+			payload: node.path.replace(process.env.REACT_APP_ROOT_FOLDER, ''),
+		})
 	}
 
 	if (queryLoading) {

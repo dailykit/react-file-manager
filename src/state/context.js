@@ -4,7 +4,7 @@ const Context = React.createContext()
 
 const initialState = {
 	isSidebarVisible: true,
-	currentFolder: './../apps',
+	currentFolder: '',
 	folderView: 'list',
 	isPreviewVisible: false,
 	searchText: '',
@@ -25,10 +25,7 @@ const reducers = (state, action) => {
 		case 'SET_CURRENT_FOLDER':
 			return {
 				...state,
-				currentFolder:
-					action.payload === './..'
-						? state.currentFolder
-						: action.payload,
+				currentFolder: action.payload,
 			}
 		case 'SET_FOLDER_DATA':
 			return {

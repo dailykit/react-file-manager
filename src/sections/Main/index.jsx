@@ -242,9 +242,7 @@ const Main = () => {
 					) : null}
 				</ContentWrapper>
 			</ContextMenuTrigger>
-			{state.currentFolder.split('/').length > 5 && (
-				<MainMenu id="main__menu" />
-			)}
+			<MainMenu id="main__menu" />
 		</MainWrapper>
 	)
 }
