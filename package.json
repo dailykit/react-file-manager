@@ -33,7 +33,7 @@
         "react-scripts": "3.3.0",
         "react-toast-notifications": "^2.4.0",
         "react-treebeard": "^3.2.4",
-        "styled-components": "^5.0.0"
+        "styled-components": "4.4.1"
     },
     "scripts": {
         "start": "react-scripts start",
