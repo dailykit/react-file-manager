@@ -31,7 +31,7 @@ import { CardWrapper, Thumb } from './styles'
 
 const Card = ({ item }) => {
 	const { addToast } = useToasts()
-	const { state, dispatch } = React.useContext(Context)
+	const { dispatch } = React.useContext(Context)
 	const [folderName, setFolderName] = React.useState('')
 	const [fileName, setFileName] = React.useState('')
 	const [callSingleClick, callDoubleClick] = useClick()
@@ -98,13 +98,16 @@ const Card = ({ item }) => {
 	const openFile = () => {
 		openFileQuery({
 			variables: {
-				path: item.path,
+				path: item.path.replace(process.env.REACT_APP_ROOT_FOLDER, ''),
 			},
 		})
 	}
 
 	const openFolder = () =>
-		dispatch({ type: 'SET_CURRENT_FOLDER', payload: item.path })
+		dispatch({
+			type: 'SET_CURRENT_FOLDER',
+			payload: item.path.replace(process.env.REACT_APP_ROOT_FOLDER, ''),
+		})
 
 	const singleClick = () => {
 		dispatch({
@@ -200,46 +203,42 @@ const Card = ({ item }) => {
 			) : (
 				<MenuItem onClick={() => openFolder()}>Open Folder</MenuItem>
 			)}
-			{state.currentFolder.split('/').length > 5 && (
-				<MenuItem
-					onClick={() => {
-						if (item.type === 'file') {
-							return setCreateModalVisibility({
-								file: !isCreateModalVisible.file,
-							})
-						}
-						setCreateModalVisibility({
-							folder: !isCreateModalVisible.folder,
+			<MenuItem
+				onClick={() => {
+					if (item.type === 'file') {
+						return setCreateModalVisibility({
+							file: true,
 						})
-					}}
-				>
-					Rename {item.type === 'file' ? 'file' : 'folder'}
-				</MenuItem>
-			)}
-			{state.currentFolder.split('/').length > 5 && (
-				<MenuItem
-					onClick={() => {
-						const args = {
-							variables: {
-								path: item.path,
-							},
-						}
-						return item.type === 'file'
-							? deleteFile(args)
-							: deleteFolder(args)
-					}}
-				>
-					Delete {item.type === 'file' ? 'file' : 'folder'}
-				</MenuItem>
-			)}
+					}
+					setCreateModalVisibility({
+						folder: true,
+					})
+				}}
+			>
+				Rename {item.type === 'file' ? 'file' : 'folder'}
+			</MenuItem>
+			<MenuItem
+				onClick={() => {
+					const args = {
+						variables: {
+							path: item.path,
+						},
+					}
+					return item.type === 'file'
+						? deleteFile(args)
+						: deleteFolder(args)
+				}}
+			>
+				Delete {item.type === 'file' ? 'file' : 'folder'}
+			</MenuItem>
 		</ContextMenu>
 	)
 
 	return (
 		<React.Fragment>
 			<ContextMenuTrigger id={generateId}>
-				{isCreateModalVisible.folder && CreatePopup}
-				{isCreateModalVisible.file && CreatePopup}
+				{isCreateModalVisible.folder && <CreatePopup />}
+				{isCreateModalVisible.file && <CreatePopup />}
 				<CardWrapper
 					onClick={() => callSingleClick(singleClick)}
 					onDoubleClick={() => callDoubleClick(doubleClick)}

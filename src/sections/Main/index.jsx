@@ -81,11 +81,17 @@ const Main = () => {
 				payload: {
 					name: queryData.getFolderWithFiles.name,
 					path: queryData.getFolderWithFiles.path,
-					children: childrens,
+					children: childrens.map(children => ({
+						...children,
+						path: children.path.replace(
+							process.env.REACT_APP_ROOT_FOLDER,
+							''
+						),
+					})),
 				},
 			})
 		}
-	}, [queryData, state.searchText])
+	}, [dispatch, queryData, state.searchText])
 
 	let items = _.mapValues(
 		_.groupBy(state.folderData.children || [], 'type'),
@@ -242,9 +248,7 @@ const Main = () => {
 					) : null}
 				</ContentWrapper>
 			</ContextMenuTrigger>
-			{state.currentFolder.split('/').length > 5 && (
-				<MainMenu id="main__menu" />
-			)}
+			<MainMenu id="main__menu" />
 		</MainWrapper>
 	)
 }
