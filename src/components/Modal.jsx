@@ -53,16 +53,17 @@ const ModalWrapper = styled.div`
 `
 
 const ModalCard = styled.div`
-	height: 200px;
+	max-height: 320px;
 	width: 480px;
 	background: #fff;
 	border-radius: 3px;
-	@include flex(null, space-between);
 	flex-direction: column;
+	display: flex;
+	justify-content: space-between;
 `
 
 const HeaderWrapper = styled.div`
-	height: 32px;
+	height: 40px;
 	padding: 0 12px;
 	display: flex;
 	align-items: center;
@@ -72,10 +73,11 @@ const HeaderWrapper = styled.div`
 const BodyWrapper = styled.div`
 	padding: 12px;
 	flex: 1;
+	overflow-y: auto;
 `
 
 const FooterWrapper = styled.div`
-	height: 40px;
+	height: 48px;
 	padding: 0 12px;
 	display: flex;
 	align-items: center;
