@@ -1,7 +1,6 @@
 import CREATE_FILE from './file/createFile'
 import DELETE_FILE from './file/deleteFile'
 import RENAME_FILE from './file/renameFile'
-import IMAGE_UPLOAD from './file/imageUpload'
 import OPEN_FILE from './file/openFile'
 import CREATE_FOLDER from './folder/createFolder'
 import RENAME_FOLDER from './folder/renameFolder'
@@ -18,6 +17,5 @@ export {
 	DELETE_FOLDER,
 	GET_FOLDER,
 	GET_NESTED_FOLDER,
-	IMAGE_UPLOAD,
 	OPEN_FILE,
 }
