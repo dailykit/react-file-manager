@@ -1,30 +1,24 @@
 import React from 'react'
 import _ from 'lodash'
 import styled, { css } from 'styled-components'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
-import { useToasts } from 'react-toast-notifications'
 
 // State
 import { Context } from '../../state/context'
 
 // Components
 import { FilePreview, Grid, Table } from '../../components'
-import CreateModal from './CreateModal'
+import { CreateFile, CreateFolder } from './modals'
 
 // Queries
-import {
-	GET_FOLDER,
-	CREATE_FOLDER,
-	CREATE_FILE,
-	IMAGE_UPLOAD,
-} from '../../queries'
+import { GET_FOLDER } from '../../queries'
 
 const Main = () => {
 	const { state, dispatch } = React.useContext(Context)
 	const [modal, setModal] = React.useState({
-		isVisible: false,
-		tabIndex: 0,
+		file: false,
+		folder: false,
 	})
 	const {
 		loading: queryLoading,
@@ -34,41 +28,6 @@ const Main = () => {
 		variables: {
 			path: state.currentFolder,
 		},
-	})
-
-	const { addToast } = useToasts()
-	const [createFolder] = useMutation(CREATE_FOLDER, {
-		onCompleted: ({ createFolder }) => {
-			addToast(createFolder.message, {
-				appearance: 'success',
-				autoDismiss: true,
-			})
-		},
-		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
-		],
-	})
-	const [createFile] = useMutation(CREATE_FILE, {
-		onCompleted: ({ createFile }) => {
-			addToast(createFile.message, {
-				appearance: 'success',
-				autoDismiss: true,
-			})
-		},
-		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
-		],
-	})
-	const [imageUpload] = useMutation(IMAGE_UPLOAD, {
-		onCompleted: ({ imageUpload }) => {
-			addToast(imageUpload.message, {
-				appearance: 'success',
-				autoDismiss: true,
-			})
-		},
-		refetchQueries: [
-			{ query: GET_FOLDER, variables: { path: state.currentFolder } },
-		],
 	})
 
 	React.useEffect(() => {
@@ -98,72 +57,34 @@ const Main = () => {
 		v => _.orderBy(v, [state.sortBy.column], [state.sortBy.order])
 	)
 
-	const onModalSubmit = ({ value, type }) => {
-		if (type === 'folder') {
-			createFolder({
-				variables: {
-					path: `${state.currentFolder}/${value}`,
-				},
-			})
-		} else if (type === 'file') {
-			createFile({
-				variables: {
-					path: `${state.currentFolder}/${value}.json`,
-					content: '',
-				},
-			})
-		} else {
-			imageUpload({
-				variables: {
-					files: value,
-					path: state.currentFolder,
-				},
-			})
-		}
-		setModal({
-			isVisible: false,
-			tabIndex: 0,
-		})
-	}
-
-	const onModalClose = () => {
-		return setModal({
-			isVisible: false,
-			tabIndex: 0,
-		})
+	const onModalClose = type => {
+		return setModal(modal => ({
+			...modal,
+			[type]: false,
+		}))
 	}
 
 	const MainMenu = () => (
 		<ContextMenu id="main__menu">
 			<MenuItem
 				onClick={() =>
-					setModal({
-						isVisible: true,
-						tabIndex: 0,
-					})
+					setModal(modal => ({
+						...modal,
+						file: true,
+					}))
 				}
 			>
 				Create File
 			</MenuItem>
 			<MenuItem
 				onClick={() =>
-					setModal({
-						isVisible: true,
-						tabIndex: 1,
-					})
+					setModal(modal => ({
+						...modal,
+						folder: true,
+					}))
 				}
 			>
 				Create Folder
-			</MenuItem>
-			<MenuItem
-				onClick={() =>
-					setModal({
-						isVisible: true,
-						tabIndex: 2,
-					})
-				}
-			>
-				Upload Image
 			</MenuItem>
 		</ContextMenu>
 	)
@@ -172,10 +93,15 @@ const Main = () => {
 	if (Object.keys(items).length === 0 && state.searchText === '') {
 		return (
 			<MainWrapper isEmpty>
-				{modal.isVisible && (
-					<CreateModal
-						tabIndex={modal.tabIndex}
-						onModalSubmit={onModalSubmit}
+				{modal.file && (
+					<CreateFile
+						folderPath={state.currentFolder}
+						onModalClose={onModalClose}
+					/>
+				)}
+				{modal.folder && (
+					<CreateFolder
+						folderPath={state.currentFolder}
 						onModalClose={onModalClose}
 					/>
 				)}
@@ -186,33 +112,23 @@ const Main = () => {
 				<div>
 					<button
 						onClick={() =>
-							setModal({
-								isVisible: true,
-								tabIndex: 0,
-							})
+							setModal(modal => ({
+								...modal,
+								file: true,
+							}))
 						}
 					>
 						Create File
 					</button>
 					<button
 						onClick={() =>
-							setModal({
-								isVisible: true,
-								tabIndex: 1,
-							})
+							setModal(modal => ({
+								...modal,
+								folder: true,
+							}))
 						}
 					>
 						Create Folder
-					</button>
-					<button
-						onClick={() =>
-							setModal({
-								isVisible: true,
-								tabIndex: 2,
-							})
-						}
-					>
-						Upload Image
 					</button>
 				</div>
 			</MainWrapper>
@@ -228,10 +144,15 @@ const Main = () => {
 	return (
 		<MainWrapper isSidebarVisible={state.isSidebarVisible}>
 			<ContextMenuTrigger id="main__menu">
-				{modal.isVisible && (
-					<CreateModal
-						tabIndex={modal.tabIndex}
-						onModalSubmit={onModalSubmit}
+				{modal.file && (
+					<CreateFile
+						folderPath={state.currentFolder}
+						onModalClose={onModalClose}
+					/>
+				)}
+				{modal.folder && (
+					<CreateFolder
+						folderPath={state.currentFolder}
 						onModalClose={onModalClose}
 					/>
 				)}
